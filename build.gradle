@@ -1,0 +1,32 @@
+buildscript {
+	ext {
+		versionSpringBoot = "2.0.0.M7"
+		versionGuava = "23.5-jre"
+		versionCommonsLang3 = "3.7"
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/milestone" }
+	}
+	dependencies { classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}" }
+}
+
+apply plugin: "java"
+apply plugin: "eclipse"
+
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+
+repositories {
+	mavenCentral()
+	maven { url "https://repo.spring.io/milestone" }
+}
+
+dependencies {
+	compile "org.springframework.boot:spring-boot-starter"
+	compile "org.springframework.boot:spring-boot-starter-web"
+	compile "com.google.guava:guava:${versionGuava}"
+	compile "org.apache.commons:commons-lang3:${versionCommonsLang3}"
+}
+
+springBoot { mainClassName = "cherry.pname.Main" }
