@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
 	compile "org.springframework.boot:spring-boot-starter"
+	compile "org.springframework.boot:spring-boot-starter-aop"
 	compile "org.springframework.boot:spring-boot-starter-web"
 	compile "com.google.guava:guava:${versionGuava}"
 	compile "org.apache.commons:commons-lang3:${versionCommonsLang3}"
