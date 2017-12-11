@@ -3,6 +3,7 @@ buildscript {
 		versionSpringBoot = "2.0.0.M7"
 		versionGuava = "23.5-jre"
 		versionCommonsLang3 = "3.7"
+		versionCommonsCsv = "1.5"
 	}
 	repositories {
 		mavenCentral()
@@ -29,6 +30,7 @@ dependencies {
 	testCompile "org.springframework.boot:spring-boot-starter-test"
 	compile "com.google.guava:guava:${versionGuava}"
 	compile "org.apache.commons:commons-lang3:${versionCommonsLang3}"
+	compile "org.apache.commons:commons-csv:${versionCommonsCsv}"
 }
 
 springBoot { mainClassName = "cherry.pname.Main" }
