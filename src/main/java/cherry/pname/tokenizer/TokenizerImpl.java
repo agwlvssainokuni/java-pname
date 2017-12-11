@@ -21,13 +21,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
 @Component
 @Lazy(true)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TokenizerImpl implements Tokenizer {
 
 	private final Map<String, List<String>> dict;
