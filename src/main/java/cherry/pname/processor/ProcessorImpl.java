@@ -18,49 +18,41 @@ package cherry.pname.processor;
 
 import static java.text.MessageFormat.format;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import cherry.pname.tokenizer.Token;
 import cherry.pname.tokenizer.Tokenizer;
 
-import com.google.common.collect.Lists;
-
 @Component
+@Lazy(true)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProcessorImpl implements Processor {
 
+	private final Tokenizer tokenizer;
+
+	private final Function<List<Token>, String> pnfunc;
+
+	@Autowired
+	public ProcessorImpl(Tokenizer tokenizer, Function<List<Token>, String> pnfunc) {
+		super();
+		this.tokenizer = tokenizer;
+		this.pnfunc = pnfunc;
+	}
+
 	@Override
-	public List<Result> process(Tokenizer tokenizer, Function<List<Token>, String> pnFunc, Reader r, boolean tsv) {
-		try (CSVParser parser = CSVParser.parse(r, tsv ? CSVFormat.TDF : CSVFormat.EXCEL)) {
-
-			List<Result> list = Lists.newArrayList();
-			for (CSVRecord record : parser) {
-
-				if (record.size() <= 0) {
-					continue;
-				}
-
-				String lname = record.get(0);
-				List<Token> token = tokenizer.tokenize(lname);
-				String pname = pnFunc.apply(token);
-				List<String> desc = token.stream().map(this::getDesc).collect(Collectors.toList());
-
-				list.add(new Result(lname, pname, desc));
-			}
-
-			return list;
-
-		} catch (IOException ex) {
-			throw new IllegalStateException(ex);
-		}
+	public Result process(String lname) {
+		List<Token> token = tokenizer.tokenize(lname);
+		String pname = pnfunc.apply(token);
+		List<String> desc = token.stream().map(this::getDesc).collect(Collectors.toList());
+		return new Result(lname, pname, desc);
 	}
 
 	private String getDesc(Token token) {

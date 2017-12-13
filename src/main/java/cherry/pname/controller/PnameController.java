@@ -27,10 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface PnameController {
 
 	@RequestMapping("reg")
-	boolean register(@RequestParam("dict") String dict);
+	boolean register(@RequestParam("dict") String dict, @RequestParam(value = "delim", required = false) String delim);
 
 	@RequestMapping("gen")
-	List<Result> generate(@RequestParam("ln") String ln);
+	List<Result> generate(@RequestParam("ln") String ln,
+			@RequestParam(value = "type", required = false) String pnameType);
 
 	public static class Result {
 

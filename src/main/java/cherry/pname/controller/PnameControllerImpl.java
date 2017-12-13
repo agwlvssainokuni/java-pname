@@ -21,16 +21,20 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import cherry.pname.caseform.CaseForm;
 import cherry.pname.dict.DictLoader;
+import cherry.pname.processor.PnameType;
 import cherry.pname.processor.Processor;
-import cherry.pname.tokenizer.TokenizerBuilder;
+import cherry.pname.processor.ProcessorBuilder;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @RestController
@@ -40,20 +44,14 @@ public class PnameControllerImpl implements PnameController {
 	private DictLoader loader;
 
 	@Autowired
-	private TokenizerBuilder builder;
-
-	@Autowired
-	private CaseForm caseform;
-
-	@Autowired
-	private Processor processor;
+	private ProcessorBuilder builder;
 
 	private Map<String, List<String>> dictMap = Maps.newHashMap();
 
 	@Override
-	public boolean register(String dict) {
+	public boolean register(String dict, String delim) {
 		try (Reader r = new StringReader(dict)) {
-			dictMap = loader.load(r, false, " ", true);
+			dictMap = loader.load(r, false, StringUtils.isEmpty(delim) ? " " : delim, true);
 			return true;
 		} catch (IOException ex) {
 			throw new IllegalArgumentException(ex);
@@ -61,9 +59,28 @@ public class PnameControllerImpl implements PnameController {
 	}
 
 	@Override
-	public List<Result> generate(String ln) {
-		return processor.process(builder.build(dictMap), caseform::toLowerCamel, ln, true).stream()
-				.map(r -> new Result(r.getLname(), r.getPname(), r.getDesc())).collect(Collectors.toList());
+	public List<Result> generate(String ln, String pnameType) {
+		Processor processor = builder.build(dictMap, getPnameType(pnameType));
+		List<Result> list = Lists.newArrayList();
+		try (StringReader reader = new StringReader(ln); CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF)) {
+			for (CSVRecord record : parser) {
+				if (record.size() <= 0) {
+					continue;
+				}
+				Processor.Result r = processor.process(record.get(0));
+				list.add(new Result(r.getLname(), r.getPname(), r.getDesc()));
+			}
+		} catch (IOException ex) {
+			throw new IllegalStateException(ex);
+		}
+		return list;
+	}
+
+	private PnameType getPnameType(String pnameType) {
+		if (StringUtils.isBlank(pnameType)) {
+			return null;
+		}
+		return PnameType.valueOf(pnameType);
 	}
 
 }

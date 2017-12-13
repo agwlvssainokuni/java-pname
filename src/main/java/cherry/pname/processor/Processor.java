@@ -16,39 +16,14 @@
 
 package cherry.pname.processor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.charset.Charset;
 import java.util.List;
-import java.util.function.Function;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import cherry.pname.tokenizer.Token;
-import cherry.pname.tokenizer.Tokenizer;
-
 public interface Processor {
 
-	List<Result> process(Tokenizer tokenizer, Function<List<Token>, String> pnFunc, Reader r, boolean tsv);
-
-	default List<Result> process(Tokenizer tokenizer, Function<List<Token>, String> pnFunc, String s, boolean tsv) {
-		try (StringReader r = new StringReader(s)) {
-			return process(tokenizer, pnFunc, r, tsv);
-		}
-	}
-
-	default List<Result> process(Tokenizer tokenizer, Function<List<Token>, String> pnFunc, InputStream in,
-			Charset charset, boolean tsv) {
-		try (Reader r = new InputStreamReader(in, charset)) {
-			return process(tokenizer, pnFunc, r, tsv);
-		} catch (IOException ex) {
-			throw new IllegalStateException(ex);
-		}
-	}
+	Result process(String pname);
 
 	public static class Result {
 
