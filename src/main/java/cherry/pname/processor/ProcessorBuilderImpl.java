@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -36,19 +35,19 @@ public class ProcessorBuilderImpl implements ProcessorBuilder, ApplicationContex
 	private ApplicationContext appctx;
 
 	@Autowired
-	private TokenizerBuilder builder;
+	private TokenizerBuilder tokenizerBuilder;
 
 	@Autowired
 	private CaseForm caseform;
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.appctx = applicationContext;
 	}
 
 	@Override
 	public Processor build(Map<String, List<String>> dict, PnameType pnameType) {
-		return appctx.getBean(Processor.class, builder.build(dict), getPnameFunc(pnameType));
+		return appctx.getBean(Processor.class, tokenizerBuilder.build(dict), getPnameFunc(pnameType));
 	}
 
 	private Function<List<Token>, String> getPnameFunc(PnameType pnameType) {

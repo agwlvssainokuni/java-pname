@@ -29,8 +29,8 @@ public class TokenizerBuilderImpl implements TokenizerBuilder, ApplicationContex
 	private ApplicationContext appctx;
 
 	@Override
-	public void setApplicationContext(ApplicationContext appctx) {
-		this.appctx = appctx;
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.appctx = applicationContext;
 	}
 
 	@Override

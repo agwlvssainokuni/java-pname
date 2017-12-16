@@ -21,10 +21,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,24 +35,23 @@ import cherry.pname.processor.PnameType;
 import cherry.pname.processor.Processor;
 import cherry.pname.processor.ProcessorBuilder;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @RestController
 public class PnameControllerImpl implements PnameController {
 
 	@Autowired
-	private DictLoader loader;
+	private DictLoader dictLoader;
 
 	@Autowired
-	private ProcessorBuilder builder;
+	private ProcessorBuilder processorBuilder;
 
 	private Map<String, List<String>> dictMap = Maps.newHashMap();
 
 	@Override
 	public boolean register(String dict, String delim) {
 		try (Reader r = new StringReader(dict)) {
-			dictMap = loader.load(r, false, StringUtils.isEmpty(delim) ? " " : delim, true);
+			dictMap = dictLoader.load(r, false, StringUtils.isEmpty(delim) ? " " : delim, true);
 			return true;
 		} catch (IOException ex) {
 			throw new IllegalArgumentException(ex);
@@ -60,20 +60,14 @@ public class PnameControllerImpl implements PnameController {
 
 	@Override
 	public List<Result> generate(String ln, String pnameType) {
-		Processor processor = builder.build(dictMap, getPnameType(pnameType));
-		List<Result> list = Lists.newArrayList();
+		Processor processor = processorBuilder.build(dictMap, getPnameType(pnameType));
 		try (StringReader reader = new StringReader(ln); CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF)) {
-			for (CSVRecord record : parser) {
-				if (record.size() <= 0) {
-					continue;
-				}
-				Processor.Result r = processor.process(record.get(0));
-				list.add(new Result(r.getLname(), r.getPname(), r.getDesc()));
-			}
+			return StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0)
+					.map(rec -> rec.get(0)).map(processor::process)
+					.map(pr -> new Result(pr.getLname(), pr.getPname(), pr.getDesc())).collect(Collectors.toList());
 		} catch (IOException ex) {
 			throw new IllegalStateException(ex);
 		}
-		return list;
 	}
 
 	private PnameType getPnameType(String pnameType) {
