@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cherry.pname.controller;
+package cherry.pname.web;
 
 import java.util.List;
 

@@ -1,0 +1,1 @@
+include ":pname-common", ":pname-cmd", ":pname-web"

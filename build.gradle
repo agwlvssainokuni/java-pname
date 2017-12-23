@@ -12,25 +12,45 @@ buildscript {
 	dependencies { classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}" }
 }
 
-apply plugin: "java"
-apply plugin: "eclipse"
+subprojects {
 
-apply plugin: "org.springframework.boot"
-apply plugin: "io.spring.dependency-management"
+	apply plugin: "java"
+	apply plugin: "eclipse"
+	apply plugin: "io.spring.dependency-management"
+	if (project.name == "pname-cmd") {
+		apply plugin: "org.springframework.boot"
+		springBoot { mainClassName = "cherry.pname.Main" }
+	}
+	if (project.name == "pname-web") {
+		apply plugin: "org.springframework.boot"
+		springBoot { mainClassName = "cherry.pname.Main" }
+	}
+	if (project.name == "pname-common") {
+		dependencyManagement {
+			imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${versionSpringBoot}") }
+		}
+	}
 
-repositories {
-	mavenCentral()
-	maven { url "https://repo.spring.io/milestone" }
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/milestone" }
+	}
+
+	dependencies {
+		if (project.name == "pname-common") {
+			compile "org.springframework.boot:spring-boot-starter"
+			compile "org.springframework.boot:spring-boot-starter-aop"
+			compile "com.google.guava:guava:${versionGuava}"
+			compile "org.apache.commons:commons-lang3:${versionCommonsLang3}"
+			compile "org.apache.commons:commons-csv:${versionCommonsCsv}"
+		}
+		if (project.name == "pname-cmd") {
+			compile project(":pname-common")
+		}
+		if (project.name == "pname-web") {
+			compile project(":pname-common")
+			compile "org.springframework.boot:spring-boot-starter-web"
+		}
+		testCompile "org.springframework.boot:spring-boot-starter-test"
+	}
 }
-
-dependencies {
-	compile "org.springframework.boot:spring-boot-starter"
-	compile "org.springframework.boot:spring-boot-starter-aop"
-	compile "org.springframework.boot:spring-boot-starter-web"
-	testCompile "org.springframework.boot:spring-boot-starter-test"
-	compile "com.google.guava:guava:${versionGuava}"
-	compile "org.apache.commons:commons-lang3:${versionCommonsLang3}"
-	compile "org.apache.commons:commons-csv:${versionCommonsCsv}"
-}
-
-springBoot { mainClassName = "cherry.pname.Main" }

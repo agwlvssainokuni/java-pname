@@ -14,38 +14,15 @@
  * limitations under the License.
  */
 
-package cherry.pname;
+package cherry.pname.web;
 
-import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
 @RequestMapping("/exit")
-public class ExitController implements ExitCodeGenerator {
-
-	private Integer exitCode = null;
+public interface ExitController {
 
 	@RequestMapping()
-	public synchronized boolean setExitCode(@RequestParam("code") Integer exitCode) {
-		this.exitCode = exitCode;
-		notifyAll();
-		return true;
-	}
-
-	@Override
-	public synchronized int getExitCode() {
-		while (true) {
-			if (exitCode != null) {
-				return exitCode.intValue();
-			}
-			try {
-				wait();
-			} catch (InterruptedException ex) {
-				// NOTHING TO DO
-			}
-		}
-	}
+	public boolean setExitCode(@RequestParam("code") Integer exitCode);
 
 }
