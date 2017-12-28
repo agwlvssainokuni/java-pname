@@ -16,9 +16,10 @@
 
 package cherry.pname.web;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,8 +27,9 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
 import cherry.pname.dict.DictLoader;
@@ -35,10 +37,17 @@ import cherry.pname.processor.PnameType;
 import cherry.pname.processor.Processor;
 import cherry.pname.processor.ProcessorBuilder;
 
-import com.google.common.collect.Maps;
-
 @RestController
-public class PnameControllerImpl implements PnameController {
+public class PnameControllerImpl implements PnameController, InitializingBean {
+
+	@Value("${charset}")
+	private Charset charset;
+
+	@Value("${dict}")
+	private File dict;
+
+	@Value("${delim}")
+	private String delim;
 
 	@Autowired
 	private DictLoader dictLoader;
@@ -46,21 +55,16 @@ public class PnameControllerImpl implements PnameController {
 	@Autowired
 	private ProcessorBuilder processorBuilder;
 
-	private Map<String, List<String>> dictMap = Maps.newHashMap();
+	private Map<String, List<String>> dictMap;
 
 	@Override
-	public boolean register(String dict, String delim) {
-		try (Reader r = new StringReader(dict)) {
-			dictMap = dictLoader.load(r, false, StringUtils.isEmpty(delim) ? " " : delim, true);
-			return true;
-		} catch (IOException ex) {
-			throw new IllegalArgumentException(ex);
-		}
+	public void afterPropertiesSet() throws IOException {
+		dictMap = dictLoader.load(dict, charset, false, delim, dict.getName().endsWith(".tsv"));
 	}
 
 	@Override
-	public List<Result> generate(String ln, String pnameType) {
-		Processor processor = processorBuilder.build(dictMap, getPnameType(pnameType));
+	public List<Result> generate(String ln, PnameType type) {
+		Processor processor = processorBuilder.build(dictMap, type);
 		try (StringReader reader = new StringReader(ln); CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF)) {
 			return StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0)
 					.map(rec -> rec.get(0)).map(processor::process)
@@ -68,13 +72,6 @@ public class PnameControllerImpl implements PnameController {
 		} catch (IOException ex) {
 			throw new IllegalStateException(ex);
 		}
-	}
-
-	private PnameType getPnameType(String pnameType) {
-		if (StringUtils.isBlank(pnameType)) {
-			return null;
-		}
-		return PnameType.valueOf(pnameType);
 	}
 
 }

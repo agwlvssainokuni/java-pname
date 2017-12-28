@@ -16,13 +16,11 @@
 
 package cherry.pname.web;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
-@RequestMapping("/exit")
-public interface ExitController {
-
-	@RequestMapping()
-	public boolean setExitCode(@RequestParam(required = false) Integer code);
+@Configuration
+@PropertySource(value = { "classpath:pname-web.properties" })
+public class WebConfig {
 
 }

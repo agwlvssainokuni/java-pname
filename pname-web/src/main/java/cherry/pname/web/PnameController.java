@@ -23,15 +23,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import cherry.pname.processor.PnameType;
+
 @RequestMapping("/pname")
 public interface PnameController {
 
-	@RequestMapping("reg")
-	boolean register(@RequestParam("dict") String dict, @RequestParam(value = "delim", required = false) String delim);
-
-	@RequestMapping("gen")
-	List<Result> generate(@RequestParam("ln") String ln,
-			@RequestParam(value = "type", required = false) String pnameType);
+	@RequestMapping()
+	List<Result> generate(@RequestParam() String ln, @RequestParam(required = false) PnameType type);
 
 	public static class Result {
 

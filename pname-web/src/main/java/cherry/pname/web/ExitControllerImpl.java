@@ -16,6 +16,8 @@
 
 package cherry.pname.web;
 
+import java.util.Optional;
+
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,8 +27,8 @@ public class ExitControllerImpl implements ExitController, ExitCodeGenerator {
 	private Integer exitCode = null;
 
 	@Override
-	public synchronized boolean setExitCode(Integer exitCode) {
-		this.exitCode = exitCode;
+	public synchronized boolean setExitCode(Integer code) {
+		this.exitCode = Optional.ofNullable(code).orElse(0);
 		notifyAll();
 		return true;
 	}
