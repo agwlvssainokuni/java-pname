@@ -50,6 +50,7 @@ subprojects {
 		if (project.name == "pname-web") {
 			compile project(":pname-common")
 			compile "org.springframework.boot:spring-boot-starter-web"
+			compile "org.springframework.boot:spring-boot-starter-thymeleaf"
 		}
 		testCompile "org.springframework.boot:spring-boot-starter-test"
 	}
