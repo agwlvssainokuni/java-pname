@@ -5,14 +5,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <title>物理名生成</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
-	integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous" />
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
-	integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" />
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
 </head>
 <body role="document">
 	<div class="navbar navbar-default" role="navigation">
@@ -23,21 +19,35 @@
 		</div>
 	</div>
 	<div class="container" role="main">
-		<form action="#">
+		<div>
 			<div class="form-group">
-				<div class="col-md-12">
-					<textarea class="form-control" rows="5" cols="40"></textarea>
-				</div>
+				<textarea class="form-control pname-ln" rows="20" cols="40"></textarea>
 			</div>
 			<div class="form-group">
-				<div class="col-md-12">
-					<button class="btn" value="UPPER_SNAKE">UPPER_SNAKE</button>
-					<button class="btn" value="LOWER_SNAKE">lower_snake</button>
-					<button class="btn" value="UPPER_CAMEL">UpperCamel</button>
-					<button class="btn" value="LOWER_CAMEL">lowerCamel</button>
-				</div>
+				<button class="btn btn-primary pname-type" value="UPPER_SNAKE">UPPER_SNAKE</button>
+				<button class="btn btn-primary pname-type" value="LOWER_SNAKE">lower_snake</button>
+				<button class="btn btn-primary pname-type" value="UPPER_CAMEL">UpperCamel</button>
+				<button class="btn btn-primary pname-type" value="LOWER_CAMEL">lowerCamel</button>
 			</div>
-		</form>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				$(".pname-type").click(function(event) {
+					(function(lnVal, pnameType) {
+						$.ajax({
+							url: "pname?tsv",
+							type: "POST",
+							data: {
+								ln: lnVal,
+								type:  pnameType
+							}
+						}).done(function(data, textStatus, jqXHR) {
+							$(".pname-ln").val(data);
+						});
+					})($(".pname-ln").val(), $(this).val());
+				});
+			});
+		</script>
 	</div>
 	<div class="container" role="main">
 		<address class="text-center">Copyright &copy;, 2017, agwlvssainokuni</address>

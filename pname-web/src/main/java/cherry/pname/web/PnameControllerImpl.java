@@ -19,6 +19,7 @@ package cherry.pname.web;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +71,28 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 			return StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0)
 					.map(rec -> rec.get(0)).map(processor::process)
 					.map(pr -> new Result(pr.getLname(), pr.getPname(), pr.getDesc())).collect(Collectors.toList());
+		} catch (IOException ex) {
+			throw new IllegalStateException(ex);
+		}
+	}
+
+	@Override
+	public String generateTsv(String ln, PnameType type) {
+		Processor processor = processorBuilder.build(dictMap, type);
+		try (StringReader reader = new StringReader(ln);
+				CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF);
+				StringWriter writer = new StringWriter();
+				CSVPrinter printer = new CSVPrinter(writer, CSVFormat.TDF)) {
+			StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0).map(rec -> rec.get(0))
+					.map(processor::process).forEach(pr -> {
+						try {
+							printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc());
+						} catch (IOException ex) {
+							throw new IllegalStateException(ex);
+						}
+					});
+			printer.flush();
+			return writer.toString();
 		} catch (IOException ex) {
 			throw new IllegalStateException(ex);
 		}

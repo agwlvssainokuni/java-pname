@@ -31,6 +31,9 @@ public interface PnameController {
 	@RequestMapping()
 	List<Result> generate(@RequestParam() String ln, @RequestParam(required = false) PnameType type);
 
+	@RequestMapping(params = "tsv", produces = "text/tab-separated-values; charset=UTF-8")
+	String generateTsv(@RequestParam() String ln, @RequestParam(required = false) PnameType type);
+
 	public static class Result {
 
 		private final String ln;
