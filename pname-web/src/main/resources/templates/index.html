@@ -3,12 +3,23 @@
 <head>
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="context-root" th:content="@{/}" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <title>物理名生成</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" />
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+var uri = (function(root) {
+	if (root.endsWith("/")) {
+		root = root.substring(0, root.length - 1);
+	}
+	return function(path) {
+		return root + path;
+	};
+})($("meta[name='context-root']").attr("content"));
+</script>
 </head>
 <body role="document">
 	<div class="navbar navbar-default" role="navigation">
@@ -35,7 +46,7 @@
 				$(".pname-type").click(function(event) {
 					(function(lnVal, pnameType) {
 						$.ajax({
-							url: "pname?tsv",
+							url: uri("/pname?tsv"),
 							type: "POST",
 							data: {
 								ln: lnVal,
