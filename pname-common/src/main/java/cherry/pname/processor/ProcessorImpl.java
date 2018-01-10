@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Lazy;
@@ -35,6 +37,8 @@ import cherry.pname.tokenizer.Tokenizer;
 @Lazy(true)
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProcessorImpl implements Processor {
+
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final Tokenizer tokenizer;
 
@@ -52,6 +56,19 @@ public class ProcessorImpl implements Processor {
 		List<Token> token = tokenizer.tokenize(lname);
 		String pname = pnfunc.apply(token);
 		List<String> desc = token.stream().map(this::getDesc).collect(Collectors.toList());
+
+		if (logger.isInfoEnabled()) {
+			logger.info("論理名: {}", lname);
+			for (Token tk : token) {
+				if (tk.isOk()) {
+					logger.info("  単語: {} => {}", tk.getWord(), tk.getName());
+				} else {
+					logger.info("  未知: {}", tk.getWord());
+				}
+			}
+			logger.info("物理名: {}", pname);
+		}
+
 		return new Result(lname, pname, desc);
 	}
 

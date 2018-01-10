@@ -38,6 +38,7 @@ import cherry.pname.dict.DictLoader;
 import cherry.pname.processor.PnameType;
 import cherry.pname.processor.Processor;
 import cherry.pname.processor.ProcessorBuilder;
+import cherry.pname.processor.ResultConsumer;
 
 @RestController
 public class PnameControllerImpl implements PnameController, InitializingBean {
@@ -50,6 +51,9 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 
 	@Value("${delim}")
 	private String delim;
+
+	@Value("${desc}")
+	private boolean desc;
 
 	@Autowired
 	private DictLoader dictLoader;
@@ -83,14 +87,10 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 				CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF);
 				StringWriter writer = new StringWriter();
 				CSVPrinter printer = new CSVPrinter(writer, CSVFormat.TDF)) {
+			ResultConsumer consumer = desc ? pr -> printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc())
+					: pr -> printer.printRecord(pr.getLname(), pr.getPname());
 			StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0).map(rec -> rec.get(0))
-					.map(processor::process).forEach(pr -> {
-						try {
-							printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc());
-						} catch (IOException ex) {
-							throw new IllegalStateException(ex);
-						}
-					});
+					.map(processor::process).forEach(consumer);
 			printer.flush();
 			return writer.toString();
 		} catch (IOException ex) {

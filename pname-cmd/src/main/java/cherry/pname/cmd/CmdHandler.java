@@ -48,6 +48,7 @@ import cherry.pname.dict.DictLoader;
 import cherry.pname.processor.PnameType;
 import cherry.pname.processor.Processor;
 import cherry.pname.processor.ProcessorBuilder;
+import cherry.pname.processor.ResultConsumer;
 
 @Component
 public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, InitializingBean {
@@ -66,6 +67,9 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
 
 	@Value("${tsvout}")
 	private boolean tsvout;
+
+	@Value("${desc}")
+	private boolean desc;
 
 	@Value("${type}")
 	private PnameType type;
@@ -144,15 +148,10 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
 	private void generate(InputStream in, Processor processor, CSVPrinter printer) throws IOException {
 		try (Reader reader = new InputStreamReader(in, charset);
 				CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF)) {
+			ResultConsumer consumer = desc ? pr -> printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc())
+					: pr -> printer.printRecord(pr.getLname(), pr.getPname());
 			StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0).map(rec -> rec.get(0))
-					.map(processor::process).forEach(pr -> {
-						try {
-							printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc());
-						} catch (IOException ex) {
-							throw new IllegalStateException(ex);
-						}
-					});
+					.map(processor::process).forEach(consumer);
 		}
 	}
-
 }
