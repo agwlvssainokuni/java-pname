@@ -63,8 +63,8 @@ public class TokenizerImplTest {
 		List<Token> result = tokenizer.tokenize("a");
 		assertEquals(1, result.size());
 		Token token = result.get(0);
-		assertEquals("a", token.getWord());
-		assertEquals(asList("A"), token.getName());
+		assertEquals("a", token.getLnm());
+		assertEquals(asList("A"), token.getPnm());
 		assertTrue(token.isOk());
 	}
 
@@ -74,8 +74,8 @@ public class TokenizerImplTest {
 		List<Token> result = tokenizer.tokenize("aa");
 		assertEquals(1, result.size());
 		Token token = result.get(0);
-		assertEquals("aa", token.getWord());
-		assertEquals(asList("A", "A"), token.getName());
+		assertEquals("aa", token.getLnm());
+		assertEquals(asList("A", "A"), token.getPnm());
 		assertTrue(token.isOk());
 	}
 
@@ -85,8 +85,8 @@ public class TokenizerImplTest {
 		List<Token> result = tokenizer.tokenize("cde");
 		assertEquals(1, result.size());
 		Token token = result.get(0);
-		assertEquals("cde", token.getWord());
-		assertEquals(asList("cde"), token.getName());
+		assertEquals("cde", token.getLnm());
+		assertEquals(asList("cde"), token.getPnm());
 		assertFalse(token.isOk());
 	}
 
@@ -97,33 +97,33 @@ public class TokenizerImplTest {
 		assertEquals(6, result.size());
 
 		Token token0 = result.get(0);
-		assertEquals("a", token0.getWord());
-		assertEquals(asList("A"), token0.getName());
+		assertEquals("a", token0.getLnm());
+		assertEquals(asList("A"), token0.getPnm());
 		assertTrue(token0.isOk());
 
 		Token token1 = result.get(1);
-		assertEquals("b", token1.getWord());
-		assertEquals(asList("B"), token1.getName());
+		assertEquals("b", token1.getLnm());
+		assertEquals(asList("B"), token1.getPnm());
 		assertTrue(token0.isOk());
 
 		Token token2 = result.get(2);
-		assertEquals("cde", token2.getWord());
-		assertEquals(asList("cde"), token2.getName());
+		assertEquals("cde", token2.getLnm());
+		assertEquals(asList("cde"), token2.getPnm());
 		assertFalse(token2.isOk());
 
 		Token token3 = result.get(3);
-		assertEquals("aa", token3.getWord());
-		assertEquals(asList("A", "A"), token3.getName());
+		assertEquals("aa", token3.getLnm());
+		assertEquals(asList("A", "A"), token3.getPnm());
 		assertTrue(token3.isOk());
 
 		Token token4 = result.get(4);
-		assertEquals("b", token4.getWord());
-		assertEquals(asList("B"), token4.getName());
+		assertEquals("b", token4.getLnm());
+		assertEquals(asList("B"), token4.getPnm());
 		assertTrue(token4.isOk());
 
 		Token token5 = result.get(5);
-		assertEquals("b", token5.getWord());
-		assertEquals(asList("B"), token5.getName());
+		assertEquals("b", token5.getLnm());
+		assertEquals(asList("B"), token5.getPnm());
 		assertTrue(token5.isOk());
 	}
 

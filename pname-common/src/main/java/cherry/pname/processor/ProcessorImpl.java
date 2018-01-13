@@ -61,9 +61,9 @@ public class ProcessorImpl implements Processor {
 			logger.info("論理名: {}", lname);
 			for (Token tk : token) {
 				if (tk.isOk()) {
-					logger.info("  単語: {} => {}", tk.getWord(), tk.getName());
+					logger.info("  単語: {} => {}", tk.getLnm(), tk.getPnm());
 				} else {
-					logger.info("  未知: {}", tk.getWord());
+					logger.info("  未知: {}", tk.getLnm());
 				}
 			}
 			logger.info("物理名: {}", pname);
@@ -74,9 +74,9 @@ public class ProcessorImpl implements Processor {
 
 	private String getDesc(Token token) {
 		if (token.isOk()) {
-			return format("{0}=>{1}", token.getWord(), token.getName());
+			return format("{0}=>{1}", token.getLnm(), token.getPnm());
 		} else {
-			return format("{0}=*", token.getWord(), token.getName());
+			return format("{0}=*", token.getLnm(), token.getPnm());
 		}
 	}
 

@@ -35,13 +35,13 @@ public class TokenizerImpl implements Tokenizer {
 
 	private final Map<String, List<String>> dict;
 
-	private final List<String> wordList;
+	private final List<String> lnmlist;
 
 	@Autowired
 	public TokenizerImpl(Map<String, List<String>> dict) {
 		this.dict = dict;
-		this.wordList = Lists.newArrayList(dict.keySet());
-		this.wordList.sort((a, b) -> b.length() - a.length());
+		this.lnmlist = Lists.newArrayList(dict.keySet());
+		this.lnmlist.sort((a, b) -> b.length() - a.length());
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class TokenizerImpl implements Tokenizer {
 		StringBuilder unmatch = new StringBuilder(text.length());
 		for (int offset = 0; offset < text.length(); offset++) {
 
-			int wordlen = lookupWord(text, offset, wordList);
-			if (wordlen < 0) {
+			int lnmlen = lookupLnm(text, offset, lnmlist);
+			if (lnmlen < 0) {
 				unmatch.append(text.charAt(offset));
 				continue;
 			}
@@ -63,10 +63,10 @@ public class TokenizerImpl implements Tokenizer {
 				unmatch = new StringBuilder(text.length());
 			}
 
-			String word = text.substring(offset, offset + wordlen);
-			result.add(new Token(word, dict.get(word), true));
+			String lnm = text.substring(offset, offset + lnmlen);
+			result.add(new Token(lnm, dict.get(lnm), true));
 
-			offset += wordlen - 1;
+			offset += lnmlen - 1;
 		}
 		if (unmatch.length() > 0) {
 			String un = unmatch.toString();
@@ -75,20 +75,20 @@ public class TokenizerImpl implements Tokenizer {
 		return result;
 	}
 
-	private int lookupWord(String text, int offset, List<String> wordList) {
-		LOOP: for (String word : wordList) {
-			if (word.length() <= 0) {
+	private int lookupLnm(String text, int offset, List<String> lnmlist) {
+		LOOP: for (String lnm : lnmlist) {
+			if (lnm.length() <= 0) {
 				continue;
 			}
-			for (int i = 0; i < word.length(); i++) {
+			for (int i = 0; i < lnm.length(); i++) {
 				if (offset + i >= text.length()) {
 					continue LOOP;
 				}
-				if (text.charAt(offset + i) != word.charAt(i)) {
+				if (text.charAt(offset + i) != lnm.charAt(i)) {
 					continue LOOP;
 				}
 			}
-			return word.length();
+			return lnm.length();
 		}
 		return -1;
 	}

@@ -23,9 +23,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Token {
 
-	private final String word;
+	private final String lnm;
 
-	private final List<String> name;
+	private final List<String> pnm;
 
 	private final boolean ok;
 
@@ -34,19 +34,19 @@ public class Token {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
-	public Token(String word, List<String> name, boolean ok) {
+	public Token(String lnm, List<String> pnm, boolean ok) {
 		super();
-		this.word = word;
-		this.name = name;
+		this.lnm = lnm;
+		this.pnm = pnm;
 		this.ok = ok;
 	}
 
-	public String getWord() {
-		return word;
+	public String getLnm() {
+		return lnm;
 	}
 
-	public List<String> getName() {
-		return name;
+	public List<String> getPnm() {
+		return pnm;
 	}
 
 	public boolean isOk() {

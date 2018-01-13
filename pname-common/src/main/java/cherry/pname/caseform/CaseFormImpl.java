@@ -50,7 +50,7 @@ public class CaseFormImpl implements CaseForm {
 
 	private String toCamelCase(List<Token> list, Function<Character, Character> func) {
 
-		List<String> pname = list.stream().flatMap(tk -> tk.getName().stream()).filter(StringUtils::isNotBlank)
+		List<String> pname = list.stream().flatMap(tk -> tk.getPnm().stream()).filter(StringUtils::isNotBlank)
 				.collect(Collectors.toList());
 
 		char[] ch = new char[pname.stream().mapToInt(String::length).sum()];
@@ -75,7 +75,7 @@ public class CaseFormImpl implements CaseForm {
 
 	private String toSnakeCase(List<Token> list, Function<Character, Character> func) {
 
-		List<String> pname = list.stream().flatMap(tk -> tk.getName().stream()).filter(StringUtils::isNotBlank)
+		List<String> pname = list.stream().flatMap(tk -> tk.getPnm().stream()).filter(StringUtils::isNotBlank)
 				.collect(Collectors.toList());
 
 		char[] ch = new char[pname.stream().mapToInt(String::length).sum() + pname.size() - 1];
