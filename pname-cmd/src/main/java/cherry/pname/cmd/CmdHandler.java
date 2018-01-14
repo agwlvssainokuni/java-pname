@@ -42,6 +42,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.ExitCodeGenerator;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import cherry.pname.dict.DictLoader;
@@ -57,7 +58,7 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
 	private Charset charset;
 
 	@Value("${dict}")
-	private File dict;
+	private Resource dict;
 
 	@Value("${delim}")
 	private String delim;
@@ -86,7 +87,7 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
 
 	@Override
 	public void afterPropertiesSet() throws IOException {
-		dictMap = dictLoader.load(dict, charset, false, delim, dict.getName().endsWith(".tsv"));
+		dictMap = dictLoader.load(dict, charset, false, delim, dict.getFilename().endsWith(".tsv"));
 	}
 
 	@Override

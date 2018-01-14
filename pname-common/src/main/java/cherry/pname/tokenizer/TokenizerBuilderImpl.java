@@ -35,7 +35,7 @@ public class TokenizerBuilderImpl implements TokenizerBuilder, ApplicationContex
 
 	@Override
 	public Tokenizer build(Map<String, List<String>> dict) {
-		return appctx.getBean(TokenizerImpl.class, dict);
+		return appctx.getBean(Tokenizer.class, dict);
 	}
 
 }

@@ -5,7 +5,7 @@
 
 	<!-- AOP: トレース設定 -->
 	<aop:aspectj-autoproxy proxy-target-class="false" />
-	<aop:config>
+	<aop:config proxy-target-class="false">
 		<aop:pointcut id="tracePointcut" expression="execution(* cherry..*.*(..))" />
 		<aop:advisor pointcut-ref="tracePointcut" advice-ref="traceInterceptor" />
 	</aop:config>

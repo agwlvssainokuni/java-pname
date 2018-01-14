@@ -26,6 +26,8 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.io.Resource;
+
 public interface DictLoader {
 
 	Map<String, List<String>> load(Reader r, boolean withHeader, String delim, boolean tsv) throws IOException;
@@ -41,6 +43,13 @@ public interface DictLoader {
 			boolean tsv) throws IOException {
 		try (FileInputStream fin = new FileInputStream(file)) {
 			return load(fin, charset, withHeader, delim, tsv);
+		}
+	}
+
+	default public Map<String, List<String>> load(Resource resrc, Charset charset, boolean withHeader, String delim,
+			boolean tsv) throws IOException {
+		try (InputStream in = resrc.getInputStream()) {
+			return load(in, charset, withHeader, delim, tsv);
 		}
 	}
 

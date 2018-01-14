@@ -16,7 +16,6 @@
 
 package cherry.pname.web;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -32,6 +31,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
 import cherry.pname.dict.DictLoader;
@@ -47,7 +47,7 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 	private Charset charset;
 
 	@Value("${dict}")
-	private File dict;
+	private Resource dict;
 
 	@Value("${delim}")
 	private String delim;
@@ -65,7 +65,7 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws IOException {
-		dictMap = dictLoader.load(dict, charset, false, delim, dict.getName().endsWith(".tsv"));
+		dictMap = dictLoader.load(dict, charset, false, delim, dict.getFilename().endsWith(".tsv"));
 	}
 
 	@Override
