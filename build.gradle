@@ -31,10 +31,7 @@ subprojects {
 	compileJava.options.encoding = "UTF-8"
 	compileTestJava.options.encoding = "UTF-8"
 
-	repositories {
-		mavenCentral()
-		maven { url "https://repo.spring.io/milestone" }
-	}
+	repositories { mavenCentral() }
 
 	dependencies {
 		if (project.name == "pname-common") {
