@@ -35,20 +35,24 @@ subprojects {
 
 	dependencies {
 		if (project.name == "pname-common") {
-			compile "org.springframework.boot:spring-boot-starter"
-			compile "org.springframework.boot:spring-boot-starter-aop"
-			compile "com.google.guava:guava:${versionGuava}"
-			compile "org.apache.commons:commons-lang3:${versionCommonsLang3}"
-			compile "org.apache.commons:commons-csv:${versionCommonsCsv}"
+			implementation "org.springframework.boot:spring-boot-starter"
+			runtimeOnly "org.springframework.boot:spring-boot-starter-aop"
+			implementation "com.google.guava:guava:${versionGuava}"
+			implementation "org.apache.commons:commons-lang3:${versionCommonsLang3}"
+			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
 		}
 		if (project.name == "pname-cmd") {
-			compile project(":pname-common")
+			implementation project(":pname-common")
+			implementation "org.springframework.boot:spring-boot-starter"
+			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
 		}
 		if (project.name == "pname-web") {
-			compile project(":pname-common")
-			compile "org.springframework.boot:spring-boot-starter-web"
-			compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+			implementation project(":pname-common")
+			implementation "org.springframework.boot:spring-boot-starter-web"
+			implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+			implementation "org.apache.commons:commons-lang3:${versionCommonsLang3}"
+			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
 		}
-		testCompile "org.springframework.boot:spring-boot-starter-test"
+		testImplementation "org.springframework.boot:spring-boot-starter-test"
 	}
 }
