@@ -1,9 +1,9 @@
 buildscript {
 	ext {
-		versionSpringBoot = "2.0.0.RELEASE"
-		versionGuava = "23.5-jre"
-		versionCommonsLang3 = "3.7"
-		versionCommonsCsv = "1.5"
+		versionSpringBoot = "2.1.6.RELEASE"
+		versionGuava = "28.0-jre"
+		versionCommonsLang3 = "3.9"
+		versionCommonsCsv = "1.7"
 	}
 	repositories { mavenCentral() }
 	dependencies { classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}" }
