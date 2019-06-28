@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2018 agwlvssainokuni
+ * Copyright 2017,2019 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package cherry.pname.web;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -33,6 +34,12 @@ public interface PnameController {
 
 	@RequestMapping(params = "tsv", produces = "text/tab-separated-values; charset=UTF-8")
 	String generateTsv(@RequestParam() String ln, @RequestParam(required = false) PnameType type);
+
+	@RequestMapping(params = { "dicttext" })
+	int uploadDictText(@RequestParam("dicttext") String dicttext) throws IOException;
+
+	@RequestMapping(params = { "dictreload" })
+	int reloadDict() throws IOException;
 
 	public static class Result {
 

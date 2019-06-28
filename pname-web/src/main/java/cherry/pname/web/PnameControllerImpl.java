@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2018 agwlvssainokuni
+ * Copyright 2017,2019 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,6 +96,20 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 		} catch (IOException ex) {
 			throw new IllegalStateException(ex);
 		}
+	}
+
+	@Override
+	public int uploadDictText(String dicttext) throws IOException {
+		try (StringReader reader = new StringReader(dicttext)) {
+			dictMap = dictLoader.load(reader, false, delim, dict.getFilename().endsWith(".tsv"));
+		}
+		return dictMap.size();
+	}
+
+	@Override
+	public int reloadDict() throws IOException {
+		dictMap = dictLoader.load(dict, charset, false, delim, dict.getFilename().endsWith(".tsv"));
+		return dictMap.size();
 	}
 
 }
