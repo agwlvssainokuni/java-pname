@@ -44,6 +44,7 @@ subprojects {
 		if (project.name == "pname-cmd") {
 			implementation project(":pname-common")
 			implementation "org.springframework.boot:spring-boot-starter"
+			implementation "org.apache.commons:commons-lang3:${versionCommonsLang3}"
 			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
 		}
 		if (project.name == "pname-web") {

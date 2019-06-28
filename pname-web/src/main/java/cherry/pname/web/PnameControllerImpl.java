@@ -19,7 +19,6 @@ package cherry.pname.web;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,8 +29,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
 import cherry.pname.dict.DictLoader;
@@ -43,17 +40,8 @@ import cherry.pname.processor.ResultConsumer;
 @RestController
 public class PnameControllerImpl implements PnameController, InitializingBean {
 
-	@Value("${charset}")
-	private Charset charset;
-
-	@Value("${dict}")
-	private Resource dict;
-
-	@Value("${delim}")
-	private String delim;
-
-	@Value("${desc}")
-	private boolean desc;
+	@Autowired
+	private WebConfig webConfig;
 
 	@Autowired
 	private DictLoader dictLoader;
@@ -65,7 +53,8 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws IOException {
-		dictMap = dictLoader.load(dict, charset, false, delim, dict.getFilename().endsWith(".tsv"));
+		dictMap = dictLoader.load(webConfig.getDict(), webConfig.getCharset(), false, webConfig.getDelim(), webConfig
+				.getDict().getFilename().endsWith(".tsv"));
 	}
 
 	@Override
@@ -87,8 +76,8 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 				CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF);
 				StringWriter writer = new StringWriter();
 				CSVPrinter printer = new CSVPrinter(writer, CSVFormat.TDF)) {
-			ResultConsumer consumer = desc ? pr -> printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc())
-					: pr -> printer.printRecord(pr.getLname(), pr.getPname());
+			ResultConsumer consumer = webConfig.isDesc() ? pr -> printer.printRecord(pr.getLname(), pr.getPname(),
+					pr.getDesc()) : pr -> printer.printRecord(pr.getLname(), pr.getPname());
 			StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0).map(rec -> rec.get(0))
 					.map(processor::process).forEach(consumer);
 			printer.flush();
@@ -101,14 +90,16 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 	@Override
 	public int uploadDictText(String dicttext) throws IOException {
 		try (StringReader reader = new StringReader(dicttext)) {
-			dictMap = dictLoader.load(reader, false, delim, dict.getFilename().endsWith(".tsv"));
+			dictMap = dictLoader.load(reader, false, webConfig.getDelim(),
+					webConfig.getDict().getFilename().endsWith(".tsv"));
 		}
 		return dictMap.size();
 	}
 
 	@Override
 	public int reloadDict() throws IOException {
-		dictMap = dictLoader.load(dict, charset, false, delim, dict.getFilename().endsWith(".tsv"));
+		dictMap = dictLoader.load(webConfig.getDict(), webConfig.getCharset(), false, webConfig.getDelim(), webConfig
+				.getDict().getFilename().endsWith(".tsv"));
 		return dictMap.size();
 	}
 
