@@ -1,7 +1,7 @@
 buildscript {
 	ext {
-		versionSpringBoot = "2.1.7.RELEASE"
-		versionGuava = "28.0-jre"
+		versionSpringBoot = "2.2.2.RELEASE"
+		versionGuava = "28.2-jre"
 		versionCommonsLang3 = "3.9"
 		versionCommonsCsv = "1.7"
 	}
