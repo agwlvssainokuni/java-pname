@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2019 agwlvssainokuni
+ * Copyright 2017,2020 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,8 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws IOException {
-		dictMap = dictLoader.load(webConfig.getDict(), webConfig.getCharset(), false, webConfig.getDelim(), webConfig
-				.getDict().getFilename().endsWith(".tsv"));
+		dictMap = dictLoader.load(webConfig.getDict(), webConfig.getCharset(), false, webConfig.getDelim(),
+				webConfig.getDict().getFilename().endsWith(".tsv"));
 	}
 
 	@Override
@@ -76,8 +76,9 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 				CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF);
 				StringWriter writer = new StringWriter();
 				CSVPrinter printer = new CSVPrinter(writer, CSVFormat.TDF)) {
-			ResultConsumer consumer = webConfig.isDesc() ? pr -> printer.printRecord(pr.getLname(), pr.getPname(),
-					pr.getDesc()) : pr -> printer.printRecord(pr.getLname(), pr.getPname());
+			ResultConsumer consumer = webConfig.isDesc()
+					? pr -> printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc())
+					: pr -> printer.printRecord(pr.getLname(), pr.getPname());
 			StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0).map(rec -> rec.get(0))
 					.map(processor::process).forEach(consumer);
 			printer.flush();
@@ -98,8 +99,8 @@ public class PnameControllerImpl implements PnameController, InitializingBean {
 
 	@Override
 	public int reloadDict() throws IOException {
-		dictMap = dictLoader.load(webConfig.getDict(), webConfig.getCharset(), false, webConfig.getDelim(), webConfig
-				.getDict().getFilename().endsWith(".tsv"));
+		dictMap = dictLoader.load(webConfig.getDict(), webConfig.getCharset(), false, webConfig.getDelim(),
+				webConfig.getDict().getFilename().endsWith(".tsv"));
 		return dictMap.size();
 	}
 

@@ -10,16 +10,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-const uri = (function(root) {
-	if (root.endsWith("/")) {
-		root = root.substring(0, root.length - 1);
-	}
-	return function(path) {
-		return root + path;
-	};
-})($("meta[name='context-root']").attr("content"));
-</script>
+<script th:src="@{/javascript/index.js}"></script>
 </head>
 <body role="document">
 	<div class="navbar navbar-default" role="navigation">
@@ -41,27 +32,9 @@ const uri = (function(root) {
 				<button class="btn btn-primary pname-type" value="LOWER_CAMEL">lowerCamel</button>
 			</div>
 		</div>
-		<script type="text/javascript">
-			$(function() {
-				$(".pname-type").click(function(event) {
-					(function(lnVal, pnameType) {
-						$.ajax({
-							url: uri("/pname?tsv"),
-							type: "POST",
-							data: {
-								ln: lnVal,
-								type:  pnameType
-							}
-						}).done(function(data, textStatus, jqXHR) {
-							$(".pname-ln").val(data);
-						});
-					})($(".pname-ln").val(), $(this).val());
-				});
-			});
-		</script>
 	</div>
 	<div class="container" role="main">
-		<address class="text-center">Copyright &copy;, 2017,2019, agwlvssainokuni</address>
+		<address class="text-center">Copyright &copy;, 2017,2020, agwlvssainokuni</address>
 	</div>
 </body>
 </html>

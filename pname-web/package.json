@@ -1,0 +1,25 @@
+{
+	"name": "pname-web",
+	"version": "0.0.0",
+	"main": "index.js",
+	"scripts": {
+		"clean": "rm -rf src/main/resources/static/javascript",
+		"build": "webpack --mode=production"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/agwlvssainokuni/java-pname.git"
+	},
+	"author": "",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/agwlvssainokuni/java-pname/issues"
+	},
+	"homepage": "https://github.com/agwlvssainokuni/java-pname#readme",
+	"dependencies": {},
+	"description": "",
+	"devDependencies": {
+		"webpack": "^4.41.5",
+		"webpack-cli": "^3.3.10"
+	}
+}

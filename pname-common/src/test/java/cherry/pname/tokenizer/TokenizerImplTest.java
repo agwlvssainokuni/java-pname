@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2018 agwlvssainokuni
+ * Copyright 2017,2020 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import cherry.pname.Main;
-
 import com.google.common.collect.Maps;
+
+import cherry.pname.Main;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

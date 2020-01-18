@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package cherry.pname;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
-@SpringBootApplication
-public class Main {
-
-	public static void main(String[] args) {
-		System.exit(doMain(args));
+export const resolver = {};
+resolver.uri = (function(root) {
+	if (root.endsWith("/")) {
+		root = root.substring(0, root.length - 1);
 	}
-
-	public static int doMain(String[] args) {
-		try (ConfigurableApplicationContext appctx = SpringApplication.run(Main.class, args)) {
-			return SpringApplication.exit(appctx);
-		}
-	}
-
-}
+	return function(path) {
+		return root + path;
+	};
+})($("meta[name='context-root']").attr("content"));

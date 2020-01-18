@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// ENTRY
 
-package cherry.pname;
+import { resolver } from "./resolver";
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
-@SpringBootApplication
-public class Main {
-
-	public static void main(String[] args) {
-		System.exit(doMain(args));
-	}
-
-	public static int doMain(String[] args) {
-		try (ConfigurableApplicationContext appctx = SpringApplication.run(Main.class, args)) {
-			return SpringApplication.exit(appctx);
-		}
-	}
-
-}
+$(function() {
+	$(".pname-type").click(function(event) {
+		const lnVal = $(".pname-ln").val();
+		const pnameType = $(this).val();
+		$.ajax({
+			url : resolver.uri("/pname?tsv"),
+			type : "POST",
+			data : {
+				ln : lnVal,
+				type : pnameType
+			}
+		}).done(function(data, textStatus, jqXHR) {
+			$(".pname-ln").val(data);
+		});
+	});
+});

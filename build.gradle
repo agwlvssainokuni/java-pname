@@ -46,6 +46,7 @@ subprojects {
 			implementation "org.springframework.boot:spring-boot-starter"
 			implementation "org.apache.commons:commons-lang3:${versionCommonsLang3}"
 			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
+			compileOnly "org.springframework.boot:spring-boot-configuration-processor"
 		}
 		if (project.name == "pname-web") {
 			implementation project(":pname-common")
@@ -53,6 +54,7 @@ subprojects {
 			implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
 			implementation "org.apache.commons:commons-lang3:${versionCommonsLang3}"
 			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
+			compileOnly "org.springframework.boot:spring-boot-configuration-processor"
 		}
 		testImplementation "org.springframework.boot:spring-boot-starter-test"
 	}

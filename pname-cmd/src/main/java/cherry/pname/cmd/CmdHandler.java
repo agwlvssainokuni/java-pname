@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2019 agwlvssainokuni
+ * Copyright 2017,2020 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,8 +65,8 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
 
 	@Override
 	public void afterPropertiesSet() throws IOException {
-		dictMap = dictLoader.load(cmdConfig.getDict(), cmdConfig.getCharset(), false, cmdConfig.getDelim(), cmdConfig
-				.getDict().getFilename().endsWith(".tsv"));
+		dictMap = dictLoader.load(cmdConfig.getDict(), cmdConfig.getCharset(), false, cmdConfig.getDelim(),
+				cmdConfig.getDict().getFilename().endsWith(".tsv"));
 	}
 
 	@Override
@@ -118,8 +118,8 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
 	}
 
 	private OutputStream openOutputStream(ApplicationArguments args) throws FileNotFoundException {
-		Optional<String> output = Optional.ofNullable(args.getOptionValues("output")).flatMap(
-				list -> list.stream().filter(StringUtils::isNotBlank).findFirst());
+		Optional<String> output = Optional.ofNullable(args.getOptionValues("output"))
+				.flatMap(list -> list.stream().filter(StringUtils::isNotBlank).findFirst());
 		if (output.isPresent()) {
 			return new FileOutputStream(output.get());
 		} else {
@@ -130,8 +130,9 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
 	private void generate(InputStream in, Processor processor, CSVPrinter printer) throws IOException {
 		try (Reader reader = new InputStreamReader(in, cmdConfig.getCharset());
 				CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF)) {
-			ResultConsumer consumer = cmdConfig.isDesc() ? pr -> printer.printRecord(pr.getLname(), pr.getPname(),
-					pr.getDesc()) : pr -> printer.printRecord(pr.getLname(), pr.getPname());
+			ResultConsumer consumer = cmdConfig.isDesc()
+					? pr -> printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc())
+					: pr -> printer.printRecord(pr.getLname(), pr.getPname());
 			StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0).map(rec -> rec.get(0))
 					.map(processor::process).forEach(consumer);
 		}

@@ -7,7 +7,7 @@
 	<aop:aspectj-autoproxy proxy-target-class="false" />
 	<aop:config proxy-target-class="false">
 		<aop:pointcut id="tracePointcut" expression="execution(* cherry..*.*(..))" />
-		<aop:advisor pointcut-ref="tracePointcut" advice-ref="traceInterceptor" />
+		<aop:advisor pointcut-ref="tracePointcut" advice-ref="traceInterceptor" order="100" />
 	</aop:config>
 	<bean id="traceInterceptor" class="org.springframework.aop.interceptor.CustomizableTraceInterceptor">
 		<property name="useDynamicLogger" value="true" />
