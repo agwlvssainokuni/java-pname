@@ -4,6 +4,7 @@ module.exports = {
 		path: __dirname + "/src/main/resources/static/javascript"
 	},
 	entry: {
-		"index.js": "./src/main/javascript/index.js"
+		"index.js": "./src/main/javascript/index.js",
+		"indexvue.js": "./src/main/javascript/indexvue.js"
 	}
 };
