@@ -56,8 +56,18 @@ public class CaseFormImplTest {
 	}
 
 	@Test
-	public void toUpperScanke() {
+	public void toUpperSnake() {
 		assertEquals("ABC_DEF_GHI", caseForm.toUpperSnake(createTestData()));
+	}
+
+	@Test
+	public void toLowerKebab() {
+		assertEquals("abc-def-ghi", caseForm.toLowerKebab(createTestData()));
+	}
+
+	@Test
+	public void toUpperKebab() {
+		assertEquals("ABC-DEF-GHI", caseForm.toUpperKebab(createTestData()));
 	}
 
 	private List<Token> createTestData() {

@@ -59,6 +59,10 @@ public class ProcessorBuilderImpl implements ProcessorBuilder, ApplicationContex
 			return caseform::toUpperCamel;
 		} else if (pnameType == PnameType.LOWER_CAMEL) {
 			return caseform::toLowerCamel;
+		} else if (pnameType == PnameType.UPPER_KEBAB) {
+			return caseform::toUpperKebab;
+		} else if (pnameType == PnameType.LOWER_KEBAB) {
+			return caseform::toLowerKebab;
 		} else {
 			return caseform::toUpperSnake;
 		}

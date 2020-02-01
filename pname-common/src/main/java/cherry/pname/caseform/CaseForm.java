@@ -30,4 +30,8 @@ public interface CaseForm {
 
 	String toUpperSnake(List<Token> list);
 
+	String toLowerKebab(List<Token> list);
+
+	String toUpperKebab(List<Token> list);
+
 }

@@ -48,6 +48,16 @@ public class CaseFormImpl implements CaseForm {
 		return toSnakeCase(list, Character::toUpperCase);
 	}
 
+	@Override
+	public String toLowerKebab(List<Token> list) {
+		return toKebabCase(list, Character::toLowerCase);
+	}
+
+	@Override
+	public String toUpperKebab(List<Token> list) {
+		return toKebabCase(list, Character::toUpperCase);
+	}
+
 	private String toCamelCase(List<Token> list, Function<Character, Character> func) {
 
 		List<String> pname = list.stream().flatMap(tk -> tk.getPnm().stream()).filter(StringUtils::isNotBlank)
@@ -74,6 +84,14 @@ public class CaseFormImpl implements CaseForm {
 	}
 
 	private String toSnakeCase(List<Token> list, Function<Character, Character> func) {
+		return toSnakeKebab(list, func, '_');
+	}
+
+	private String toKebabCase(List<Token> list, Function<Character, Character> func) {
+		return toSnakeKebab(list, func, '-');
+	}
+
+	private String toSnakeKebab(List<Token> list, Function<Character, Character> func, char delim) {
 
 		List<String> pname = list.stream().flatMap(tk -> tk.getPnm().stream()).filter(StringUtils::isNotBlank)
 				.collect(Collectors.toList());
@@ -85,7 +103,7 @@ public class CaseFormImpl implements CaseForm {
 			if (first) {
 				first = false;
 			} else {
-				ch[index++] = '_';
+				ch[index++] = delim;
 			}
 			for (int i = 0; i < pn.length(); i++) {
 				ch[index++] = func.apply(pn.charAt(i));
