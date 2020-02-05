@@ -16,37 +16,35 @@
 // ENTRY
 const qs = require("querystring");
 
-const uri = (function(root) {
+const uri = (function (root) {
 	if (root.endsWith("/")) {
 		root = root.substring(0, root.length - 1);
 	}
-	return function(path) {
+	return function (path) {
 		return root + path;
-	};
+	}
 })(document.querySelector("meta[name='context-root']").getAttribute("content"));
 
-window.onload = function() {
-	const vm = new Vue({
-		el : "#pname-web",
-		data : {
-			pnameln : ""
-		},
-		methods : {
-			convert : function(event) {
-				const vm = this;
-				const lnVal = vm.pnameln;
-				const pnameType = event.target.value;
-				axios({
-					url : uri("/pname?tsv"),
-					method : "POST",
-					data : qs.stringify({
-						ln : lnVal,
-						type : pnameType
-					})
-				}).then(function(response) {
-					vm.pnameln = response.data;
-				});
-			}
-		}
+const data = {
+	pnameln: ""
+}
+
+function convert(event) {
+	const vm = this;
+	const lnVal = vm.pnameln;
+	const pnameType = event.target.value;
+	axios.post(uri("/pname?tsv"), qs.stringify({
+		ln: lnVal,
+		type: pnameType
+	})).then(function (response) {
+		vm.pnameln = response.data;
 	});
 }
+
+const vm = new Vue({
+	el: "#pname-web",
+	data: data,
+	methods: {
+		convert: convert
+	}
+});

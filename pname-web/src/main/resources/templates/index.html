@@ -2,25 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="context-root" th:content="@{/}" />
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <title>物理名生成</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-<script th:src="@{/javascript/index.js}"></script>
 </head>
-<body role="document">
-	<div class="navbar navbar-default" role="navigation">
-		<div class="container">
-			<div class="nav navbar-header">
-				<div class="navbar-brand">物理名生成</div>
-			</div>
-		</div>
-	</div>
-	<div class="container" role="main">
+<body>
+	<div class="container">
+		<h2 class="my-3">物理名生成</h2>
 		<div id="pname-web">
 			<div class="form-group">
 				<textarea class="form-control pname-ln" rows="20" cols="40"></textarea>
@@ -35,8 +27,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="container" role="main">
+	<div class="container">
 		<address class="text-center">Copyright &copy;, 2017,2020, agwlvssainokuni</address>
 	</div>
+	<script th:src="@{/javascript/index.js}"></script>
 </body>
 </html>
