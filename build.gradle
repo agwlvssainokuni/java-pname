@@ -1,9 +1,9 @@
 buildscript {
 	ext {
-		versionSpringBoot = "2.2.7.RELEASE"
-		versionGuava = "28.2-jre"
-		versionCommonsLang3 = "3.9"
-		versionCommonsCsv = "1.7"
+		versionSpringBoot = "2.3.6.RELEASE"
+		versionGuava = "30.0-jre"
+		versionCommonsLang3 = "3.11"
+		versionCommonsCsv = "1.8"
 	}
 	repositories { mavenCentral() }
 	dependencies { classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}" }
@@ -12,7 +12,6 @@ buildscript {
 subprojects {
 
 	apply plugin: "java"
-	apply plugin: "eclipse"
 	apply plugin: "io.spring.dependency-management"
 	if (project.name == "pname-cmd") {
 		apply plugin: "org.springframework.boot"
@@ -27,6 +26,9 @@ subprojects {
 			imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${versionSpringBoot}") }
 		}
 	}
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
 
 	compileJava.options.encoding = "UTF-8"
 	compileTestJava.options.encoding = "UTF-8"

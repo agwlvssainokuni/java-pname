@@ -30,14 +30,6 @@ gradle.properties
 # Maven
 target/
 
-# Eclipse
-.classpath
-.project
-.settings/
-
-# VS Code
-.vscode/
-
 # misc
 .DS_Store
 *~
