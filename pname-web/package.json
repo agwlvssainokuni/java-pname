@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"main": "index.js",
 	"scripts": {
-		"clean": "rm -rf src/main/resources/static/javascript",
+		"clean": "rimraf src/main/resources/static/javascript",
 		"build": "webpack --mode=production"
 	},
 	"repository": {
@@ -16,10 +16,13 @@
 		"url": "https://github.com/agwlvssainokuni/java-pname/issues"
 	},
 	"homepage": "https://github.com/agwlvssainokuni/java-pname#readme",
-	"dependencies": {},
+	"dependencies": {
+		"querystring": "^0.2.0"
+	},
 	"description": "",
 	"devDependencies": {
-		"webpack": "^5.9.0",
+		"rimraf": "^3.0.2",
+		"webpack": "^5.10.0",
 		"webpack-cli": "^4.2.0"
 	}
 }
