@@ -96,7 +96,11 @@ public class CaseFormImpl implements CaseForm {
 		List<String> pname = list.stream().flatMap(tk -> tk.getPnm().stream()).filter(StringUtils::isNotBlank)
 				.collect(Collectors.toList());
 
-		char[] ch = new char[pname.stream().mapToInt(String::length).sum() + pname.size() - 1];
+		int size = pname.stream().mapToInt(String::length).sum() + pname.size() - 1;
+		if (size < 0) {
+			return "";
+		}
+		char[] ch = new char[size];
 		int index = 0;
 		boolean first = true;
 		for (String pn : pname) {
