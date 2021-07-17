@@ -17,12 +17,12 @@
 	},
 	"homepage": "https://github.com/agwlvssainokuni/java-pname#readme",
 	"dependencies": {
-		"querystring": "^0.2.0"
+		"querystring": "^0.2.1"
 	},
 	"description": "",
 	"devDependencies": {
 		"rimraf": "^3.0.2",
-		"webpack": "^5.10.0",
-		"webpack-cli": "^4.2.0"
+		"webpack": "^5.45.1",
+		"webpack-cli": "^4.7.2"
 	}
 }

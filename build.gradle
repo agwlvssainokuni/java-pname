@@ -1,8 +1,8 @@
 buildscript {
 	ext {
-		versionSpringBoot = "2.3.6.RELEASE"
-		versionGuava = "30.0-jre"
-		versionCommonsLang3 = "3.11"
+		versionSpringBoot = "2.5.2"
+		versionGuava = "30.1.1-jre"
+		versionCommonsLang3 = "3.12.0"
 		versionCommonsCsv = "1.8"
 	}
 	repositories { mavenCentral() }
