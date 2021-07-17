@@ -100,12 +100,20 @@ var PnamePanel = function (_React$Component) {
 				React.createElement(
 					"div",
 					{ className: "form-group" },
-					[["UPPER_SNAKE", "UPPER_SNAKE"], ["LOWER_SNAKE", "lower_snake"], ["UPPER_CAMEL", "UpperCamel"], ["LOWER_CAMEL", "lowerCamel"], ["UPPER_KEBAB", "UPPER-KEBAB"], ["LOWER_KEBAB", "lower-kebab"]].map(function (e) {
-						return React.createElement(
-							"button",
-							{ className: "btn btn-primary", value: e[0], onClick: _this2.handleClick },
-							e[1]
-						);
+					[["UPPER_SNAKE", "UPPER_SNAKE"], ["-----"], ["LOWER_SNAKE", "lower_snake"], ["-----"], ["UPPER_CAMEL", "UpperCamel"], ["-----"], ["LOWER_CAMEL", "lowerCamel"], ["-----"], ["UPPER_KEBAB", "UPPER-KEBAB"], ["-----"], ["LOWER_KEBAB", "lower-kebab"]].map(function (e) {
+						if (e.length === 2) {
+							return React.createElement(
+								"button",
+								{ className: "btn btn-primary", value: e[0], onClick: _this2.handleClick },
+								e[1]
+							);
+						} else {
+							return React.createElement(
+								"span",
+								null,
+								" "
+							);
+						}
 					})
 				)
 			);

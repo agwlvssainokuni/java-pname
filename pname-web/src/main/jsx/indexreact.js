@@ -49,16 +49,25 @@ class PnamePanel extends React.Component {
 				<div className="form-group">
 					{[
 						["UPPER_SNAKE", "UPPER_SNAKE"],
+						["-----"],
 						["LOWER_SNAKE", "lower_snake"],
+						["-----"],
 						["UPPER_CAMEL", "UpperCamel"],
+						["-----"],
 						["LOWER_CAMEL", "lowerCamel"],
+						["-----"],
 						["UPPER_KEBAB", "UPPER-KEBAB"],
+						["-----"],
 						["LOWER_KEBAB", "lower-kebab"],
-					].map((e) =>
-						<button className="btn btn-primary" value={e[0]} onClick={this.handleClick} >
-							{e[1]}
-						</button>
-					)}
+					].map((e) => {
+						if (e.length === 2) {
+							return <button className="btn btn-primary" value={e[0]} onClick={this.handleClick} >
+								{e[1]}
+							</button>;
+						} else {
+							return <span>{" "}</span>;
+						}
+					})}
 				</div>
 			</div >
 		);
