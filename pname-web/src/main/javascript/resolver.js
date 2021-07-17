@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-export const resolver = {};
-resolver.uri = (function(root) {
+export { uri };
+
+const uri = ((root) => {
 	if (root.endsWith("/")) {
 		root = root.substring(0, root.length - 1);
 	}
-	return function(path) {
-		return root + path;
-	};
-})($("meta[name='context-root']").attr("content"));
+	return (path) => root + path;
+})(document.querySelector("meta[name='context-root']").getAttribute("content"));

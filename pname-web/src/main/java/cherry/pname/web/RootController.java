@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2021 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// ENTRY
 
-import { ln2pn } from "./pname-api";
+package cherry.pname.web;
 
-$(function () {
-	$(".pname-type").click(function (event) {
-		const pnameType = $(this).val();
-		const lnVal = $(".pname-ln").val();
-		ln2pn(pnameType, lnVal).then((data) => {
-			$(".pname-ln").val(data)
-		});
-	});
-});
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@RequestMapping("/")
+public interface RootController {
+
+	@RequestMapping({ "/", "/index" })
+	ModelAndView index();
+
+	@RequestMapping({ "/vue", "/indexvue" })
+	ModelAndView indexvue();
+
+	@RequestMapping({ "/react", "/indexreact" })
+	ModelAndView indexreact();
+
+}

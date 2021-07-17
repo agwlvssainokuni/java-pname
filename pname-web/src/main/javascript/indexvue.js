@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 // ENTRY
-const qs = require("querystring");
 
-const uri = (function (root) {
-	if (root.endsWith("/")) {
-		root = root.substring(0, root.length - 1);
-	}
-	return function (path) {
-		return root + path;
-	}
-})(document.querySelector("meta[name='context-root']").getAttribute("content"));
+import { ln2pn } from "./pname-api";
 
 const data = {
 	pnameln: ""
@@ -31,14 +23,11 @@ const data = {
 
 function convert(event) {
 	const vm = this;
-	const lnVal = vm.pnameln;
 	const pnameType = event.target.value;
-	axios.post(uri("/pname?tsv"), qs.stringify({
-		ln: lnVal,
-		type: pnameType
-	})).then(function (response) {
-		vm.pnameln = response.data;
-	});
+	const lnVal = vm.pnameln;
+	ln2pn(pnameType, lnVal).then((data) =>
+		vm.pnameln = data
+	);
 }
 
 const vm = new Vue({

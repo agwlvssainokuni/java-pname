@@ -21,6 +21,8 @@
 	},
 	"description": "",
 	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-preset-react-app": "^3.1.2",
 		"rimraf": "^3.0.2",
 		"webpack": "^5.45.1",
 		"webpack-cli": "^4.7.2"

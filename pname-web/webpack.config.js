@@ -5,6 +5,7 @@ module.exports = {
 	},
 	entry: {
 		"index.js": "./src/main/javascript/index.js",
+		"indexreact.js": "./src/main/javascript/indexreact.js",
 		"indexvue.js": "./src/main/javascript/indexvue.js"
 	}
 };

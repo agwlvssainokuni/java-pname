@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2021 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// ENTRY
 
-import { ln2pn } from "./pname-api";
+import { uri } from "./resolver";
 
-$(function () {
-	$(".pname-type").click(function (event) {
-		const pnameType = $(this).val();
-		const lnVal = $(".pname-ln").val();
-		ln2pn(pnameType, lnVal).then((data) => {
-			$(".pname-ln").val(data)
+export { ln2pn };
+
+const ln2pn = ((action) => {
+	return async (type, text) => {
+		let response = await fetch(action, {
+			method: "POST",
+			body: new URLSearchParams({
+				type: type,
+				ln: text
+			})
 		});
-	});
-});
+		let result = await response.text();
+		return result;
+	}
+})(uri("/pname?tsv"));
