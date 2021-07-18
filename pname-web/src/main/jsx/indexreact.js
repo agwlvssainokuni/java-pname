@@ -41,36 +41,30 @@ class PnamePanel extends React.Component {
 	}
 
 	render() {
-		return (
-			<div>
-				<div className="form-group">
-					<textarea className="form-control" rows="20" cols="40" value={this.state.text} onChange={this.handleChange} />
-				</div>
-				<div className="form-group">
-					{[
-						["UPPER_SNAKE", "UPPER_SNAKE"],
-						["-----"],
-						["LOWER_SNAKE", "lower_snake"],
-						["-----"],
-						["UPPER_CAMEL", "UpperCamel"],
-						["-----"],
-						["LOWER_CAMEL", "lowerCamel"],
-						["-----"],
-						["UPPER_KEBAB", "UPPER-KEBAB"],
-						["-----"],
-						["LOWER_KEBAB", "lower-kebab"],
-					].map((e) => {
-						if (e.length === 2) {
-							return <button className="btn btn-primary" value={e[0]} onClick={this.handleClick} >
-								{e[1]}
-							</button>;
-						} else {
-							return <span>{" "}</span>;
-						}
-					})}
-				</div>
-			</div >
-		);
+		return [
+			<div className="form-group">
+				<textarea className="form-control" rows="20" cols="40" value={this.state.text} onChange={this.handleChange} />
+			</div>,
+			<div className="form-group">
+				{[
+					["UPPER_SNAKE", "UPPER_SNAKE"],
+					["LOWER_SNAKE", "lower_snake"],
+					["UPPER_CAMEL", "UpperCamel"],
+					["LOWER_CAMEL", "lowerCamel"],
+					["UPPER_KEBAB", "UPPER-KEBAB"],
+					["LOWER_KEBAB", "lower-kebab"],
+				].map((e, i) => {
+					let btn = <button className="btn btn-primary" value={e[0]} onClick={this.handleClick} >
+						{e[1]}
+					</button>;
+					if (i === 0) {
+						return [btn];
+					} else {
+						return [" ", btn];
+					}
+				})}
+			</div>
+		];
 	}
 }
 

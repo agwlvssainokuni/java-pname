@@ -89,34 +89,26 @@ var PnamePanel = function (_React$Component) {
 		value: function render() {
 			var _this2 = this;
 
-			return React.createElement(
+			return [React.createElement(
 				"div",
-				null,
-				React.createElement(
-					"div",
-					{ className: "form-group" },
-					React.createElement("textarea", { className: "form-control", rows: "20", cols: "40", value: this.state.text, onChange: this.handleChange })
-				),
-				React.createElement(
-					"div",
-					{ className: "form-group" },
-					[["UPPER_SNAKE", "UPPER_SNAKE"], ["-----"], ["LOWER_SNAKE", "lower_snake"], ["-----"], ["UPPER_CAMEL", "UpperCamel"], ["-----"], ["LOWER_CAMEL", "lowerCamel"], ["-----"], ["UPPER_KEBAB", "UPPER-KEBAB"], ["-----"], ["LOWER_KEBAB", "lower-kebab"]].map(function (e) {
-						if (e.length === 2) {
-							return React.createElement(
-								"button",
-								{ className: "btn btn-primary", value: e[0], onClick: _this2.handleClick },
-								e[1]
-							);
-						} else {
-							return React.createElement(
-								"span",
-								null,
-								" "
-							);
-						}
-					})
-				)
-			);
+				{ className: "form-group" },
+				React.createElement("textarea", { className: "form-control", rows: "20", cols: "40", value: this.state.text, onChange: this.handleChange })
+			), React.createElement(
+				"div",
+				{ className: "form-group" },
+				[["UPPER_SNAKE", "UPPER_SNAKE"], ["LOWER_SNAKE", "lower_snake"], ["UPPER_CAMEL", "UpperCamel"], ["LOWER_CAMEL", "lowerCamel"], ["UPPER_KEBAB", "UPPER-KEBAB"], ["LOWER_KEBAB", "lower-kebab"]].map(function (e, i) {
+					var btn = React.createElement(
+						"button",
+						{ className: "btn btn-primary", value: e[0], onClick: _this2.handleClick },
+						e[1]
+					);
+					if (i === 0) {
+						return [btn];
+					} else {
+						return [" ", btn];
+					}
+				})
+			)];
 		}
 	}]);
 
