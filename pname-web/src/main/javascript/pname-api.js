@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-import { uri } from "./resolver";
+import { uri, csrfToken } from "./resolver";
 
 export { ln2pn };
 
 const ln2pn = ((action) => {
-	return async (type, text) => {
+	let headers = new Headers();
+	if (csrfToken.header != null) {
+		headers.append(csrfToken.header, csrfToken.token);
+	}
+	return async (pnameType, lnVal) => {
 		let response = await fetch(action, {
 			method: "POST",
 			body: new URLSearchParams({
-				type: type,
-				ln: text
-			})
+				type: pnameType,
+				ln: lnVal
+			}),
+			headers: headers
 		});
 		let result = await response.text();
 		return result;
