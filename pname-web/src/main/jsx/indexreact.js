@@ -54,16 +54,13 @@ class PnamePanel extends React.Component {
 					["LOWER_CAMEL", "lowerCamel"],
 					["UPPER_KEBAB", "UPPER-KEBAB"],
 					["LOWER_KEBAB", "lower-kebab"],
-				].map((e, i) => {
-					let btn = <button className="btn btn-primary" value={e[0]} onClick={this.handleClick} >
+				].map((e) =>
+					<button className="btn btn-primary" value={e[0]} onClick={this.handleClick} >
 						{e[1]}
-					</button>;
-					if (i === 0) {
-						return [btn];
-					} else {
-						return [" ", btn];
-					}
-				})}
+					</button>
+				).map((btn, i) =>
+					i === 0 ? [btn] : [" ", btn]
+				)}
 			</div>
 		];
 	}
