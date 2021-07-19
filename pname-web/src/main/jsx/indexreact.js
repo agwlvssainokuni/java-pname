@@ -42,10 +42,10 @@ class PnamePanel extends React.Component {
 	}
 
 	render() {
-		return [
+		return <React.Fragment>
 			<div className="form-group">
 				<textarea className="form-control" rows="20" cols="40" value={this.state.text} onChange={this.handleChange} />
-			</div>,
+			</div>
 			<div className="form-group">
 				{[
 					["UPPER_SNAKE", "UPPER_SNAKE"],
@@ -58,11 +58,11 @@ class PnamePanel extends React.Component {
 					<button className="btn btn-primary" value={e[0]} onClick={this.handleClick} >
 						{e[1]}
 					</button>
-				).map((btn, i) =>
+				).flatMap((btn, i) =>
 					i === 0 ? [btn] : [" ", btn]
 				)}
 			</div>
-		];
+		</React.Fragment>;
 	}
 }
 

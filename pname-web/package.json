@@ -16,9 +16,6 @@
 		"url": "https://github.com/agwlvssainokuni/java-pname/issues"
 	},
 	"homepage": "https://github.com/agwlvssainokuni/java-pname#readme",
-	"dependencies": {
-		"querystring": "^0.2.1"
-	},
 	"description": "",
 	"devDependencies": {
 		"babel-cli": "^6.26.0",

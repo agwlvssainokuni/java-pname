@@ -36,12 +36,11 @@ const uri = ((r) => {
  *   <meta name="csrf-parameter" th:content="${_csrf.parameterName}" />
  *   <meta name="csrf-token" th:content="${_csrf.token}" />
  */
-const csrfToken = ((h, p, t) => {
-	return {
-		header: (h ? h.getAttribute("content") : null),
-		parameter: (p ? p.getAttribute("content") : null),
-		token: (t ? t.getAttribute("content") : null),
-	}
-})(document.querySelector("meta[name='csrf-header']"),
+const csrfToken = ((h, p, t) => ({
+	header: (h ? h.getAttribute("content") : null),
+	parameter: (p ? p.getAttribute("content") : null),
+	token: (t ? t.getAttribute("content") : null),
+})
+)(document.querySelector("meta[name='csrf-header']"),
 	document.querySelector("meta[name='csrf-parameter']"),
 	document.querySelector("meta[name='csrf-token']"))
