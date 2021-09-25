@@ -1,30 +1,21 @@
-buildscript {
-	ext {
-		versionSpringBoot = "2.5.2"
-		versionGuava = "30.1.1-jre"
-		versionCommonsLang3 = "3.12.0"
-		versionCommonsCsv = "1.8"
-	}
-	repositories { mavenCentral() }
-	dependencies { classpath "org.springframework.boot:spring-boot-gradle-plugin:${versionSpringBoot}" }
+plugins {
+	id "io.spring.dependency-management" version "1.0.11.RELEASE" apply false
+	id "org.springframework.boot" version "2.5.5" apply false
 }
 
 subprojects {
 
-	apply plugin: "java"
+	apply plugin: "java-library"
 	apply plugin: "io.spring.dependency-management"
-	if (project.name == "pname-cmd") {
+	if (project.name in ["pname-cmd", "pname-web"]) {
 		apply plugin: "org.springframework.boot"
+	}
+
+	if (project.name == "pname-cmd") {
 		springBoot { mainClassName = "cherry.pname.Main" }
 	}
 	if (project.name == "pname-web") {
-		apply plugin: "org.springframework.boot"
 		springBoot { mainClassName = "cherry.pname.Main" }
-	}
-	if (project.name == "pname-common") {
-		dependencyManagement {
-			imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${versionSpringBoot}") }
-		}
 	}
 
 	sourceCompatibility = 1.8
@@ -35,27 +26,35 @@ subprojects {
 
 	repositories { mavenCentral() }
 
+	dependencyManagement {
+		imports { mavenBom "org.springframework.boot:spring-boot-dependencies:2.5.5" }
+		dependencies {
+			dependency group: "com.google.guava", name: "guava", version: "30.1.1-jre"
+			dependency group: "org.apache.commons", name: "commons-csv", version: "1.9.0"
+		}
+	}
+
 	dependencies {
 		if (project.name == "pname-common") {
 			implementation "org.springframework.boot:spring-boot-starter"
 			runtimeOnly "org.springframework.boot:spring-boot-starter-aop"
-			implementation "com.google.guava:guava:${versionGuava}"
-			implementation "org.apache.commons:commons-lang3:${versionCommonsLang3}"
-			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
+			implementation "com.google.guava:guava"
+			implementation "org.apache.commons:commons-lang3"
+			implementation "org.apache.commons:commons-csv"
 		}
 		if (project.name == "pname-cmd") {
 			implementation project(":pname-common")
 			implementation "org.springframework.boot:spring-boot-starter"
-			implementation "org.apache.commons:commons-lang3:${versionCommonsLang3}"
-			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
+			implementation "org.apache.commons:commons-lang3"
+			implementation "org.apache.commons:commons-csv"
 			compileOnly "org.springframework.boot:spring-boot-configuration-processor"
 		}
 		if (project.name == "pname-web") {
 			implementation project(":pname-common")
 			implementation "org.springframework.boot:spring-boot-starter-web"
 			implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
-			implementation "org.apache.commons:commons-lang3:${versionCommonsLang3}"
-			implementation "org.apache.commons:commons-csv:${versionCommonsCsv}"
+			implementation "org.apache.commons:commons-lang3"
+			implementation "org.apache.commons:commons-csv"
 			compileOnly "org.springframework.boot:spring-boot-configuration-processor"
 		}
 		testImplementation "org.springframework.boot:spring-boot-starter-test"
