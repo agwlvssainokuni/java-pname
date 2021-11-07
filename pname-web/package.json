@@ -4,6 +4,7 @@
 	"main": "index.js",
 	"scripts": {
 		"clean": "rimraf src/main/resources/static/javascript",
+		"babel": "babel src/main/jsx --out-dir src/main/javascript --presets @babel/preset-react --watch",
 		"build": "webpack --mode=production"
 	},
 	"repository": {
@@ -18,10 +19,11 @@
 	"homepage": "https://github.com/agwlvssainokuni/java-pname#readme",
 	"description": "",
 	"devDependencies": {
-		"babel-cli": "^6.26.0",
-		"babel-preset-react-app": "^3.1.2",
+		"@babel/cli": "^7.16.0",
+		"@babel/core": "^7.16.0",
+		"@babel/preset-react": "^7.16.0",
 		"rimraf": "^3.0.2",
-		"webpack": "^5.59.1",
+		"webpack": "^5.62.1",
 		"webpack-cli": "^4.9.1"
 	},
 	"dependencies": {
