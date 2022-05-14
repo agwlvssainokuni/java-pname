@@ -7,10 +7,13 @@ subprojects {
 
 	apply plugin: "java-library"
 	apply plugin: "io.spring.dependency-management"
-	if (project.name in ["pname-cmd", "pname-web"]) {
+	if (project.name in ["pname-batch", "pname-cmd", "pname-web"]) {
 		apply plugin: "org.springframework.boot"
 	}
 
+	if (project.name == "pname-batch") {
+		springBoot { mainClass = "cherry.pname.Main" }
+	}
 	if (project.name == "pname-cmd") {
 		springBoot { mainClass = "cherry.pname.Main" }
 	}
@@ -41,6 +44,14 @@ subprojects {
 			implementation "com.google.guava:guava"
 			implementation "org.apache.commons:commons-lang3"
 			implementation "org.apache.commons:commons-csv"
+		}
+		if (project.name == "pname-batch") {
+			implementation project(":pname-common")
+			implementation "org.springframework.boot:spring-boot-starter-batch"
+			implementation "org.apache.commons:commons-lang3"
+			implementation "org.apache.commons:commons-csv"
+			runtimeOnly "com.h2database:h2"
+			compileOnly "org.springframework.boot:spring-boot-configuration-processor"
 		}
 		if (project.name == "pname-cmd") {
 			implementation project(":pname-common")

@@ -1,1 +1,4 @@
-include ":pname-common", ":pname-cmd", ":pname-web"
+include ":pname-common"
+include ":pname-batch"
+include ":pname-cmd"
+include ":pname-web"

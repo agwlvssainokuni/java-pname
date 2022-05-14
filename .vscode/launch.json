@@ -12,6 +12,16 @@
         },
         {
             "type": "java",
+            "name": "Spring Boot-Main<pname-batch>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console":  "integratedTerminal",
+            "mainClass": "cherry.pname.Main",
+            "projectName": "pname-batch",
+            "args": ""
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-Main<pname-web>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
