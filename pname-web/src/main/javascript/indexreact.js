@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 // ENTRY
+
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { ln2pn } from "./pname-api";
-
 function PnamePanel(props) {
   let [data, setData] = useState("");
-
   const handleClick = async event => {
     let pn = await ln2pn(event.target.value, data);
     setData(pn);
   };
-
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "form-group"
   }, /*#__PURE__*/React.createElement("textarea", {
@@ -42,7 +40,6 @@ function PnamePanel(props) {
     onClick: handleClick
   }, e[1])).flatMap((btn, i) => i === 0 ? [btn] : [" ", btn])));
 }
-
 window.onload = () => {
   ReactDOM.render( /*#__PURE__*/React.createElement(PnamePanel, null), document.querySelector("#pname-web"));
 };
