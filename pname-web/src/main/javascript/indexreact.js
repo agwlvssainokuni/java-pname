@@ -41,5 +41,5 @@ function PnamePanel(props) {
   }, e[1])).flatMap((btn, i) => i === 0 ? [btn] : [" ", btn])));
 }
 window.onload = () => {
-  ReactDOM.render( /*#__PURE__*/React.createElement(PnamePanel, null), document.querySelector("#pname-web"));
+  ReactDOM.render(/*#__PURE__*/React.createElement(PnamePanel, null), document.querySelector("#pname-web"));
 };
