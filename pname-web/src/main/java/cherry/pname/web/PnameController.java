@@ -17,8 +17,6 @@
 package cherry.pname.web;
 
 import cherry.pname.processor.PnameType;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -40,37 +38,11 @@ public interface PnameController {
     @RequestMapping(params = {"dictreload"})
     int reloadDict() throws IOException;
 
-    public static class Result {
-
-        private final String ln;
-
-        private final String pn;
-
-        private final List<String> desc;
-
-        @Override
-        public String toString() {
-            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-        }
-
-        public Result(String ln, String pn, List<String> desc) {
-            super();
-            this.ln = ln;
-            this.pn = pn;
-            this.desc = desc;
-        }
-
-        public String getLn() {
-            return ln;
-        }
-
-        public String getPn() {
-            return pn;
-        }
-
-        public List<String> getDesc() {
-            return desc;
-        }
+    record Result(
+            String ln,
+            String pn,
+            List<String> desc
+    ) {
     }
 
 }

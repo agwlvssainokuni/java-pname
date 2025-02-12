@@ -20,31 +20,30 @@ import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class ExitControllerImpl implements ExitController, ExitCodeGenerator {
 
-    private Integer exitCode = null;
+    private final AtomicInteger exitCode = new AtomicInteger(0);
+    private final CountDownLatch latch = new CountDownLatch(1);
 
     @Override
-    public synchronized boolean setExitCode(Integer code) {
-        this.exitCode = Optional.ofNullable(code).orElse(0);
-        notifyAll();
+    public boolean setExitCode(Integer code) {
+        Optional.ofNullable(code).ifPresent(exitCode::set);
+        latch.countDown();
         return true;
     }
 
     @Override
-    public synchronized int getExitCode() {
-        while (true) {
-            if (exitCode != null) {
-                return exitCode.intValue();
-            }
-            try {
-                wait();
-            } catch (InterruptedException ex) {
-                // NOTHING TO DO
-            }
+    public int getExitCode() {
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            // NOTHING TO DO
         }
+        return exitCode.get();
     }
 
 }

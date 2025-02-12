@@ -24,8 +24,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.ExitCodeGenerator;
@@ -35,37 +33,44 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, InitializingBean {
+public class CmdHandler implements ApplicationRunner, ExitCodeGenerator {
 
-    @Autowired
-    private CmdConfig cmdConfig;
+    private final CmdConfig cmdConfig;
+    private final DictLoader dictLoader;
+    private final ProcessorBuilder processorBuilder;
+    private final Map<String, List<String>> dictMap;
 
-    @Autowired
-    private DictLoader dictLoader;
+    private final AtomicInteger exitCode = new AtomicInteger(0);
+    private final CountDownLatch latch = new CountDownLatch(1);
 
-    @Autowired
-    private ProcessorBuilder processorBuilder;
-
-    private Map<String, List<String>> dictMap;
-
-    private Integer exitCode = null;
-
-    @Override
-    public void afterPropertiesSet() throws IOException {
-        dictMap = dictLoader.load(cmdConfig.getDict(), cmdConfig.getCharset(), false, cmdConfig.getDelim(),
-                cmdConfig.getDict().getFilename().endsWith(".tsv"));
+    public CmdHandler(
+            CmdConfig cmdConfig,
+            DictLoader dictLoader,
+            ProcessorBuilder processorBuilder
+    ) throws IOException {
+        this.cmdConfig = cmdConfig;
+        this.dictLoader = dictLoader;
+        this.processorBuilder = processorBuilder;
+        this.dictMap = dictLoader.load(
+                cmdConfig.getDict(),
+                cmdConfig.getCharset(),
+                false,
+                cmdConfig.getDelim(),
+                cmdConfig.getDict().getFilename().endsWith(".tsv")
+        );
     }
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args) throws IOException {
 
-        Processor processor = processorBuilder.build(dictMap, cmdConfig.getType());
-        try (OutputStream out = openOutputStream(args);
-             Writer writer = new OutputStreamWriter(out, cmdConfig.getCharset());
-             CSVPrinter printer = new CSVPrinter(writer, cmdConfig.isTsvout() ? CSVFormat.TDF : CSVFormat.EXCEL)) {
+        var processor = processorBuilder.build(dictMap, cmdConfig.getType());
+        try (var out = openOutputStream(args);
+             var writer = new OutputStreamWriter(out, cmdConfig.getCharset());
+             var printer = new CSVPrinter(writer, cmdConfig.isTsvout() ? CSVFormat.TDF : CSVFormat.EXCEL)) {
             if (args.getNonOptionArgs().isEmpty()) {
                 generate(System.in, processor, printer);
             } else {
@@ -88,28 +93,26 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
         }
     }
 
-    private synchronized void setExitCode(int code) {
-        exitCode = code;
-        notifyAll();
+    private void setExitCode(int code) {
+        exitCode.set(code);
+        latch.countDown();
     }
 
     @Override
-    public synchronized int getExitCode() {
-        while (true) {
-            if (exitCode != null) {
-                return exitCode.intValue();
-            }
-            try {
-                wait();
-            } catch (InterruptedException ex) {
-                // NOTHING TO DO
-            }
+    public int getExitCode() {
+        try {
+            latch.await();
+        } catch (InterruptedException ex) {
+            // NOTHING TO DO
         }
+        return exitCode.get();
     }
 
     private OutputStream openOutputStream(ApplicationArguments args) throws FileNotFoundException {
-        Optional<String> output = Optional.ofNullable(args.getOptionValues("output"))
-                .flatMap(list -> list.stream().filter(StringUtils::isNotBlank).findFirst());
+        var output = Optional.ofNullable(args.getOptionValues("output")).stream()
+                .flatMap(List::stream)
+                .filter(StringUtils::isNotBlank)
+                .findFirst();
         if (output.isPresent()) {
             return new FileOutputStream(output.get());
         } else {
@@ -118,12 +121,12 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator, Initial
     }
 
     private void generate(InputStream in, Processor processor, CSVPrinter printer) throws IOException {
-        try (Reader reader = new InputStreamReader(in, cmdConfig.getCharset());
-             CSVParser parser = CSVParser.parse(reader, CSVFormat.TDF)) {
+        try (var reader = new InputStreamReader(in, cmdConfig.getCharset());
+             var parser = CSVParser.parse(reader, CSVFormat.TDF)) {
             ResultConsumer consumer = cmdConfig.isDesc()
-                    ? pr -> printer.printRecord(pr.getLname(), pr.getPname(), pr.getDesc())
-                    : pr -> printer.printRecord(pr.getLname(), pr.getPname());
-            StreamSupport.stream(parser.spliterator(), false).filter(rec -> rec.size() > 0).map(rec -> rec.get(0))
+                    ? pr -> printer.printRecord(pr.lname(), pr.pname(), pr.desc())
+                    : pr -> printer.printRecord(pr.lname(), pr.pname());
+            parser.stream().filter(rec -> rec.size() > 0).map(rec -> rec.get(0))
                     .map(processor::process).forEach(consumer);
         }
     }
