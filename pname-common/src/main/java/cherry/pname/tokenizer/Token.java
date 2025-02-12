@@ -16,41 +16,11 @@
 
 package cherry.pname.tokenizer;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.util.List;
 
-public class Token {
-
-    private final String lnm;
-
-    private final List<String> pnm;
-
-    private final boolean ok;
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    public Token(String lnm, List<String> pnm, boolean ok) {
-        super();
-        this.lnm = lnm;
-        this.pnm = pnm;
-        this.ok = ok;
-    }
-
-    public String getLnm() {
-        return lnm;
-    }
-
-    public List<String> getPnm() {
-        return pnm;
-    }
-
-    public boolean isOk() {
-        return ok;
-    }
-
+public record Token(
+        String lnm,
+        List<String> pnm,
+        boolean ok
+) {
 }

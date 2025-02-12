@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
 public class CaseFormImpl implements CaseForm {
@@ -59,14 +58,16 @@ public class CaseFormImpl implements CaseForm {
 
     private String toCamelCase(List<Token> list, Function<Character, Character> func) {
 
-        List<String> pname = list.stream().flatMap(tk -> tk.getPnm().stream()).filter(StringUtils::isNotBlank)
-                .collect(Collectors.toList());
+        var pname = list.stream().map(Token::pnm)
+                .flatMap(List::stream)
+                .filter(StringUtils::isNotBlank)
+                .toList();
 
-        char[] ch = new char[pname.stream().mapToInt(String::length).sum()];
-        int index = 0;
-        boolean first = true;
-        for (String pn : pname) {
-            for (int i = 0; i < pn.length(); i++) {
+        var ch = new char[pname.stream().mapToInt(String::length).sum()];
+        var index = 0;
+        var first = true;
+        for (var pn : pname) {
+            for (var i = 0; i < pn.length(); i++) {
                 if (i == 0) {
                     if (first) {
                         ch[index++] = func.apply(pn.charAt(i));
@@ -92,23 +93,25 @@ public class CaseFormImpl implements CaseForm {
 
     private String toSnakeKebab(List<Token> list, Function<Character, Character> func, char delim) {
 
-        List<String> pname = list.stream().flatMap(tk -> tk.getPnm().stream()).filter(StringUtils::isNotBlank)
-                .collect(Collectors.toList());
+        var pname = list.stream().map(Token::pnm)
+                .flatMap(List::stream)
+                .filter(StringUtils::isNotBlank)
+                .toList();
 
-        int size = pname.stream().mapToInt(String::length).sum() + pname.size() - 1;
+        var size = pname.stream().mapToInt(String::length).sum() + pname.size() - 1;
         if (size < 0) {
             return "";
         }
-        char[] ch = new char[size];
-        int index = 0;
-        boolean first = true;
-        for (String pn : pname) {
+        var ch = new char[size];
+        var index = 0;
+        var first = true;
+        for (var pn : pname) {
             if (first) {
                 first = false;
             } else {
                 ch[index++] = delim;
             }
-            for (int i = 0; i < pn.length(); i++) {
+            for (var i = 0; i < pn.length(); i++) {
                 ch[index++] = func.apply(pn.charAt(i));
             }
         }

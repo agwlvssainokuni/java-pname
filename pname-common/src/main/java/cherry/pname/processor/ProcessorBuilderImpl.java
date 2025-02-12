@@ -19,9 +19,7 @@ package cherry.pname.processor;
 import cherry.pname.caseform.CaseForm;
 import cherry.pname.tokenizer.Token;
 import cherry.pname.tokenizer.TokenizerBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,42 +27,42 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class ProcessorBuilderImpl implements ProcessorBuilder, ApplicationContextAware {
+public class ProcessorBuilderImpl implements ProcessorBuilder {
 
-    private ApplicationContext appctx;
+    private final ApplicationContext appctx;
 
-    @Autowired
-    private TokenizerBuilder tokenizerBuilder;
+    private final TokenizerBuilder tokenizerBuilder;
 
-    @Autowired
-    private CaseForm caseform;
+    private final CaseForm caseform;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.appctx = applicationContext;
+    public ProcessorBuilderImpl(
+            ApplicationContext appctx,
+            TokenizerBuilder tokenizerBuilder,
+            CaseForm caseform
+    ) {
+        this.appctx = appctx;
+        this.tokenizerBuilder = tokenizerBuilder;
+        this.caseform = caseform;
     }
 
     @Override
     public Processor build(Map<String, List<String>> dict, PnameType pnameType) {
-        return appctx.getBean(Processor.class, tokenizerBuilder.build(dict), getPnameFunc(pnameType));
+        return appctx.getBean(
+                Processor.class,
+                tokenizerBuilder.build(dict),
+                getPnameFunc(pnameType)
+        );
     }
 
     private Function<List<Token>, String> getPnameFunc(PnameType pnameType) {
-        if (pnameType == PnameType.UPPER_SNAKE) {
-            return caseform::toUpperSnake;
-        } else if (pnameType == PnameType.LOWER_SNAKE) {
-            return caseform::toLowerSnake;
-        } else if (pnameType == PnameType.UPPER_CAMEL) {
-            return caseform::toUpperCamel;
-        } else if (pnameType == PnameType.LOWER_CAMEL) {
-            return caseform::toLowerCamel;
-        } else if (pnameType == PnameType.UPPER_KEBAB) {
-            return caseform::toUpperKebab;
-        } else if (pnameType == PnameType.LOWER_KEBAB) {
-            return caseform::toLowerKebab;
-        } else {
-            return caseform::toUpperSnake;
-        }
+        return switch (pnameType) {
+            case UPPER_SNAKE -> caseform::toUpperSnake;
+            case LOWER_SNAKE -> caseform::toLowerSnake;
+            case UPPER_CAMEL -> caseform::toUpperCamel;
+            case LOWER_CAMEL -> caseform::toLowerCamel;
+            case UPPER_KEBAB -> caseform::toUpperKebab;
+            case LOWER_KEBAB -> caseform::toLowerKebab;
+        };
     }
 
 }

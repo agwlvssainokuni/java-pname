@@ -17,7 +17,6 @@
 package cherry.pname.tokenizer;
 
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
@@ -36,7 +35,6 @@ public class TokenizerImpl implements Tokenizer {
 
     private final List<String> lnmlist;
 
-    @Autowired
     public TokenizerImpl(Map<String, List<String>> dict) {
         this.dict = dict;
         this.lnmlist = Lists.newArrayList(dict.keySet());
@@ -47,28 +45,28 @@ public class TokenizerImpl implements Tokenizer {
     public List<Token> tokenize(String text) {
 
         List<Token> result = Lists.newArrayListWithCapacity(text.length());
-        StringBuilder unmatch = new StringBuilder(text.length());
-        for (int offset = 0; offset < text.length(); offset++) {
+        var unmatch = new StringBuilder(text.length());
+        for (var offset = 0; offset < text.length(); offset++) {
 
-            int lnmlen = lookupLnm(text, offset, lnmlist);
+            var lnmlen = lookupLnm(text, offset, lnmlist);
             if (lnmlen < 0) {
                 unmatch.append(text.charAt(offset));
                 continue;
             }
 
-            if (unmatch.length() > 0) {
-                String un = unmatch.toString();
+            if (!unmatch.isEmpty()) {
+                var un = unmatch.toString();
                 result.add(new Token(un, Arrays.asList(un), false));
                 unmatch = new StringBuilder(text.length());
             }
 
-            String lnm = text.substring(offset, offset + lnmlen);
+            var lnm = text.substring(offset, offset + lnmlen);
             result.add(new Token(lnm, dict.get(lnm), true));
 
             offset += lnmlen - 1;
         }
-        if (unmatch.length() > 0) {
-            String un = unmatch.toString();
+        if (!unmatch.isEmpty()) {
+            var un = unmatch.toString();
             result.add(new Token(un, Arrays.asList(un), false));
         }
         return result;
@@ -76,11 +74,11 @@ public class TokenizerImpl implements Tokenizer {
 
     private int lookupLnm(String text, int offset, List<String> lnmlist) {
         LOOP:
-        for (String lnm : lnmlist) {
+        for (var lnm : lnmlist) {
             if (lnm.length() <= 0) {
                 continue;
             }
-            for (int i = 0; i < lnm.length(); i++) {
+            for (var i = 0; i < lnm.length(); i++) {
                 if (offset + i >= text.length()) {
                     continue LOOP;
                 }

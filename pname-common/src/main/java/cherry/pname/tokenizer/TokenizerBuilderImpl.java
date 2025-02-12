@@ -17,20 +17,18 @@
 package cherry.pname.tokenizer;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
 @Component
-public class TokenizerBuilderImpl implements TokenizerBuilder, ApplicationContextAware {
+public class TokenizerBuilderImpl implements TokenizerBuilder {
 
-    private ApplicationContext appctx;
+    private final ApplicationContext appctx;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.appctx = applicationContext;
+    public TokenizerBuilderImpl(ApplicationContext appctx) {
+        this.appctx = appctx;
     }
 
     @Override

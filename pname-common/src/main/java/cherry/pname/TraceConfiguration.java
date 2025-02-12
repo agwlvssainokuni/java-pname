@@ -22,5 +22,4 @@ import org.springframework.context.annotation.ImportResource;
 @Configuration
 @ImportResource(locations = "classpath:spring/appctx-trace.xml")
 public class TraceConfiguration {
-
 }

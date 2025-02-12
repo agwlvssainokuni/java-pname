@@ -26,29 +26,44 @@ import java.util.Map;
 public interface DictLoader {
 
     Map<String, List<String>> load(
-            Reader r, boolean withHeader, String delim,
-            boolean tsv) throws IOException;
+            Reader r,
+            boolean withHeader,
+            String delim,
+            boolean tsv
+    ) throws IOException;
 
     default Map<String, List<String>> load(
-            InputStream in, Charset charset, boolean withHeader, String delim,
-            boolean tsv) throws IOException {
-        try (InputStreamReader r = new InputStreamReader(in, charset)) {
+            InputStream in,
+            Charset charset,
+            boolean withHeader,
+            String delim,
+            boolean tsv
+    ) throws IOException {
+        try (var r = new InputStreamReader(in, charset)) {
             return load(r, withHeader, delim, tsv);
         }
     }
 
     default Map<String, List<String>> load(
-            File file, Charset charset, boolean withHeader, String delim,
-            boolean tsv) throws IOException {
-        try (FileInputStream fin = new FileInputStream(file)) {
+            File file,
+            Charset charset,
+            boolean withHeader,
+            String delim,
+            boolean tsv
+    ) throws IOException {
+        try (var fin = new FileInputStream(file)) {
             return load(fin, charset, withHeader, delim, tsv);
         }
     }
 
     default Map<String, List<String>> load(
-            Resource resrc, Charset charset, boolean withHeader, String delim,
-            boolean tsv) throws IOException {
-        try (InputStream in = resrc.getInputStream()) {
+            Resource resrc,
+            Charset charset,
+            boolean withHeader,
+            String delim,
+            boolean tsv
+    ) throws IOException {
+        try (var in = resrc.getInputStream()) {
             return load(in, charset, withHeader, delim, tsv);
         }
     }

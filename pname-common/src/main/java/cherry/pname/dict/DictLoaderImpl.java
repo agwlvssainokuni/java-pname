@@ -19,28 +19,30 @@ package cherry.pname.dict;
 import com.google.common.collect.Maps;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
 
 @Component
 public class DictLoaderImpl implements DictLoader {
 
     @Override
-    public Map<String, List<String>> load(Reader r, boolean withHeader, String delim, boolean tsv) throws IOException {
+    public Map<String, List<String>> load(
+            Reader r,
+            boolean withHeader,
+            String delim,
+            boolean tsv
+    ) throws IOException {
 
         Map<String, List<String>> dict = Maps.newHashMap();
-        try (CSVParser parser = CSVParser.parse(r, tsv ? CSVFormat.TDF : CSVFormat.EXCEL)) {
-            boolean skip = withHeader ? true : false;
-            for (CSVRecord record : parser) {
+        try (var parser = CSVParser.parse(r, tsv ? CSVFormat.TDF : CSVFormat.EXCEL)) {
+            var skip = withHeader ? true : false;
+            for (var record : parser) {
 
                 if (skip) {
                     skip = false;
@@ -51,8 +53,12 @@ public class DictLoaderImpl implements DictLoader {
                     continue;
                 }
 
-                dict.put(record.get(0), asList(record.get(1).split(delim)).stream().filter(StringUtils::isNotBlank)
-                        .collect(Collectors.toList()));
+                dict.put(
+                        record.get(0),
+                        Arrays.stream(record.get(1).split(delim))
+                                .filter(StringUtils::isNotBlank)
+                                .toList()
+                );
             }
         }
 

@@ -20,7 +20,6 @@ import cherry.pname.tokenizer.Token;
 import cherry.pname.tokenizer.Tokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
 
@@ -43,26 +41,27 @@ public class ProcessorImpl implements Processor {
 
     private final Function<List<Token>, String> pnfunc;
 
-    @Autowired
-    public ProcessorImpl(Tokenizer tokenizer, Function<List<Token>, String> pnfunc) {
-        super();
+    public ProcessorImpl(
+            Tokenizer tokenizer,
+            Function<List<Token>, String> pnfunc
+    ) {
         this.tokenizer = tokenizer;
         this.pnfunc = pnfunc;
     }
 
     @Override
     public Result process(String lname) {
-        List<Token> token = tokenizer.tokenize(lname);
-        String pname = pnfunc.apply(token);
-        List<String> desc = token.stream().map(this::getDesc).collect(Collectors.toList());
+        var token = tokenizer.tokenize(lname);
+        var pname = pnfunc.apply(token);
+        var desc = token.stream().map(this::getDesc).toList();
 
         if (logger.isInfoEnabled()) {
             logger.info("論理名: {}", lname);
             for (Token tk : token) {
-                if (tk.isOk()) {
-                    logger.info("  単語: {} => {}", tk.getLnm(), tk.getPnm());
+                if (tk.ok()) {
+                    logger.info("  単語: {} => {}", tk.lnm(), tk.pnm());
                 } else {
-                    logger.info("  未知: {}", tk.getLnm());
+                    logger.info("  未知: {}", tk.lnm());
                 }
             }
             logger.info("物理名: {}", pname);
@@ -72,10 +71,10 @@ public class ProcessorImpl implements Processor {
     }
 
     private String getDesc(Token token) {
-        if (token.isOk()) {
-            return format("{0}=>{1}", token.getLnm(), token.getPnm());
+        if (token.ok()) {
+            return format("{0}=>{1}", token.lnm(), token.pnm());
         } else {
-            return format("{0}=*", token.getLnm(), token.getPnm());
+            return format("{0}=*", token.lnm(), token.pnm());
         }
     }
 
