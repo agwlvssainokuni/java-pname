@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,41 @@
 
 package cherry.pname.tokenizer;
 
-import java.util.List;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.List;
+
 public class Token {
 
-	private final String lnm;
+    private final String lnm;
 
-	private final List<String> pnm;
+    private final List<String> pnm;
 
-	private final boolean ok;
+    private final boolean ok;
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 
-	public Token(String lnm, List<String> pnm, boolean ok) {
-		super();
-		this.lnm = lnm;
-		this.pnm = pnm;
-		this.ok = ok;
-	}
+    public Token(String lnm, List<String> pnm, boolean ok) {
+        super();
+        this.lnm = lnm;
+        this.pnm = pnm;
+        this.ok = ok;
+    }
 
-	public String getLnm() {
-		return lnm;
-	}
+    public String getLnm() {
+        return lnm;
+    }
 
-	public List<String> getPnm() {
-		return pnm;
-	}
+    public List<String> getPnm() {
+        return pnm;
+    }
 
-	public boolean isOk() {
-		return ok;
-	}
+    public boolean isOk() {
+        return ok;
+    }
 
 }

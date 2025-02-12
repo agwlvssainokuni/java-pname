@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,8 @@
 
 package cherry.pname.processor;
 
-import static java.text.MessageFormat.format;
-
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import cherry.pname.tokenizer.Token;
+import cherry.pname.tokenizer.Tokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,54 +26,57 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import cherry.pname.tokenizer.Token;
-import cherry.pname.tokenizer.Tokenizer;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static java.text.MessageFormat.format;
 
 @Component
 @Lazy(true)
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ProcessorImpl implements Processor {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final Tokenizer tokenizer;
+    private final Tokenizer tokenizer;
 
-	private final Function<List<Token>, String> pnfunc;
+    private final Function<List<Token>, String> pnfunc;
 
-	@Autowired
-	public ProcessorImpl(Tokenizer tokenizer, Function<List<Token>, String> pnfunc) {
-		super();
-		this.tokenizer = tokenizer;
-		this.pnfunc = pnfunc;
-	}
+    @Autowired
+    public ProcessorImpl(Tokenizer tokenizer, Function<List<Token>, String> pnfunc) {
+        super();
+        this.tokenizer = tokenizer;
+        this.pnfunc = pnfunc;
+    }
 
-	@Override
-	public Result process(String lname) {
-		List<Token> token = tokenizer.tokenize(lname);
-		String pname = pnfunc.apply(token);
-		List<String> desc = token.stream().map(this::getDesc).collect(Collectors.toList());
+    @Override
+    public Result process(String lname) {
+        List<Token> token = tokenizer.tokenize(lname);
+        String pname = pnfunc.apply(token);
+        List<String> desc = token.stream().map(this::getDesc).collect(Collectors.toList());
 
-		if (logger.isInfoEnabled()) {
-			logger.info("論理名: {}", lname);
-			for (Token tk : token) {
-				if (tk.isOk()) {
-					logger.info("  単語: {} => {}", tk.getLnm(), tk.getPnm());
-				} else {
-					logger.info("  未知: {}", tk.getLnm());
-				}
-			}
-			logger.info("物理名: {}", pname);
-		}
+        if (logger.isInfoEnabled()) {
+            logger.info("論理名: {}", lname);
+            for (Token tk : token) {
+                if (tk.isOk()) {
+                    logger.info("  単語: {} => {}", tk.getLnm(), tk.getPnm());
+                } else {
+                    logger.info("  未知: {}", tk.getLnm());
+                }
+            }
+            logger.info("物理名: {}", pname);
+        }
 
-		return new Result(lname, pname, desc);
-	}
+        return new Result(lname, pname, desc);
+    }
 
-	private String getDesc(Token token) {
-		if (token.isOk()) {
-			return format("{0}=>{1}", token.getLnm(), token.getPnm());
-		} else {
-			return format("{0}=*", token.getLnm(), token.getPnm());
-		}
-	}
+    private String getDesc(Token token) {
+        if (token.isOk()) {
+            return format("{0}=>{1}", token.getLnm(), token.getPnm());
+        } else {
+            return format("{0}=*", token.getLnm(), token.getPnm());
+        }
+    }
 
 }

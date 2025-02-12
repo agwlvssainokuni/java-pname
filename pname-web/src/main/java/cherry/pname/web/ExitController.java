@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/exit")
 public interface ExitController {
 
-	@RequestMapping()
-	public boolean setExitCode(@RequestParam(required = false) Integer code);
+    @RequestMapping()
+    boolean setExitCode(@RequestParam(required = false) Integer code);
 
 }

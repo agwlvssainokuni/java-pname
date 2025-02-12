@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,56 +16,55 @@
 
 package cherry.pname.processor;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
+import cherry.pname.caseform.CaseForm;
+import cherry.pname.tokenizer.Token;
+import cherry.pname.tokenizer.TokenizerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import cherry.pname.caseform.CaseForm;
-import cherry.pname.tokenizer.Token;
-import cherry.pname.tokenizer.TokenizerBuilder;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class ProcessorBuilderImpl implements ProcessorBuilder, ApplicationContextAware {
 
-	private ApplicationContext appctx;
+    private ApplicationContext appctx;
 
-	@Autowired
-	private TokenizerBuilder tokenizerBuilder;
+    @Autowired
+    private TokenizerBuilder tokenizerBuilder;
 
-	@Autowired
-	private CaseForm caseform;
+    @Autowired
+    private CaseForm caseform;
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.appctx = applicationContext;
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.appctx = applicationContext;
+    }
 
-	@Override
-	public Processor build(Map<String, List<String>> dict, PnameType pnameType) {
-		return appctx.getBean(Processor.class, tokenizerBuilder.build(dict), getPnameFunc(pnameType));
-	}
+    @Override
+    public Processor build(Map<String, List<String>> dict, PnameType pnameType) {
+        return appctx.getBean(Processor.class, tokenizerBuilder.build(dict), getPnameFunc(pnameType));
+    }
 
-	private Function<List<Token>, String> getPnameFunc(PnameType pnameType) {
-		if (pnameType == PnameType.UPPER_SNAKE) {
-			return caseform::toUpperSnake;
-		} else if (pnameType == PnameType.LOWER_SNAKE) {
-			return caseform::toLowerSnake;
-		} else if (pnameType == PnameType.UPPER_CAMEL) {
-			return caseform::toUpperCamel;
-		} else if (pnameType == PnameType.LOWER_CAMEL) {
-			return caseform::toLowerCamel;
-		} else if (pnameType == PnameType.UPPER_KEBAB) {
-			return caseform::toUpperKebab;
-		} else if (pnameType == PnameType.LOWER_KEBAB) {
-			return caseform::toLowerKebab;
-		} else {
-			return caseform::toUpperSnake;
-		}
-	}
+    private Function<List<Token>, String> getPnameFunc(PnameType pnameType) {
+        if (pnameType == PnameType.UPPER_SNAKE) {
+            return caseform::toUpperSnake;
+        } else if (pnameType == PnameType.LOWER_SNAKE) {
+            return caseform::toLowerSnake;
+        } else if (pnameType == PnameType.UPPER_CAMEL) {
+            return caseform::toUpperCamel;
+        } else if (pnameType == PnameType.LOWER_CAMEL) {
+            return caseform::toLowerCamel;
+        } else if (pnameType == PnameType.UPPER_KEBAB) {
+            return caseform::toUpperKebab;
+        } else if (pnameType == PnameType.LOWER_KEBAB) {
+            return caseform::toLowerKebab;
+        } else {
+            return caseform::toUpperSnake;
+        }
+    }
 
 }

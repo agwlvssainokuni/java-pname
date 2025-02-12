@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,6 @@ import java.util.List;
 
 public interface Tokenizer {
 
-	List<Token> tokenize(String text);
+    List<Token> tokenize(String text);
 
 }

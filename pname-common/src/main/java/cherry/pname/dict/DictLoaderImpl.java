@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,12 @@
 
 package cherry.pname.dict;
 
-import static java.util.Arrays.asList;
+import com.google.common.collect.Maps;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -24,40 +29,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
-
-import com.google.common.collect.Maps;
+import static java.util.Arrays.asList;
 
 @Component
 public class DictLoaderImpl implements DictLoader {
 
-	@Override
-	public Map<String, List<String>> load(Reader r, boolean withHeader, String delim, boolean tsv) throws IOException {
+    @Override
+    public Map<String, List<String>> load(Reader r, boolean withHeader, String delim, boolean tsv) throws IOException {
 
-		Map<String, List<String>> dict = Maps.newHashMap();
-		try (CSVParser parser = CSVParser.parse(r, tsv ? CSVFormat.TDF : CSVFormat.EXCEL)) {
-			boolean skip = withHeader ? true : false;
-			for (CSVRecord record : parser) {
+        Map<String, List<String>> dict = Maps.newHashMap();
+        try (CSVParser parser = CSVParser.parse(r, tsv ? CSVFormat.TDF : CSVFormat.EXCEL)) {
+            boolean skip = withHeader ? true : false;
+            for (CSVRecord record : parser) {
 
-				if (skip) {
-					skip = false;
-					continue;
-				}
+                if (skip) {
+                    skip = false;
+                    continue;
+                }
 
-				if (record.size() < 2) {
-					continue;
-				}
+                if (record.size() < 2) {
+                    continue;
+                }
 
-				dict.put(record.get(0), asList(record.get(1).split(delim)).stream().filter(StringUtils::isNotBlank)
-						.collect(Collectors.toList()));
-			}
-		}
+                dict.put(record.get(0), asList(record.get(1).split(delim)).stream().filter(StringUtils::isNotBlank)
+                        .collect(Collectors.toList()));
+            }
+        }
 
-		return dict;
-	}
+        return dict;
+    }
 
 }

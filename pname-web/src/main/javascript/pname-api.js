@@ -1,5 +1,5 @@
 /*
-* Copyright 2021 agwlvssainokuni
+* Copyright 2021,2025 agwlvssainokuni
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
 * limitations under the License.
 */
 
-import { uri, csrfToken } from "./resolver";
+import {csrfToken, uri} from "./resolver";
 
-export { ln2pn };
+export {ln2pn};
 
 const ln2pn = ((action) => {
-	let headers = new Headers();
-	if (csrfToken.header != null) {
-		headers.append(csrfToken.header, csrfToken.token);
-	}
-	return async (pnameType, lnVal) => {
-		let response = await fetch(action, {
-			method: "POST",
-			headers: headers,
-			body: new URLSearchParams({
-				type: pnameType,
-				ln: lnVal
-			})
-		});
-		let result = await response.text();
-		return result;
-	}
+    let headers = new Headers();
+    if (csrfToken.header != null) {
+        headers.append(csrfToken.header, csrfToken.token);
+    }
+    return async (pnameType, lnVal) => {
+        let response = await fetch(action, {
+            method: "POST",
+            headers: headers,
+            body: new URLSearchParams({
+                type: pnameType,
+                ln: lnVal
+            })
+        });
+        let result = await response.text();
+        return result;
+    }
 })(uri("/pname?tsv"));

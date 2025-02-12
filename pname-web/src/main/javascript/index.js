@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 // ENTRY
 
-import { ln2pn } from "./pname-api";
+import {ln2pn} from "./pname-api";
 
 $(function () {
-	$(".pname-type").click(function (event) {
-		const pnameType = $(this).val();
-		const lnVal = $(".pname-ln").val();
-		ln2pn(pnameType, lnVal).then((data) => {
-			$(".pname-ln").val(data)
-		});
-	});
+    $(".pname-type").click(function (event) {
+        const pnameType = $(this).val();
+        const lnVal = $(".pname-ln").val();
+        ln2pn(pnameType, lnVal).then((data) => {
+            $(".pname-ln").val(data)
+        });
+    });
 });

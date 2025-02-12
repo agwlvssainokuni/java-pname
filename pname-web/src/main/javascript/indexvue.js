@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 agwlvssainokuni
+ * Copyright 2021,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,25 @@
  */
 // ENTRY
 
-import { ln2pn } from "./pname-api";
+import {ln2pn} from "./pname-api";
 
 const data = {
-	pnameln: ""
+    pnameln: ""
 }
 
 function convert(event) {
-	const vm = this;
-	const pnameType = event.target.value;
-	const lnVal = vm.pnameln;
-	ln2pn(pnameType, lnVal).then((data) =>
-		vm.pnameln = data
-	);
+    const vm = this;
+    const pnameType = event.target.value;
+    const lnVal = vm.pnameln;
+    ln2pn(pnameType, lnVal).then((data) =>
+        vm.pnameln = data
+    );
 }
 
 const vm = new Vue({
-	el: "#pname-web",
-	data: data,
-	methods: {
-		convert: convert
-	}
+    el: "#pname-web",
+    data: data,
+    methods: {
+        convert: convert
+    }
 });

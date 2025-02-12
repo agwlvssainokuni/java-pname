@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,6 @@ import java.util.Map;
 
 public interface TokenizerBuilder {
 
-	Tokenizer build(Map<String, List<String>> dict);
+    Tokenizer build(Map<String, List<String>> dict);
 
 }

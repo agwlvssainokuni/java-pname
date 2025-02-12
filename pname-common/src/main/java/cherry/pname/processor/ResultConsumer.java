@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,23 @@
 
 package cherry.pname.processor;
 
+import cherry.pname.processor.Processor.Result;
+
 import java.io.IOException;
 import java.util.function.Consumer;
-
-import cherry.pname.processor.Processor.Result;
 
 @FunctionalInterface
 public interface ResultConsumer extends Consumer<Result> {
 
-	@Override
-	default void accept(Result t) {
-		try {
-			doAccept(t);
-		} catch (IOException ex) {
-			throw new IllegalStateException(ex);
-		}
-	}
+    @Override
+    default void accept(Result t) {
+        try {
+            doAccept(t);
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
 
-	void doAccept(Result t) throws IOException;
+    void doAccept(Result t) throws IOException;
 
 }

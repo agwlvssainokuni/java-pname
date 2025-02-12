@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,62 +16,61 @@
 
 package cherry.pname.web;
 
-import java.io.IOException;
-import java.util.List;
-
+import cherry.pname.processor.PnameType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import cherry.pname.processor.PnameType;
+import java.io.IOException;
+import java.util.List;
 
 @RequestMapping("/pname")
 public interface PnameController {
 
-	@RequestMapping()
-	List<Result> generate(@RequestParam() String ln, @RequestParam(required = false) PnameType type);
+    @RequestMapping()
+    List<Result> generate(@RequestParam() String ln, @RequestParam(required = false) PnameType type);
 
-	@RequestMapping(params = "tsv", produces = "text/tab-separated-values; charset=UTF-8")
-	String generateTsv(@RequestParam() String ln, @RequestParam(required = false) PnameType type);
+    @RequestMapping(params = "tsv", produces = "text/tab-separated-values; charset=UTF-8")
+    String generateTsv(@RequestParam() String ln, @RequestParam(required = false) PnameType type);
 
-	@RequestMapping(params = { "dicttext" })
-	int uploadDictText(@RequestParam("dicttext") String dicttext) throws IOException;
+    @RequestMapping(params = {"dicttext"})
+    int uploadDictText(@RequestParam("dicttext") String dicttext) throws IOException;
 
-	@RequestMapping(params = { "dictreload" })
-	int reloadDict() throws IOException;
+    @RequestMapping(params = {"dictreload"})
+    int reloadDict() throws IOException;
 
-	public static class Result {
+    public static class Result {
 
-		private final String ln;
+        private final String ln;
 
-		private final String pn;
+        private final String pn;
 
-		private final List<String> desc;
+        private final List<String> desc;
 
-		@Override
-		public String toString() {
-			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-		}
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
 
-		public Result(String ln, String pn, List<String> desc) {
-			super();
-			this.ln = ln;
-			this.pn = pn;
-			this.desc = desc;
-		}
+        public Result(String ln, String pn, List<String> desc) {
+            super();
+            this.ln = ln;
+            this.pn = pn;
+            this.desc = desc;
+        }
 
-		public String getLn() {
-			return ln;
-		}
+        public String getLn() {
+            return ln;
+        }
 
-		public String getPn() {
-			return pn;
-		}
+        public String getPn() {
+            return pn;
+        }
 
-		public List<String> getDesc() {
-			return desc;
-		}
-	}
+        public List<String> getDesc() {
+            return desc;
+        }
+    }
 
 }

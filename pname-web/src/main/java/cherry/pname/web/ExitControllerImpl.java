@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,35 @@
 
 package cherry.pname.web;
 
-import java.util.Optional;
-
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 public class ExitControllerImpl implements ExitController, ExitCodeGenerator {
 
-	private Integer exitCode = null;
+    private Integer exitCode = null;
 
-	@Override
-	public synchronized boolean setExitCode(Integer code) {
-		this.exitCode = Optional.ofNullable(code).orElse(0);
-		notifyAll();
-		return true;
-	}
+    @Override
+    public synchronized boolean setExitCode(Integer code) {
+        this.exitCode = Optional.ofNullable(code).orElse(0);
+        notifyAll();
+        return true;
+    }
 
-	@Override
-	public synchronized int getExitCode() {
-		while (true) {
-			if (exitCode != null) {
-				return exitCode.intValue();
-			}
-			try {
-				wait();
-			} catch (InterruptedException ex) {
-				// NOTHING TO DO
-			}
-		}
-	}
+    @Override
+    public synchronized int getExitCode() {
+        while (true) {
+            if (exitCode != null) {
+                return exitCode.intValue();
+            }
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                // NOTHING TO DO
+            }
+        }
+    }
 
 }

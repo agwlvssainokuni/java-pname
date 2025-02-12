@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,26 @@
 
 package cherry.pname.tokenizer;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 @Component
 public class TokenizerBuilderImpl implements TokenizerBuilder, ApplicationContextAware {
 
-	private ApplicationContext appctx;
+    private ApplicationContext appctx;
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.appctx = applicationContext;
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.appctx = applicationContext;
+    }
 
-	@Override
-	public Tokenizer build(Map<String, List<String>> dict) {
-		return appctx.getBean(Tokenizer.class, dict);
-	}
+    @Override
+    public Tokenizer build(Map<String, List<String>> dict) {
+        return appctx.getBean(Tokenizer.class, dict);
+    }
 
 }

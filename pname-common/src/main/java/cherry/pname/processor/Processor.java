@@ -1,5 +1,5 @@
 /*
- * Copyright 2017,2021 agwlvssainokuni
+ * Copyright 2017,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,46 +16,46 @@
 
 package cherry.pname.processor;
 
-import java.util.List;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.List;
+
 public interface Processor {
 
-	Result process(String pname);
+    Result process(String pname);
 
-	public static class Result {
+    public static class Result {
 
-		private final String lname;
+        private final String lname;
 
-		private final String pname;
+        private final String pname;
 
-		private final List<String> desc;
+        private final List<String> desc;
 
-		@Override
-		public String toString() {
-			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-		}
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
 
-		public Result(String lname, String pname, List<String> desc) {
-			super();
-			this.lname = lname;
-			this.pname = pname;
-			this.desc = desc;
-		}
+        public Result(String lname, String pname, List<String> desc) {
+            super();
+            this.lname = lname;
+            this.pname = pname;
+            this.desc = desc;
+        }
 
-		public String getLname() {
-			return lname;
-		}
+        public String getLname() {
+            return lname;
+        }
 
-		public String getPname() {
-			return pname;
-		}
+        public String getPname() {
+            return pname;
+        }
 
-		public List<String> getDesc() {
-			return desc;
-		}
-	}
+        public List<String> getDesc() {
+            return desc;
+        }
+    }
 
 }

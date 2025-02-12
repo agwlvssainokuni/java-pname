@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 agwlvssainokuni
+ * Copyright 2021,2025 agwlvssainokuni
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public interface RootController {
 
-	@RequestMapping({ "/", "/index" })
-	ModelAndView index();
+    @RequestMapping({"/", "/index"})
+    ModelAndView index();
 
-	@RequestMapping({ "/vue", "/indexvue" })
-	ModelAndView indexvue();
+    @RequestMapping({"/vue", "/indexvue"})
+    ModelAndView indexvue();
 
-	@RequestMapping({ "/react", "/indexreact" })
-	ModelAndView indexreact();
+    @RequestMapping({"/react", "/indexreact"})
+    ModelAndView indexreact();
 
 }
