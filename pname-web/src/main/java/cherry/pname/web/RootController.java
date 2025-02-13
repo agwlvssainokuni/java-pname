@@ -25,10 +25,4 @@ public interface RootController {
     @RequestMapping({"/", "/index"})
     ModelAndView index();
 
-    @RequestMapping({"/vue", "/indexvue"})
-    ModelAndView indexvue();
-
-    @RequestMapping({"/react", "/indexreact"})
-    ModelAndView indexreact();
-
 }

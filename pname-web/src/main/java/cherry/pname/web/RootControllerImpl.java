@@ -27,14 +27,4 @@ public class RootControllerImpl implements RootController {
         return new ModelAndView("/index");
     }
 
-    @Override
-    public ModelAndView indexvue() {
-        return new ModelAndView("/indexvue");
-    }
-
-    @Override
-    public ModelAndView indexreact() {
-        return new ModelAndView("/indexreact");
-    }
-
 }
