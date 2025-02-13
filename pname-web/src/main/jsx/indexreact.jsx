@@ -16,7 +16,7 @@
 // ENTRY
 
 import React, {useState} from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import {ln2pn} from "./pname-api";
 
 function PnamePanel(props) {
@@ -52,8 +52,7 @@ function PnamePanel(props) {
 }
 
 window.onload = () => {
-    ReactDOM.render(
-        <PnamePanel/>,
-        document.querySelector("#pname-web")
+    ReactDOM.createRoot(document.querySelector("#pname-web")).render(
+        <PnamePanel/>
     );
 }

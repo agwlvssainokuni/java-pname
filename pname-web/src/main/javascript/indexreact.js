@@ -16,7 +16,7 @@
 // ENTRY
 
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { ln2pn } from "./pname-api";
 function PnamePanel(props) {
   let [data, setData] = useState("");
@@ -41,5 +41,5 @@ function PnamePanel(props) {
   }, e[1])).flatMap((btn, i) => i === 0 ? [btn] : [" ", btn])));
 }
 window.onload = () => {
-  ReactDOM.render(/*#__PURE__*/React.createElement(PnamePanel, null), document.querySelector("#pname-web"));
+  ReactDOM.createRoot(document.querySelector("#pname-web")).render(/*#__PURE__*/React.createElement(PnamePanel, null));
 };
