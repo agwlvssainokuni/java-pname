@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cherry.pname.web;
+package cherry.pname;
 
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.stereotype.Component;

@@ -16,6 +16,7 @@
 
 package cherry.pname.cmd;
 
+import cherry.pname.ExitCodeHolder;
 import cherry.pname.dict.DictLoader;
 import cherry.pname.processor.Processor;
 import cherry.pname.processor.ProcessorBuilder;
@@ -24,33 +25,33 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class CmdHandler implements ApplicationRunner, ExitCodeGenerator {
+public class CmdHandler implements ApplicationRunner {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CmdConfig cmdConfig;
     private final DictLoader dictLoader;
     private final ProcessorBuilder processorBuilder;
     private final Map<String, List<String>> dictMap;
-
-    private final AtomicInteger exitCode = new AtomicInteger(0);
-    private final CountDownLatch latch = new CountDownLatch(1);
+    private final ExitCodeHolder exitCodeHolder;
 
     public CmdHandler(
             CmdConfig cmdConfig,
             DictLoader dictLoader,
-            ProcessorBuilder processorBuilder
+            ProcessorBuilder processorBuilder,
+            ExitCodeHolder exitCodeHolder
     ) throws IOException {
         this.cmdConfig = cmdConfig;
         this.dictLoader = dictLoader;
@@ -62,10 +63,11 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator {
                 cmdConfig.getDelim(),
                 cmdConfig.getDict().getFilename().endsWith(".tsv")
         );
+        this.exitCodeHolder = exitCodeHolder;
     }
 
     @Override
-    public void run(ApplicationArguments args) throws IOException {
+    public void run(ApplicationArguments args) {
 
         var processor = processorBuilder.build(dictMap, cmdConfig.getType());
         try (var out = openOutputStream(args);
@@ -80,32 +82,14 @@ public class CmdHandler implements ApplicationRunner, ExitCodeGenerator {
                     }
                 }
             }
-            setExitCode(0);
+            exitCodeHolder.setExitCode(0);
         } catch (FileNotFoundException ex) {
-            setExitCode(1);
-            throw new IllegalArgumentException(ex);
-        } catch (IOException ex) {
-            setExitCode(-1);
-            throw new IllegalStateException(ex);
-        } catch (IllegalStateException ex) {
-            setExitCode(-1);
-            throw ex;
+            logger.error(ex.getMessage(), ex);
+            exitCodeHolder.setExitCode(1);
+        } catch (IOException | IllegalStateException ex) {
+            logger.error(ex.getMessage(), ex);
+            exitCodeHolder.setExitCode(-1);
         }
-    }
-
-    private void setExitCode(int code) {
-        exitCode.set(code);
-        latch.countDown();
-    }
-
-    @Override
-    public int getExitCode() {
-        try {
-            latch.await();
-        } catch (InterruptedException ex) {
-            // NOTHING TO DO
-        }
-        return exitCode.get();
     }
 
     private OutputStream openOutputStream(ApplicationArguments args) throws FileNotFoundException {
