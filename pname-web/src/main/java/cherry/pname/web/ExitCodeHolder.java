@@ -17,23 +17,20 @@
 package cherry.pname.web;
 
 import org.springframework.boot.ExitCodeGenerator;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@RestController
-public class ExitControllerImpl implements ExitController, ExitCodeGenerator {
+@Component
+public class ExitCodeHolder implements ExitCodeGenerator {
 
     private final AtomicInteger exitCode = new AtomicInteger(0);
     private final CountDownLatch latch = new CountDownLatch(1);
 
-    @Override
-    public boolean setExitCode(Integer code) {
-        Optional.ofNullable(code).ifPresent(exitCode::set);
+    public void setExitCode(int code) {
+        exitCode.set(code);
         latch.countDown();
-        return true;
     }
 
     @Override
