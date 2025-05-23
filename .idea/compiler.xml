@@ -3,4 +3,14 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="21" />
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="java-pname.pname-cmd" options="-parameters" />
+      <module name="java-pname.pname-cmd.main" options="-parameters" />
+      <module name="java-pname.pname-cmd.test" options="-parameters" />
+      <module name="java-pname.pname-web" options="-parameters" />
+      <module name="java-pname.pname-web.main" options="-parameters" />
+      <module name="java-pname.pname-web.test" options="-parameters" />
+    </option>
+  </component>
 </project>
