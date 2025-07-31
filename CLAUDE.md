@@ -40,6 +40,7 @@ Multi-module Gradle project with three subprojects:
 java-pname/
 ├── pname-main/          # Core conversion logic
 │   └── src/main/java/cherry/pname/main/
+│       └── tokenize/    # Word tokenization logic
 ├── pname-cli/           # CLI interface
 └── pname-web/           # Web API + React frontend
 ```
@@ -54,9 +55,19 @@ java-pname/
 ## Architecture Notes
 
 - Package structure follows `cherry.pname.*` convention
-- pname-main contains framework-agnostic conversion logic
+- pname-main contains framework-agnostic conversion logic with Spring components
 - pname-cli and pname-web depend on pname-main
 - Build configuration supports both executable applications (CLI/Web) and library (main)
+
+### Core Components
+
+**Tokenization (cherry.pname.main.tokenize)**:
+- `Tokenizer` interface: Common contract for word tokenization
+- `Token` record: Result format (word, physicalNames, isUnknown)
+- `GreedyTokenizer` (@Component("greedyTokenizer")): Forward longest-match algorithm
+- `OptimalTokenizer` (@Component("optimalTokenizer")): Dynamic programming with evaluation criteria
+  - Priority: unknown word length minimization → token count minimization → dictionary word maximization → unknown word count minimization
+- Thread-safe implementation with method-local memoization
 
 ## License
 
