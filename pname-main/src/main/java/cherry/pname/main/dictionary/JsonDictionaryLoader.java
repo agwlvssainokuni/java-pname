@@ -29,7 +29,7 @@ import java.util.Map;
  * JSON形式の辞書データを読み込むローダー
  * フォーマット: {"論理名1": ["物理名1", "物理名2"], "論理名2": ["物理名3"]}
  */
-@Component
+@Component("jsonDictionaryLoader")
 public class JsonDictionaryLoader implements DictionaryLoader {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -41,30 +41,31 @@ public class JsonDictionaryLoader implements DictionaryLoader {
         }
 
         try {
-            TypeReference<Map<String, List<String>>> typeRef = new TypeReference<>() {};
+            TypeReference<Map<String, List<String>>> typeRef = new TypeReference<>() {
+            };
             Map<String, List<String>> rawMap = objectMapper.readValue(source, typeRef);
-            
+
             // 空のキーや値をフィルタリング
             Map<String, List<String>> dictionary = new HashMap<>();
             for (Map.Entry<String, List<String>> entry : rawMap.entrySet()) {
                 String logicalName = entry.getKey();
                 List<String> physicalNames = entry.getValue();
-                
-                if (logicalName != null && !logicalName.trim().isEmpty() && 
-                    physicalNames != null && !physicalNames.isEmpty()) {
-                    
+
+                if (logicalName != null && !logicalName.trim().isEmpty() &&
+                        physicalNames != null && !physicalNames.isEmpty()) {
+
                     // 空でない物理名のみをフィルタリング
                     List<String> filteredPhysicalNames = physicalNames.stream()
                             .filter(name -> name != null && !name.trim().isEmpty())
                             .map(String::trim)
                             .toList();
-                    
+
                     if (!filteredPhysicalNames.isEmpty()) {
                         dictionary.put(logicalName.trim(), filteredPhysicalNames);
                     }
                 }
             }
-            
+
             return dictionary;
         } catch (Exception e) {
             throw new IOException("Failed to parse JSON dictionary: " + e.getMessage(), e);

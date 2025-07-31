@@ -31,7 +31,7 @@ import java.util.Map;
  * CSV形式の辞書データを読み込むローダー
  * フォーマット: 論理名,物理名1 物理名2 物理名3...
  */
-@Component
+@Component("csvDictionaryLoader")
 public class CsvDictionaryLoader implements DictionaryLoader {
 
     private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT;

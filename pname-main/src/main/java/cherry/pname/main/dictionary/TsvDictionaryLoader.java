@@ -31,7 +31,7 @@ import java.util.Map;
  * TSV形式の辞書データを読み込むローダー
  * フォーマット: 論理名\t物理名1 物理名2 物理名3...
  */
-@Component
+@Component("tsvDictionaryLoader")
 public class TsvDictionaryLoader implements DictionaryLoader {
 
     private static final CSVFormat TSV_FORMAT = CSVFormat.TDF;
