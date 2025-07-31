@@ -19,15 +19,15 @@ package cherry.pname.main.tokenize;
 import java.util.List;
 
 /**
- * 論理名を単語に分割するトークナイザーのインターフェース
+ * トークナイザーの結果を表すレコード
+ * 
+ * @param word 分割された単語（日本語）
+ * @param physicalNames 対応する物理名のリスト（英語）
+ * @param isUnknown 未知語フラグ（辞書にない単語の場合true）
  */
-public interface Tokenizer {
-    
-    /**
-     * 論理名をトークンのリストに分割する
-     * 
-     * @param logicalName 分割対象の論理名（日本語）
-     * @return 分割されたトークンのリスト（単語、物理名、未知語フラグを含む）
-     */
-    List<Token> tokenize(String logicalName);
+public record Token(
+    String word,
+    List<String> physicalNames,
+    boolean isUnknown
+) {
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 agwlvssainokuni
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cherry.pname.main.tokenize;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,33 +41,59 @@ class GreedyTokenizerTest extends TokenizerTestBase {
     @Test
     void testSimpleTokenization() {
         // 基本的な分割テスト
-        List<String> result = tokenizer.tokenize("顧客管理");
-        assertEquals(Arrays.asList("顧客管理"), result);
+        List<Token> result = tokenizer.tokenize("顧客管理");
+        assertEquals(1, result.size());
+        assertEquals("顧客管理", result.get(0).word());
+        assertEquals(Arrays.asList("customer_management", "crm"), result.get(0).physicalNames());
+        assertFalse(result.get(0).isUnknown());
         
         result = tokenizer.tokenize("顧客情報");
-        assertEquals(Arrays.asList("顧客", "情報"), result);
+        assertEquals(2, result.size());
+        assertEquals("顧客", result.get(0).word());
+        assertEquals(Arrays.asList("customer", "client"), result.get(0).physicalNames());
+        assertFalse(result.get(0).isUnknown());
+        assertEquals("情報", result.get(1).word());
+        assertEquals(Arrays.asList("information", "info"), result.get(1).physicalNames());
+        assertFalse(result.get(1).isUnknown());
     }
     
     @Test
     void testLongestMatchPriority() {
         // 最長マッチの優先度テスト
         // "顧客管理" vs "顧客" + "管理"
-        List<String> result = tokenizer.tokenize("顧客管理システム");
-        assertEquals(Arrays.asList("顧客管理", "システム"), result);
+        List<Token> result = tokenizer.tokenize("顧客管理システム");
+        assertEquals(2, result.size());
+        assertEquals("顧客管理", result.get(0).word());
+        assertEquals(Arrays.asList("customer_management", "crm"), result.get(0).physicalNames());
+        assertFalse(result.get(0).isUnknown());
+        assertEquals("システム", result.get(1).word());
+        assertEquals(Arrays.asList("system"), result.get(1).physicalNames());
+        assertFalse(result.get(1).isUnknown());
     }
     
     @Test
     void testUnknownWords() {
         // 未知語を含む場合のテスト
-        List<String> result = tokenizer.tokenize("顧客X情報");
-        assertEquals(Arrays.asList("顧客", "X", "情報"), result);
+        List<Token> result = tokenizer.tokenize("顧客X情報");
+        assertEquals(3, result.size());
+        assertEquals("顧客", result.get(0).word());
+        assertFalse(result.get(0).isUnknown());
+        assertEquals("X", result.get(1).word());
+        assertTrue(result.get(1).isUnknown());
+        assertTrue(result.get(1).physicalNames().isEmpty());
+        assertEquals("情報", result.get(2).word());
+        assertFalse(result.get(2).isUnknown());
     }
     
     @Test
     void testComplexTokenization() {
         // 複雑な分割テスト
-        List<String> result = tokenizer.tokenize("注文明細管理システム");
-        assertEquals(Arrays.asList("注文", "明細", "管理", "システム"), result);
+        List<Token> result = tokenizer.tokenize("注文明細管理システム");
+        assertEquals(4, result.size());
+        assertEquals("注文", result.get(0).word());
+        assertEquals("明細", result.get(1).word());
+        assertEquals("管理", result.get(2).word());
+        assertEquals("システム", result.get(3).word());
     }
     
     @Test
@@ -64,14 +106,30 @@ class GreedyTokenizerTest extends TokenizerTestBase {
     @Test
     void testAllUnknownWords() {
         // すべて未知語の場合
-        List<String> result = tokenizer.tokenize("ABC");
-        assertEquals(Arrays.asList("A", "B", "C"), result);
+        List<Token> result = tokenizer.tokenize("ABC");
+        assertEquals(3, result.size());
+        assertEquals("A", result.get(0).word());
+        assertTrue(result.get(0).isUnknown());
+        assertEquals("B", result.get(1).word());
+        assertTrue(result.get(1).isUnknown());
+        assertEquals("C", result.get(2).word());
+        assertTrue(result.get(2).isUnknown());
     }
     
     @Test
     void testMixedKnownUnknown() {
         // 既知語と未知語の混在
-        List<String> result = tokenizer.tokenize("顧客ABC情報");
-        assertEquals(Arrays.asList("顧客", "A", "B", "C", "情報"), result);
+        List<Token> result = tokenizer.tokenize("顧客ABC情報");
+        assertEquals(5, result.size());
+        assertEquals("顧客", result.get(0).word());
+        assertFalse(result.get(0).isUnknown());
+        assertEquals("A", result.get(1).word());
+        assertTrue(result.get(1).isUnknown());
+        assertEquals("B", result.get(2).word());
+        assertTrue(result.get(2).isUnknown());
+        assertEquals("C", result.get(3).word());
+        assertTrue(result.get(3).isUnknown());
+        assertEquals("情報", result.get(4).word());
+        assertFalse(result.get(4).isUnknown());
     }
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 agwlvssainokuni
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cherry.pname.main.tokenize;
 
 import java.util.ArrayList;
@@ -17,12 +33,12 @@ public class GreedyTokenizer implements Tokenizer {
     }
     
     @Override
-    public List<String> tokenize(String logicalName) {
+    public List<Token> tokenize(String logicalName) {
         if (logicalName == null || logicalName.isEmpty()) {
             return new ArrayList<>();
         }
         
-        List<String> tokens = new ArrayList<>();
+        List<Token> tokens = new ArrayList<>();
         int pos = 0;
         
         while (pos < logicalName.length()) {
@@ -39,11 +55,13 @@ public class GreedyTokenizer implements Tokenizer {
             }
             
             if (longestMatch != null) {
-                tokens.add(longestMatch);
+                List<String> physicalNames = dictionary.get(longestMatch);
+                tokens.add(new Token(longestMatch, physicalNames, false));
                 pos += longestLength;
             } else {
                 // マッチしない場合は1文字を未知語として扱う
-                tokens.add(logicalName.substring(pos, pos + 1));
+                String unknownWord = logicalName.substring(pos, pos + 1);
+                tokens.add(new Token(unknownWord, new ArrayList<>(), true));
                 pos++;
             }
         }

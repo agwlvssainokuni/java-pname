@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 agwlvssainokuni
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cherry.pname.main.tokenize;
 
 import java.util.ArrayList;
@@ -22,7 +38,7 @@ public class OptimalTokenizer implements Tokenizer {
     }
     
     @Override
-    public List<String> tokenize(String logicalName) {
+    public List<Token> tokenize(String logicalName) {
         if (logicalName == null || logicalName.isEmpty()) {
             return new ArrayList<>();
         }
@@ -57,8 +73,13 @@ public class OptimalTokenizer implements Tokenizer {
             // 残りの部分を再帰的に分割
             TokenizeResult remainingResult = findOptimalTokenization(text, end);
             if (remainingResult != null) {
-                List<String> tokens = new ArrayList<>();
-                tokens.add(word);
+                List<Token> tokens = new ArrayList<>();
+                if (isInDictionary) {
+                    List<String> physicalNames = dictionary.get(word);
+                    tokens.add(new Token(word, physicalNames, false));
+                } else {
+                    tokens.add(new Token(word, new ArrayList<>(), true));
+                }
                 tokens.addAll(remainingResult.tokens);
                 
                 int unknownWords = remainingResult.unknownWords + (isInDictionary ? 0 : 1);
@@ -104,12 +125,12 @@ public class OptimalTokenizer implements Tokenizer {
      * 分割結果を保持するクラス
      */
     private static class TokenizeResult {
-        final List<String> tokens;
+        final List<Token> tokens;
         final int unknownWords;
         final int unknownLength;
         final int totalTokens;
         
-        TokenizeResult(List<String> tokens, int unknownWords, int unknownLength, int totalTokens) {
+        TokenizeResult(List<Token> tokens, int unknownWords, int unknownLength, int totalTokens) {
             this.tokens = new ArrayList<>(tokens);
             this.unknownWords = unknownWords;
             this.unknownLength = unknownLength;
