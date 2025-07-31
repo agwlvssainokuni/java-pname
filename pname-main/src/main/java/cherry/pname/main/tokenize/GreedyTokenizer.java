@@ -16,6 +16,9 @@
 
 package cherry.pname.main.tokenize;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,7 @@ import java.util.Map;
  * 前方最長マッチ方式のトークナイザー
  * 左から右へ順次、辞書で最も長くマッチする単語を選択する
  */
+@Component("greedyTokenizer")
 public class GreedyTokenizer implements Tokenizer {
     
     private final Map<String, List<String>> dictionary;

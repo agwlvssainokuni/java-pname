@@ -16,6 +16,8 @@
 
 package cherry.pname.main.tokenize;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,10 +30,10 @@ import java.util.Map;
  * 1. 辞書にない単語（未知語）が少ない方が良い
  * 2. 分割数が少ない方が良い
  */
+@Component("optimalTokenizer")
 public class OptimalTokenizer implements Tokenizer {
     
     private final Map<String, List<String>> dictionary;
-    private Map<Integer, TokenizeResult> memoization;
     
     public OptimalTokenizer(Map<String, List<String>> dictionary) {
         this.dictionary = dictionary;
@@ -43,17 +45,17 @@ public class OptimalTokenizer implements Tokenizer {
             return new ArrayList<>();
         }
         
-        // メモ化用のマップを初期化
-        memoization = new HashMap<>();
+        // メモ化用のマップをメソッドローカル変数として初期化
+        Map<Integer, TokenizeResult> memoization = new HashMap<>();
         
-        TokenizeResult best = findOptimalTokenization(logicalName, 0);
+        TokenizeResult best = findOptimalTokenization(logicalName, 0, memoization);
         return best != null ? best.tokens : new ArrayList<>();
     }
     
     /**
      * 動的プログラミングとメモ化を使用して最適な分割を探す
      */
-    private TokenizeResult findOptimalTokenization(String text, int start) {
+    private TokenizeResult findOptimalTokenization(String text, int start, Map<Integer, TokenizeResult> memoization) {
         if (start >= text.length()) {
             return new TokenizeResult(new ArrayList<>(), 0, 0, 0);
         }
@@ -71,7 +73,7 @@ public class OptimalTokenizer implements Tokenizer {
             boolean isInDictionary = dictionary.containsKey(word);
             
             // 残りの部分を再帰的に分割
-            TokenizeResult remainingResult = findOptimalTokenization(text, end);
+            TokenizeResult remainingResult = findOptimalTokenization(text, end, memoization);
             if (remainingResult != null) {
                 List<Token> tokens = new ArrayList<>();
                 if (isInDictionary) {
