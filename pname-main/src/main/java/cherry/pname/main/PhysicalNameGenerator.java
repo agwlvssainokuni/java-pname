@@ -108,23 +108,29 @@ public class PhysicalNameGenerator {
     }
 
     /**
-     * 前方最長マッチ方式で論理名をトークン化する
+     * 指定されたトークナイザーで論理名をトークン化する
      *
+     * @param type        トークナイザーの種類
      * @param logicalName 論理名（日本語）
      * @return トークンのリスト
      */
-    public List<Token> tokenizeGreedy(String logicalName) {
-        return greedyTokenizer.tokenize(dictionary, logicalName);
+    public List<Token> tokenize(TokenizerType type, String logicalName) {
+        Tokenizer tokenizer = getTokenizer(type);
+        return tokenizer.tokenize(dictionary, logicalName);
     }
 
     /**
-     * 最適分割選択方式で論理名をトークン化する
+     * 種類に応じたトークナイザーを取得する
      *
-     * @param logicalName 論理名（日本語）
-     * @return トークンのリスト
+     * @param type トークナイザーの種類
+     * @return 対応するトークナイザー
+     * @throws IllegalArgumentException サポートされていない種類の場合
      */
-    public List<Token> tokenizeOptimal(String logicalName) {
-        return optimalTokenizer.tokenize(dictionary, logicalName);
+    private Tokenizer getTokenizer(TokenizerType type) {
+        return switch (type) {
+            case GREEDY -> greedyTokenizer;
+            case OPTIMAL -> optimalTokenizer;
+        };
     }
 
     /**

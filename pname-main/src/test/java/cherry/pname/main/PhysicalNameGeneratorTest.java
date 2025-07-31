@@ -64,7 +64,7 @@ class PhysicalNameGeneratorTest {
         assertTrue(generator.hasDictionary());
         assertEquals(3, generator.getDictionarySize());
 
-        List<Token> tokens = generator.tokenizeGreedy("顧客注文");
+        List<Token> tokens = generator.tokenize(TokenizerType.GREEDY, "顧客注文");
         assertEquals(2, tokens.size());
         assertEquals("顧客", tokens.get(0).word());
         assertEquals("注文", tokens.get(1).word());
@@ -83,7 +83,7 @@ class PhysicalNameGeneratorTest {
         assertTrue(generator.hasDictionary());
         assertEquals(3, generator.getDictionarySize());
 
-        List<Token> tokens = generator.tokenizeOptimal("顧客商品");
+        List<Token> tokens = generator.tokenize(TokenizerType.OPTIMAL, "顧客商品");
         assertEquals(2, tokens.size());
         assertEquals("顧客", tokens.get(0).word());
         assertEquals("商品", tokens.get(1).word());
@@ -104,7 +104,7 @@ class PhysicalNameGeneratorTest {
         assertTrue(generator.hasDictionary());
         assertEquals(3, generator.getDictionarySize());
 
-        List<Token> tokens = generator.tokenizeGreedy("注文商品");
+        List<Token> tokens = generator.tokenize(TokenizerType.GREEDY, "注文商品");
         assertEquals(2, tokens.size());
         assertEquals("注文", tokens.get(0).word());
         assertEquals("商品", tokens.get(1).word());
@@ -124,7 +124,7 @@ class PhysicalNameGeneratorTest {
         assertTrue(generator.hasDictionary());
         assertEquals(3, generator.getDictionarySize());
 
-        List<Token> tokens = generator.tokenizeGreedy("管理システム");
+        List<Token> tokens = generator.tokenize(TokenizerType.GREEDY, "管理システム");
         assertEquals(2, tokens.size());
         assertEquals("管理", tokens.get(0).word());
         assertEquals("システム", tokens.get(1).word());
@@ -143,7 +143,7 @@ class PhysicalNameGeneratorTest {
         assertTrue(generator.hasDictionary());
         assertEquals(2, generator.getDictionarySize());
 
-        List<Token> tokens = generator.tokenizeOptimal("情報処理");
+        List<Token> tokens = generator.tokenize(TokenizerType.OPTIMAL, "情報処理");
         assertEquals(2, tokens.size());
         assertEquals("情報", tokens.get(0).word());
         assertEquals("処理", tokens.get(1).word());
@@ -162,7 +162,7 @@ class PhysicalNameGeneratorTest {
         assertTrue(generator.hasDictionary());
         assertEquals(2, generator.getDictionarySize());
 
-        List<Token> tokens = generator.tokenizeGreedy("売上明細");
+        List<Token> tokens = generator.tokenize(TokenizerType.GREEDY, "売上明細");
         assertEquals(2, tokens.size());
         assertEquals("売上", tokens.get(0).word());
         assertEquals("明細", tokens.get(1).word());
@@ -183,7 +183,7 @@ class PhysicalNameGeneratorTest {
         assertTrue(generator.hasDictionary());
         assertEquals(2, generator.getDictionarySize());
 
-        List<Token> tokens = generator.tokenizeOptimal("年月日金額");
+        List<Token> tokens = generator.tokenize(TokenizerType.OPTIMAL, "年月日金額");
         assertEquals(2, tokens.size());
         assertEquals("年月日", tokens.get(0).word());
         assertEquals("金額", tokens.get(1).word());
@@ -198,7 +198,7 @@ class PhysicalNameGeneratorTest {
 
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
-        List<Token> greedyTokens = generator.tokenizeGreedy("顧客XY管理");
+        List<Token> greedyTokens = generator.tokenize(TokenizerType.GREEDY, "顧客XY管理");
         assertEquals(3, greedyTokens.size());
         assertEquals("顧客", greedyTokens.get(0).word());
         assertFalse(greedyTokens.get(0).isUnknown());
@@ -207,7 +207,7 @@ class PhysicalNameGeneratorTest {
         assertEquals("管理", greedyTokens.get(2).word());
         assertFalse(greedyTokens.get(2).isUnknown());
 
-        List<Token> optimalTokens = generator.tokenizeOptimal("顧客XY管理");
+        List<Token> optimalTokens = generator.tokenize(TokenizerType.OPTIMAL, "顧客XY管理");
         assertEquals(3, optimalTokens.size());
         assertEquals("顧客", optimalTokens.get(0).word());
         assertEquals("XY", optimalTokens.get(1).word());
@@ -219,7 +219,7 @@ class PhysicalNameGeneratorTest {
         assertFalse(generator.hasDictionary());
         assertEquals(0, generator.getDictionarySize());
 
-        List<Token> tokens = generator.tokenizeGreedy("テスト");
+        List<Token> tokens = generator.tokenize(TokenizerType.GREEDY, "テスト");
         assertEquals(1, tokens.size());
         assertEquals("テスト", tokens.get(0).word());
         assertTrue(tokens.get(0).isUnknown());
@@ -235,7 +235,7 @@ class PhysicalNameGeneratorTest {
 
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
-        List<Token> tokens = generator.tokenizeGreedy("顧客管理システム");
+        List<Token> tokens = generator.tokenize(TokenizerType.GREEDY, "顧客管理システム");
         assertEquals(3, tokens.size());
 
         // 物理名の確認
@@ -266,7 +266,7 @@ class PhysicalNameGeneratorTest {
         assertEquals(2, generator.getDictionarySize());
 
         // 古い辞書の内容は使えない
-        List<Token> tokens = generator.tokenizeGreedy("テスト");
+        List<Token> tokens = generator.tokenize(TokenizerType.GREEDY, "テスト");
         assertEquals(1, tokens.size());
         assertTrue(tokens.get(0).isUnknown());
     }
