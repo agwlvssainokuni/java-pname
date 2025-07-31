@@ -27,21 +27,6 @@ replay_pid*
 .gradle/
 build/
 
-# IDE
-.idea/
-*.iml
-*.ipr
-*.iws
-
-# Eclipse
-.project
-.classpath
-.settings/
-bin/
-
-# VSCode
-.vscode/
-
 # OS
 .DS_Store
 Thumbs.db
