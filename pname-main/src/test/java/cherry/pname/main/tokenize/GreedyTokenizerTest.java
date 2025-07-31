@@ -29,15 +29,15 @@ import static org.junit.jupiter.api.Assertions.*;
  * GreedyTokenizerのテストクラス
  */
 class GreedyTokenizerTest extends TokenizerTestBase {
-    
+
     private GreedyTokenizer tokenizer;
-    
+
     @BeforeEach
     void setUp() {
         Map<String, List<String>> dictionary = createTestDictionary();
         tokenizer = new GreedyTokenizer(dictionary);
     }
-    
+
     @Test
     void testSimpleTokenization() {
         // 基本的な分割テスト
@@ -46,7 +46,7 @@ class GreedyTokenizerTest extends TokenizerTestBase {
         assertEquals("顧客管理", result.get(0).word());
         assertEquals(Arrays.asList("customer_management", "crm"), result.get(0).physicalNames());
         assertFalse(result.get(0).isUnknown());
-        
+
         result = tokenizer.tokenize("顧客情報");
         assertEquals(2, result.size());
         assertEquals("顧客", result.get(0).word());
@@ -56,7 +56,7 @@ class GreedyTokenizerTest extends TokenizerTestBase {
         assertEquals(Arrays.asList("information", "info"), result.get(1).physicalNames());
         assertFalse(result.get(1).isUnknown());
     }
-    
+
     @Test
     void testLongestMatchPriority() {
         // 最長マッチの優先度テスト
@@ -70,7 +70,7 @@ class GreedyTokenizerTest extends TokenizerTestBase {
         assertEquals(Arrays.asList("system"), result.get(1).physicalNames());
         assertFalse(result.get(1).isUnknown());
     }
-    
+
     @Test
     void testUnknownWords() {
         // 未知語を含む場合のテスト
@@ -84,7 +84,7 @@ class GreedyTokenizerTest extends TokenizerTestBase {
         assertEquals("情報", result.get(2).word());
         assertFalse(result.get(2).isUnknown());
     }
-    
+
     @Test
     void testComplexTokenization() {
         // 複雑な分割テスト
@@ -95,14 +95,14 @@ class GreedyTokenizerTest extends TokenizerTestBase {
         assertEquals("管理", result.get(2).word());
         assertEquals("システム", result.get(3).word());
     }
-    
+
     @Test
     void testEmptyAndNullInput() {
         // 空文字列とnullのテスト
         assertTrue(tokenizer.tokenize("").isEmpty());
         assertTrue(tokenizer.tokenize(null).isEmpty());
     }
-    
+
     @Test
     void testAllUnknownWords() {
         // すべて未知語の場合（連続する未知語は一つにまとめられる）
@@ -111,7 +111,7 @@ class GreedyTokenizerTest extends TokenizerTestBase {
         assertEquals("ABC", result.get(0).word());
         assertTrue(result.get(0).isUnknown());
     }
-    
+
     @Test
     void testMixedKnownUnknown() {
         // 既知語と未知語の混在（連続する未知語は一つにまとめられる）

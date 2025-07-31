@@ -22,10 +22,10 @@ import java.util.List;
  * 論理名を単語に分割するトークナイザーのインターフェース
  */
 public interface Tokenizer {
-    
+
     /**
      * 論理名をトークンのリストに分割する
-     * 
+     *
      * @param logicalName 分割対象の論理名（日本語）
      * @return 分割されたトークンのリスト（単語、物理名、未知語フラグを含む）
      */

@@ -29,15 +29,15 @@ import static org.junit.jupiter.api.Assertions.*;
  * OptimalTokenizerのテストクラス
  */
 class OptimalTokenizerTest extends TokenizerTestBase {
-    
+
     private OptimalTokenizer tokenizer;
-    
+
     @BeforeEach
     void setUp() {
         Map<String, List<String>> dictionary = createTestDictionary();
         tokenizer = new OptimalTokenizer(dictionary);
     }
-    
+
     @Test
     void testSimpleTokenization() {
         // 基本的な分割テスト
@@ -46,7 +46,7 @@ class OptimalTokenizerTest extends TokenizerTestBase {
         assertEquals("顧客管理", result.get(0).word());
         assertEquals(Arrays.asList("customer_management", "crm"), result.get(0).physicalNames());
         assertFalse(result.get(0).isUnknown());
-        
+
         result = tokenizer.tokenize("顧客情報");
         assertEquals(2, result.size());
         assertEquals("顧客", result.get(0).word());
@@ -56,7 +56,7 @@ class OptimalTokenizerTest extends TokenizerTestBase {
         assertEquals(Arrays.asList("information", "info"), result.get(1).physicalNames());
         assertFalse(result.get(1).isUnknown());
     }
-    
+
     @Test
     void testOptimalChoice() {
         // 最適選択のテスト
@@ -67,7 +67,7 @@ class OptimalTokenizerTest extends TokenizerTestBase {
         assertEquals("顧客管理", result.get(0).word());
         assertFalse(result.get(0).isUnknown());
     }
-    
+
     @Test
     void testUnknownWordMinimization() {
         // 未知語最小化のテスト
@@ -84,7 +84,7 @@ class OptimalTokenizerTest extends TokenizerTestBase {
         assertEquals("管理", result.get(2).word());
         assertFalse(result.get(2).isUnknown());
     }
-    
+
     @Test
     void testComplexOptimization() {
         // 複雑な最適化テスト
@@ -96,14 +96,14 @@ class OptimalTokenizerTest extends TokenizerTestBase {
         assertEquals("システム", result.get(1).word());
         assertFalse(result.get(1).isUnknown());
     }
-    
+
     @Test
     void testEmptyAndNullInput() {
         // 空文字列とnullのテスト
         assertTrue(tokenizer.tokenize("").isEmpty());
         assertTrue(tokenizer.tokenize(null).isEmpty());
     }
-    
+
     @Test
     void testAllUnknownWords() {
         // すべて未知語の場合（連続する未知語は一つにまとめられる）
@@ -112,33 +112,33 @@ class OptimalTokenizerTest extends TokenizerTestBase {
         assertEquals("XYZ", result.get(0).word());
         assertTrue(result.get(0).isUnknown());
     }
-    
+
     @Test
     void testCompareWithGreedy() {
         // GreedyTokenizerとの比較テスト
         GreedyTokenizer greedyTokenizer = new GreedyTokenizer(createTestDictionary());
-        
+
         String testInput = "注文管理システム";
-        
+
         List<Token> greedyResult = greedyTokenizer.tokenize(testInput);
         List<Token> optimalResult = tokenizer.tokenize(testInput);
-        
+
         // どちらも同じ結果になるはず（この場合は最適解が一意）
         assertEquals(2, greedyResult.size());
         assertEquals("注文管理", greedyResult.get(0).word());
         assertEquals("システム", greedyResult.get(1).word());
-        
+
         assertEquals(2, optimalResult.size());
         assertEquals("注文管理", optimalResult.get(0).word());
         assertEquals("システム", optimalResult.get(1).word());
     }
-    
+
     @Test
     void testDifferenceFromGreedy() {
         // GreedyとOptimalで結果が異なる可能性があるケース
         // より複雑な辞書構造が必要だが、現在の辞書でもテスト可能
         String testInput = "売上明細";
-        
+
         List<Token> result = tokenizer.tokenize(testInput);
         assertEquals(2, result.size());
         assertEquals("売上", result.get(0).word());

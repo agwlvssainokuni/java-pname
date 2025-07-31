@@ -16,7 +16,6 @@
 
 package cherry.pname.main.tokenize;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -29,26 +28,26 @@ import java.util.Map;
  */
 @Component("greedyTokenizer")
 public class GreedyTokenizer implements Tokenizer {
-    
+
     private final Map<String, List<String>> dictionary;
-    
+
     public GreedyTokenizer(Map<String, List<String>> dictionary) {
         this.dictionary = dictionary;
     }
-    
+
     @Override
     public List<Token> tokenize(String logicalName) {
         if (logicalName == null || logicalName.isEmpty()) {
             return new ArrayList<>();
         }
-        
+
         List<Token> tokens = new ArrayList<>();
         int pos = 0;
-        
+
         while (pos < logicalName.length()) {
             String longestMatch = null;
             int longestLength = 0;
-            
+
             // 現在位置から始まる最長の辞書マッチを探す
             for (int end = pos + 1; end <= logicalName.length(); end++) {
                 String candidate = logicalName.substring(pos, end);
@@ -57,7 +56,7 @@ public class GreedyTokenizer implements Tokenizer {
                     longestLength = candidate.length();
                 }
             }
-            
+
             if (longestMatch != null) {
                 List<String> physicalNames = dictionary.get(longestMatch);
                 tokens.add(new Token(longestMatch, physicalNames, false));
@@ -80,12 +79,12 @@ public class GreedyTokenizer implements Tokenizer {
                     }
                     pos++;
                 }
-                
+
                 String unknownWord = logicalName.substring(unknownStart, pos);
                 tokens.add(new Token(unknownWord, new ArrayList<>(), true));
             }
         }
-        
+
         return tokens;
     }
 }

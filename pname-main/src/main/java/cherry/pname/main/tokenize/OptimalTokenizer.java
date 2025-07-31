@@ -32,27 +32,27 @@ import java.util.Map;
  */
 @Component("optimalTokenizer")
 public class OptimalTokenizer implements Tokenizer {
-    
+
     private final Map<String, List<String>> dictionary;
-    
+
     public OptimalTokenizer(Map<String, List<String>> dictionary) {
         this.dictionary = dictionary;
     }
-    
+
     @Override
     public List<Token> tokenize(String logicalName) {
         if (logicalName == null || logicalName.isEmpty()) {
             return new ArrayList<>();
         }
-        
+
         // メモ化用のマップをメソッドローカル変数として初期化
         Map<Integer, TokenizeResult> memoization = new HashMap<>();
-        
+
         TokenizeResult best = findOptimalTokenization(logicalName, 0, memoization);
         List<Token> tokens = best != null ? best.tokens : new ArrayList<>();
         return mergeConsecutiveUnknownTokens(tokens);
     }
-    
+
     /**
      * 連続する未知語トークンを一つにマージする
      */
@@ -60,31 +60,31 @@ public class OptimalTokenizer implements Tokenizer {
         if (tokens.isEmpty()) {
             return tokens;
         }
-        
+
         List<Token> merged = new ArrayList<>();
         StringBuilder unknownBuffer = new StringBuilder();
-        
+
         for (Token token : tokens) {
             if (token.isUnknown()) {
                 unknownBuffer.append(token.word());
             } else {
                 // 既知語が来たら、バッファの未知語をフラッシュ
-                if (unknownBuffer.length() > 0) {
+                if (!unknownBuffer.isEmpty()) {
                     merged.add(new Token(unknownBuffer.toString(), new ArrayList<>(), true));
                     unknownBuffer.setLength(0);
                 }
                 merged.add(token);
             }
         }
-        
+
         // 最後に未知語が残っている場合
-        if (unknownBuffer.length() > 0) {
+        if (!unknownBuffer.isEmpty()) {
             merged.add(new Token(unknownBuffer.toString(), new ArrayList<>(), true));
         }
-        
+
         return merged;
     }
-    
+
     /**
      * 動的プログラミングとメモ化を使用して最適な分割を探す
      */
@@ -92,19 +92,19 @@ public class OptimalTokenizer implements Tokenizer {
         if (start >= text.length()) {
             return new TokenizeResult(new ArrayList<>(), 0, 0, 0);
         }
-        
+
         // メモ化チェック
         if (memoization.containsKey(start)) {
             return memoization.get(start);
         }
-        
+
         TokenizeResult bestResult = null;
-        
+
         // 現在位置から始まるすべての可能な分割を試す
         for (int end = start + 1; end <= text.length(); end++) {
             String word = text.substring(start, end);
             boolean isInDictionary = dictionary.containsKey(word);
-            
+
             // 残りの部分を再帰的に分割
             TokenizeResult remainingResult = findOptimalTokenization(text, end, memoization);
             if (remainingResult != null) {
@@ -116,24 +116,24 @@ public class OptimalTokenizer implements Tokenizer {
                     tokens.add(new Token(word, new ArrayList<>(), true));
                 }
                 tokens.addAll(remainingResult.tokens);
-                
+
                 int unknownWords = remainingResult.unknownWords + (isInDictionary ? 0 : 1);
                 int unknownLength = remainingResult.unknownLength + (isInDictionary ? 0 : word.length());
                 int totalTokens = remainingResult.totalTokens + 1;
-                
+
                 TokenizeResult currentResult = new TokenizeResult(tokens, unknownWords, unknownLength, totalTokens);
-                
+
                 if (bestResult == null || isBetter(currentResult, bestResult)) {
                     bestResult = currentResult;
                 }
             }
         }
-        
+
         // メモ化
         memoization.put(start, bestResult);
         return bestResult;
     }
-    
+
     /**
      * 分割結果の評価：優先順位に従って評価する
      */
@@ -155,27 +155,18 @@ public class OptimalTokenizer implements Tokenizer {
         // 4. 未知語数で比較（少ない方が良い）
         return current.unknownWords < best.unknownWords;
     }
-    
+
     /**
-     * 分割結果を保持するクラス
+     * 分割結果を保持するrecord
      */
-    private static class TokenizeResult {
-        final List<Token> tokens;
-        final int unknownWords;
-        final int unknownLength;
-        final int totalTokens;
-        
-        TokenizeResult(List<Token> tokens, int unknownWords, int unknownLength, int totalTokens) {
-            this.tokens = new ArrayList<>(tokens);
-            this.unknownWords = unknownWords;
-            this.unknownLength = unknownLength;
-            this.totalTokens = totalTokens;
-        }
-        
-        @Override
-        public String toString() {
-            return String.format("TokenizeResult{tokens=%s, unknownWords=%d, unknownLength=%d, totalTokens=%d}", 
-                               tokens, unknownWords, unknownLength, totalTokens);
+    private record TokenizeResult(
+            List<Token> tokens,
+            int unknownWords,
+            int unknownLength,
+            int totalTokens
+    ) {
+        TokenizeResult {
+            tokens = new ArrayList<>(tokens);
         }
     }
 }

@@ -20,14 +20,14 @@ import java.util.List;
 
 /**
  * トークナイザーの結果を表すレコード
- * 
- * @param word 分割された単語（日本語）
+ *
+ * @param word          分割された単語（日本語）
  * @param physicalNames 対応する物理名のリスト（英語）
- * @param isUnknown 未知語フラグ（辞書にない単語の場合true）
+ * @param isUnknown     未知語フラグ（辞書にない単語の場合true）
  */
 public record Token(
-    String word,
-    List<String> physicalNames,
-    boolean isUnknown
+        String word,
+        List<String> physicalNames,
+        boolean isUnknown
 ) {
 }
