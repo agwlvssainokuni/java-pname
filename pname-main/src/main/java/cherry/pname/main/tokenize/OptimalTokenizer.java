@@ -33,14 +33,8 @@ import java.util.Map;
 @Component("optimalTokenizer")
 public class OptimalTokenizer implements Tokenizer {
 
-    private final Map<String, List<String>> dictionary;
-
-    public OptimalTokenizer(Map<String, List<String>> dictionary) {
-        this.dictionary = dictionary;
-    }
-
     @Override
-    public List<Token> tokenize(String logicalName) {
+    public List<Token> tokenize(Map<String, List<String>> dictionary, String logicalName) {
         if (logicalName == null || logicalName.isEmpty()) {
             return new ArrayList<>();
         }
@@ -48,7 +42,7 @@ public class OptimalTokenizer implements Tokenizer {
         // メモ化用のマップをメソッドローカル変数として初期化
         Map<Integer, TokenizeResult> memoization = new HashMap<>();
 
-        TokenizeResult best = findOptimalTokenization(logicalName, 0, memoization);
+        TokenizeResult best = findOptimalTokenization(dictionary, logicalName, 0, memoization);
         List<Token> tokens = best != null ? best.tokens : new ArrayList<>();
         return mergeConsecutiveUnknownTokens(tokens);
     }
@@ -88,9 +82,9 @@ public class OptimalTokenizer implements Tokenizer {
     /**
      * 動的プログラミングとメモ化を使用して最適な分割を探す
      */
-    private TokenizeResult findOptimalTokenization(String text, int start, Map<Integer, TokenizeResult> memoization) {
+    private TokenizeResult findOptimalTokenization(Map<String, List<String>> dictionary, String text, int start, Map<Integer, TokenizeResult> memoization) {
         if (start >= text.length()) {
-            return new TokenizeResult(new ArrayList<>(), 0, 0, 0);
+            return new TokenizeResult(List.of(), 0, 0, 0);
         }
 
         // メモ化チェック
@@ -106,7 +100,7 @@ public class OptimalTokenizer implements Tokenizer {
             boolean isInDictionary = dictionary.containsKey(word);
 
             // 残りの部分を再帰的に分割
-            TokenizeResult remainingResult = findOptimalTokenization(text, end, memoization);
+            TokenizeResult remainingResult = findOptimalTokenization(dictionary, text, end, memoization);
             if (remainingResult != null) {
                 List<Token> tokens = new ArrayList<>();
                 if (isInDictionary) {
@@ -121,7 +115,7 @@ public class OptimalTokenizer implements Tokenizer {
                 int unknownLength = remainingResult.unknownLength + (isInDictionary ? 0 : word.length());
                 int totalTokens = remainingResult.totalTokens + 1;
 
-                TokenizeResult currentResult = new TokenizeResult(tokens, unknownWords, unknownLength, totalTokens);
+                TokenizeResult currentResult = new TokenizeResult(new ArrayList<>(tokens), unknownWords, unknownLength, totalTokens);
 
                 if (bestResult == null || isBetter(currentResult, bestResult)) {
                     bestResult = currentResult;
@@ -165,8 +159,5 @@ public class OptimalTokenizer implements Tokenizer {
             int unknownLength,
             int totalTokens
     ) {
-        TokenizeResult {
-            tokens = new ArrayList<>(tokens);
-        }
     }
 }

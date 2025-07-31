@@ -17,6 +17,7 @@
 package cherry.pname.main.tokenize;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 論理名を単語に分割するトークナイザーのインターフェース
@@ -26,8 +27,9 @@ public interface Tokenizer {
     /**
      * 論理名をトークンのリストに分割する
      *
+     * @param dictionary 単語辞書（日本語→英語物理名のマップ）
      * @param logicalName 分割対象の論理名（日本語）
      * @return 分割されたトークンのリスト（単語、物理名、未知語フラグを含む）
      */
-    List<Token> tokenize(String logicalName);
+    List<Token> tokenize(Map<String, List<String>> dictionary, String logicalName);
 }

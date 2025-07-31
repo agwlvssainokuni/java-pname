@@ -29,14 +29,8 @@ import java.util.Map;
 @Component("greedyTokenizer")
 public class GreedyTokenizer implements Tokenizer {
 
-    private final Map<String, List<String>> dictionary;
-
-    public GreedyTokenizer(Map<String, List<String>> dictionary) {
-        this.dictionary = dictionary;
-    }
-
     @Override
-    public List<Token> tokenize(String logicalName) {
+    public List<Token> tokenize(Map<String, List<String>> dictionary, String logicalName) {
         if (logicalName == null || logicalName.isEmpty()) {
             return new ArrayList<>();
         }

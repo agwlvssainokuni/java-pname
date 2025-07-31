@@ -30,23 +30,24 @@ import static org.junit.jupiter.api.Assertions.*;
 class OptimalTokenizerTest extends TokenizerTestBase {
 
     private OptimalTokenizer tokenizer;
+    private Map<String, List<String>> dictionary;
 
     @BeforeEach
     void setUp() {
-        Map<String, List<String>> dictionary = createTestDictionary();
-        tokenizer = new OptimalTokenizer(dictionary);
+        tokenizer = new OptimalTokenizer();
+        dictionary = createTestDictionary();
     }
 
     @Test
     void testSimpleTokenization() {
         // 基本的な分割テスト
-        List<Token> result = tokenizer.tokenize("顧客管理");
+        List<Token> result = tokenizer.tokenize(dictionary, "顧客管理");
         assertEquals(1, result.size());
         assertEquals("顧客管理", result.get(0).word());
         assertEquals(List.of("customer_management", "crm"), result.get(0).physicalNames());
         assertFalse(result.get(0).isUnknown());
 
-        result = tokenizer.tokenize("顧客情報");
+        result = tokenizer.tokenize(dictionary, "顧客情報");
         assertEquals(2, result.size());
         assertEquals("顧客", result.get(0).word());
         assertEquals(List.of("customer", "client"), result.get(0).physicalNames());
@@ -61,7 +62,7 @@ class OptimalTokenizerTest extends TokenizerTestBase {
         // 最適選択のテスト
         // "顧客管理" (1語、未知語0) vs "顧客" + "管理" (2語、未知語0)
         // → 分割数が少ない "顧客管理" が選ばれる
-        List<Token> result = tokenizer.tokenize("顧客管理");
+        List<Token> result = tokenizer.tokenize(dictionary, "顧客管理");
         assertEquals(1, result.size());
         assertEquals("顧客管理", result.get(0).word());
         assertFalse(result.get(0).isUnknown());
@@ -71,7 +72,7 @@ class OptimalTokenizerTest extends TokenizerTestBase {
     void testUnknownWordMinimization() {
         // 未知語最小化のテスト
         // 辞書にない文字が含まれている場合
-        List<Token> result = tokenizer.tokenize("顧客Y管理");
+        List<Token> result = tokenizer.tokenize(dictionary, "顧客Y管理");
         // "顧客" + "Y" + "管理" (3語、未知語1) vs "顧客Y管理" (1語、未知語1)
         // 同じ未知語数の場合、辞書にある単語を多く使う方が良い
         // → 辞書語数2個 vs 辞書語数0個で前者が優位
@@ -87,7 +88,7 @@ class OptimalTokenizerTest extends TokenizerTestBase {
     @Test
     void testComplexOptimization() {
         // 複雑な最適化テスト
-        List<Token> result = tokenizer.tokenize("商品管理システム");
+        List<Token> result = tokenizer.tokenize(dictionary, "商品管理システム");
         // "商品管理" + "システム" (2語、未知語0) が最適
         assertEquals(2, result.size());
         assertEquals("商品管理", result.get(0).word());
@@ -99,14 +100,14 @@ class OptimalTokenizerTest extends TokenizerTestBase {
     @Test
     void testEmptyAndNullInput() {
         // 空文字列とnullのテスト
-        assertTrue(tokenizer.tokenize("").isEmpty());
-        assertTrue(tokenizer.tokenize(null).isEmpty());
+        assertTrue(tokenizer.tokenize(dictionary, "").isEmpty());
+        assertTrue(tokenizer.tokenize(dictionary, null).isEmpty());
     }
 
     @Test
     void testAllUnknownWords() {
         // すべて未知語の場合（連続する未知語は一つにまとめられる）
-        List<Token> result = tokenizer.tokenize("XYZ");
+        List<Token> result = tokenizer.tokenize(dictionary, "XYZ");
         assertEquals(1, result.size());
         assertEquals("XYZ", result.get(0).word());
         assertTrue(result.get(0).isUnknown());
@@ -115,12 +116,12 @@ class OptimalTokenizerTest extends TokenizerTestBase {
     @Test
     void testCompareWithGreedy() {
         // GreedyTokenizerとの比較テスト
-        GreedyTokenizer greedyTokenizer = new GreedyTokenizer(createTestDictionary());
+        GreedyTokenizer greedyTokenizer = new GreedyTokenizer();
 
         String testInput = "注文管理システム";
 
-        List<Token> greedyResult = greedyTokenizer.tokenize(testInput);
-        List<Token> optimalResult = tokenizer.tokenize(testInput);
+        List<Token> greedyResult = greedyTokenizer.tokenize(dictionary, testInput);
+        List<Token> optimalResult = tokenizer.tokenize(dictionary, testInput);
 
         // どちらも同じ結果になるはず（この場合は最適解が一意）
         assertEquals(2, greedyResult.size());
@@ -138,7 +139,7 @@ class OptimalTokenizerTest extends TokenizerTestBase {
         // より複雑な辞書構造が必要だが、現在の辞書でもテスト可能
         String testInput = "売上明細";
 
-        List<Token> result = tokenizer.tokenize(testInput);
+        List<Token> result = tokenizer.tokenize(dictionary, testInput);
         assertEquals(2, result.size());
         assertEquals("売上", result.get(0).word());
         assertEquals("明細", result.get(1).word());
