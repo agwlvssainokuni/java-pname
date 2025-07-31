@@ -70,7 +70,7 @@ public class OptimalTokenizer implements Tokenizer {
             } else {
                 // 既知語が来たら、バッファの未知語をフラッシュ
                 if (!unknownBuffer.isEmpty()) {
-                    merged.add(new Token(unknownBuffer.toString(), new ArrayList<>(), true));
+                    merged.add(new Token(unknownBuffer.toString(), List.of(), true));
                     unknownBuffer.setLength(0);
                 }
                 merged.add(token);
@@ -79,7 +79,7 @@ public class OptimalTokenizer implements Tokenizer {
 
         // 最後に未知語が残っている場合
         if (!unknownBuffer.isEmpty()) {
-            merged.add(new Token(unknownBuffer.toString(), new ArrayList<>(), true));
+            merged.add(new Token(unknownBuffer.toString(), List.of(), true));
         }
 
         return merged;
@@ -113,7 +113,7 @@ public class OptimalTokenizer implements Tokenizer {
                     List<String> physicalNames = dictionary.get(word);
                     tokens.add(new Token(word, physicalNames, false));
                 } else {
-                    tokens.add(new Token(word, new ArrayList<>(), true));
+                    tokens.add(new Token(word, List.of(), true));
                 }
                 tokens.addAll(remainingResult.tokens);
 

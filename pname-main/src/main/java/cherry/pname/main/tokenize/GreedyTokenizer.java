@@ -81,7 +81,7 @@ public class GreedyTokenizer implements Tokenizer {
                 }
 
                 String unknownWord = logicalName.substring(unknownStart, pos);
-                tokens.add(new Token(unknownWord, new ArrayList<>(), true));
+                tokens.add(new Token(unknownWord, List.of(), true));
             }
         }
 

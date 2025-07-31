@@ -19,7 +19,6 @@ package cherry.pname.main.tokenize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,16 +43,16 @@ class GreedyTokenizerTest extends TokenizerTestBase {
         List<Token> result = tokenizer.tokenize("顧客管理");
         assertEquals(1, result.size());
         assertEquals("顧客管理", result.get(0).word());
-        assertEquals(Arrays.asList("customer_management", "crm"), result.get(0).physicalNames());
+        assertEquals(List.of("customer_management", "crm"), result.get(0).physicalNames());
         assertFalse(result.get(0).isUnknown());
 
         result = tokenizer.tokenize("顧客情報");
         assertEquals(2, result.size());
         assertEquals("顧客", result.get(0).word());
-        assertEquals(Arrays.asList("customer", "client"), result.get(0).physicalNames());
+        assertEquals(List.of("customer", "client"), result.get(0).physicalNames());
         assertFalse(result.get(0).isUnknown());
         assertEquals("情報", result.get(1).word());
-        assertEquals(Arrays.asList("information", "info"), result.get(1).physicalNames());
+        assertEquals(List.of("information", "info"), result.get(1).physicalNames());
         assertFalse(result.get(1).isUnknown());
     }
 
@@ -64,10 +63,10 @@ class GreedyTokenizerTest extends TokenizerTestBase {
         List<Token> result = tokenizer.tokenize("顧客管理システム");
         assertEquals(2, result.size());
         assertEquals("顧客管理", result.get(0).word());
-        assertEquals(Arrays.asList("customer_management", "crm"), result.get(0).physicalNames());
+        assertEquals(List.of("customer_management", "crm"), result.get(0).physicalNames());
         assertFalse(result.get(0).isUnknown());
         assertEquals("システム", result.get(1).word());
-        assertEquals(Arrays.asList("system"), result.get(1).physicalNames());
+        assertEquals(List.of("system"), result.get(1).physicalNames());
         assertFalse(result.get(1).isUnknown());
     }
 

@@ -16,7 +16,6 @@
 
 package cherry.pname.main.tokenize;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,36 +34,36 @@ public abstract class TokenizerTestBase {
         Map<String, List<String>> dictionary = new HashMap<>();
 
         // 基本的なビジネス用語
-        dictionary.put("顧客", Arrays.asList("customer", "client"));
-        dictionary.put("注文", Arrays.asList("order"));
-        dictionary.put("商品", Arrays.asList("product", "item"));
-        dictionary.put("管理", Arrays.asList("management", "admin"));
-        dictionary.put("システム", Arrays.asList("system"));
-        dictionary.put("情報", Arrays.asList("information", "info"));
-        dictionary.put("データ", Arrays.asList("data"));
-        dictionary.put("マスタ", Arrays.asList("master"));
+        dictionary.put("顧客", List.of("customer", "client"));
+        dictionary.put("注文", List.of("order"));
+        dictionary.put("商品", List.of("product", "item"));
+        dictionary.put("管理", List.of("management", "admin"));
+        dictionary.put("システム", List.of("system"));
+        dictionary.put("情報", List.of("information", "info"));
+        dictionary.put("データ", List.of("data"));
+        dictionary.put("マスタ", List.of("master"));
 
         // 単語の組み合わせテスト用
-        dictionary.put("売上", Arrays.asList("sales", "revenue"));
-        dictionary.put("明細", Arrays.asList("detail", "line"));
-        dictionary.put("番号", Arrays.asList("number", "no"));
-        dictionary.put("コード", Arrays.asList("code"));
-        dictionary.put("名前", Arrays.asList("name"));
-        dictionary.put("名称", Arrays.asList("name", "title"));
+        dictionary.put("売上", List.of("sales", "revenue"));
+        dictionary.put("明細", List.of("detail", "line"));
+        dictionary.put("番号", List.of("number", "no"));
+        dictionary.put("コード", List.of("code"));
+        dictionary.put("名前", List.of("name"));
+        dictionary.put("名称", List.of("name", "title"));
 
         // 部分マッチテスト用（より長い単語も登録）
-        dictionary.put("顧客管理", Arrays.asList("customer_management", "crm"));
-        dictionary.put("商品管理", Arrays.asList("product_management"));
-        dictionary.put("注文管理", Arrays.asList("order_management"));
+        dictionary.put("顧客管理", List.of("customer_management", "crm"));
+        dictionary.put("商品管理", List.of("product_management"));
+        dictionary.put("注文管理", List.of("order_management"));
 
         // 日付・時間関連
-        dictionary.put("日付", Arrays.asList("date"));
-        dictionary.put("時刻", Arrays.asList("time"));
-        dictionary.put("年月日", Arrays.asList("date"));
+        dictionary.put("日付", List.of("date"));
+        dictionary.put("時刻", List.of("time"));
+        dictionary.put("年月日", List.of("date"));
 
         // 数値関連
-        dictionary.put("金額", Arrays.asList("amount", "price"));
-        dictionary.put("数量", Arrays.asList("quantity", "qty"));
+        dictionary.put("金額", List.of("amount", "price"));
+        dictionary.put("数量", List.of("quantity", "qty"));
 
         return dictionary;
     }
