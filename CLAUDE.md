@@ -2,25 +2,61 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Repository Status
+## Project Overview
 
-This is a newly initialized Java project repository with minimal structure. Currently contains only a LICENSE file (Apache License 2.0).
+This is a Java tool for converting logical names (Japanese) to physical names (alphanumeric). The project generates English identifiers from Japanese business terms for use in databases, APIs, and code.
+
+## Project Structure
+
+Multi-module Gradle project with three subprojects:
+
+- **pname-main**: Core physical name generation logic
+- **pname-cli**: Command-line interface for name conversion
+- **pname-web**: Web application with REST API and React frontend
 
 ## Development Setup
 
-This repository appears to be a fresh Java project that has not yet been set up with:
-- Source code structure (src/ directories)
-- Build configuration (pom.xml for Maven or build.gradle for Gradle)
-- Package structure
-- Test framework setup
+### Build System
+- Gradle with Wrapper (use `./gradlew` commands)
+- Java 21 with Spring Boot 3.5.4
+- Multi-project build configuration
 
-## Next Steps for Development
+### Common Commands
+```bash
+# Build all projects
+./gradlew build
 
-When working with this repository, you'll likely need to:
-1. Determine the intended build system (Maven, Gradle, or plain Java)
-2. Create standard Java project structure (src/main/java, src/test/java)
-3. Set up appropriate build configuration files
-4. Establish package naming conventions
+# Run tests
+./gradlew test
+
+# Run specific subproject tests
+./gradlew :pname-main:test
+./gradlew :pname-cli:test
+./gradlew :pname-web:test
+```
+
+### Project Layout
+```
+java-pname/
+├── pname-main/          # Core conversion logic
+│   └── src/main/java/cherry/pname/main/
+├── pname-cli/           # CLI interface
+└── pname-web/           # Web API + React frontend
+```
+
+## Dependencies
+
+- Spring Boot 3.5.4 (for pname-cli and pname-web)
+- Apache Commons CSV 1.14.1
+- Google Guava 33.4.8-jre
+- JUnit 5 for testing
+
+## Architecture Notes
+
+- Package structure follows `cherry.pname.*` convention
+- pname-main contains framework-agnostic conversion logic
+- pname-cli and pname-web depend on pname-main
+- Build configuration supports both executable applications (CLI/Web) and library (main)
 
 ## License
 
