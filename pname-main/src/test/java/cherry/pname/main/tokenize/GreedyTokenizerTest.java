@@ -105,31 +105,23 @@ class GreedyTokenizerTest extends TokenizerTestBase {
     
     @Test
     void testAllUnknownWords() {
-        // すべて未知語の場合
+        // すべて未知語の場合（連続する未知語は一つにまとめられる）
         List<Token> result = tokenizer.tokenize("ABC");
-        assertEquals(3, result.size());
-        assertEquals("A", result.get(0).word());
+        assertEquals(1, result.size());
+        assertEquals("ABC", result.get(0).word());
         assertTrue(result.get(0).isUnknown());
-        assertEquals("B", result.get(1).word());
-        assertTrue(result.get(1).isUnknown());
-        assertEquals("C", result.get(2).word());
-        assertTrue(result.get(2).isUnknown());
     }
     
     @Test
     void testMixedKnownUnknown() {
-        // 既知語と未知語の混在
+        // 既知語と未知語の混在（連続する未知語は一つにまとめられる）
         List<Token> result = tokenizer.tokenize("顧客ABC情報");
-        assertEquals(5, result.size());
+        assertEquals(3, result.size());
         assertEquals("顧客", result.get(0).word());
         assertFalse(result.get(0).isUnknown());
-        assertEquals("A", result.get(1).word());
+        assertEquals("ABC", result.get(1).word());
         assertTrue(result.get(1).isUnknown());
-        assertEquals("B", result.get(2).word());
-        assertTrue(result.get(2).isUnknown());
-        assertEquals("C", result.get(3).word());
-        assertTrue(result.get(3).isUnknown());
-        assertEquals("情報", result.get(4).word());
-        assertFalse(result.get(4).isUnknown());
+        assertEquals("情報", result.get(2).word());
+        assertFalse(result.get(2).isUnknown());
     }
 }

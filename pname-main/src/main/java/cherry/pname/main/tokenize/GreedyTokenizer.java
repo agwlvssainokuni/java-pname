@@ -63,10 +63,26 @@ public class GreedyTokenizer implements Tokenizer {
                 tokens.add(new Token(longestMatch, physicalNames, false));
                 pos += longestLength;
             } else {
-                // マッチしない場合は1文字を未知語として扱う
-                String unknownWord = logicalName.substring(pos, pos + 1);
+                // 連続する未知語をまとめて処理
+                int unknownStart = pos;
+                while (pos < logicalName.length()) {
+                    // 現在位置から辞書マッチがあるかチェック
+                    boolean foundMatch = false;
+                    for (int end = pos + 1; end <= logicalName.length(); end++) {
+                        String candidate = logicalName.substring(pos, end);
+                        if (dictionary.containsKey(candidate)) {
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+                    if (foundMatch) {
+                        break;
+                    }
+                    pos++;
+                }
+                
+                String unknownWord = logicalName.substring(unknownStart, pos);
                 tokens.add(new Token(unknownWord, new ArrayList<>(), true));
-                pos++;
             }
         }
         

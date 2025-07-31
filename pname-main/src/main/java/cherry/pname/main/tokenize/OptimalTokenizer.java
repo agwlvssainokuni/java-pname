@@ -49,7 +49,40 @@ public class OptimalTokenizer implements Tokenizer {
         Map<Integer, TokenizeResult> memoization = new HashMap<>();
         
         TokenizeResult best = findOptimalTokenization(logicalName, 0, memoization);
-        return best != null ? best.tokens : new ArrayList<>();
+        List<Token> tokens = best != null ? best.tokens : new ArrayList<>();
+        return mergeConsecutiveUnknownTokens(tokens);
+    }
+    
+    /**
+     * 連続する未知語トークンを一つにマージする
+     */
+    private List<Token> mergeConsecutiveUnknownTokens(List<Token> tokens) {
+        if (tokens.isEmpty()) {
+            return tokens;
+        }
+        
+        List<Token> merged = new ArrayList<>();
+        StringBuilder unknownBuffer = new StringBuilder();
+        
+        for (Token token : tokens) {
+            if (token.isUnknown()) {
+                unknownBuffer.append(token.word());
+            } else {
+                // 既知語が来たら、バッファの未知語をフラッシュ
+                if (unknownBuffer.length() > 0) {
+                    merged.add(new Token(unknownBuffer.toString(), new ArrayList<>(), true));
+                    unknownBuffer.setLength(0);
+                }
+                merged.add(token);
+            }
+        }
+        
+        // 最後に未知語が残っている場合
+        if (unknownBuffer.length() > 0) {
+            merged.add(new Token(unknownBuffer.toString(), new ArrayList<>(), true));
+        }
+        
+        return merged;
     }
     
     /**

@@ -106,11 +106,8 @@ class OptimalTokenizerTest extends TokenizerTestBase {
     
     @Test
     void testAllUnknownWords() {
-        // すべて未知語の場合
+        // すべて未知語の場合（連続する未知語は一つにまとめられる）
         List<Token> result = tokenizer.tokenize("XYZ");
-        // 未知語数は同じなので、分割数が少ない方が選ばれる
-        // この場合は "XYZ" (1語、未知語1) vs "X"+"Y"+"Z" (3語、未知語3)
-        // → "XYZ" が選ばれる
         assertEquals(1, result.size());
         assertEquals("XYZ", result.get(0).word());
         assertTrue(result.get(0).isUnknown());
