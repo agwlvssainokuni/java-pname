@@ -30,11 +30,4 @@ public interface RomajiConverter {
      * @return ローマ字要素のリスト
      */
     List<String> convertToRomaji(String japaneseText);
-
-    /**
-     * 変換器が利用可能かどうかを確認する
-     *
-     * @return 利用可能な場合true
-     */
-    boolean isAvailable();
 }

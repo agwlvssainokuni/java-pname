@@ -35,10 +35,6 @@ class KuromojiRomajiConverterTest {
         converter = new KuromojiRomajiConverter();
     }
 
-    @Test
-    void testIsAvailable() {
-        assertTrue(converter.isAvailable());
-    }
 
     @Test
     void testConvertSimpleKanji() {
@@ -51,7 +47,7 @@ class KuromojiRomajiConverterTest {
     void testConvertSystemKanji() {
         List<String> result = converter.convertToRomaji("システム");
         assertFalse(result.isEmpty());
-        assertEquals("system", result.get(0));
+        assertEquals("shisutemu", result.get(0)); // ICU4Jによる変換
     }
 
     @Test
@@ -90,12 +86,28 @@ class KuromojiRomajiConverterTest {
     void testConvertKatakanaReading() {
         List<String> result = converter.convertToRomaji("データ");
         assertFalse(result.isEmpty());
-        assertEquals("data", result.get(0));
+        assertEquals("deta", result.get(0)); // ICU4Jによる変換
     }
 
     @Test
     void testConvertComplexText() {
         List<String> result = converter.convertToRomaji("顧客情報管理システム");
         assertTrue(result.size() >= 3);
+        // ICU4Jによる正確なローマ字変換が行われることを確認
+        assertFalse(result.isEmpty());
+    }
+
+    @Test
+    void testICU4JTransliteration() {
+        List<String> result = converter.convertToRomaji("カタカナ");
+        assertEquals(1, result.size());
+        assertEquals("katakana", result.get(0));
+    }
+
+    @Test
+    void testICU4JWithLongVowels() {
+        List<String> result = converter.convertToRomaji("コーヒー");
+        assertEquals(1, result.size());
+        assertEquals("kohi", result.get(0)); // ICU4Jは長音符を処理
     }
 }

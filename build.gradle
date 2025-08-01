@@ -40,6 +40,7 @@ subprojects {
             dependency 'com.google.guava:guava:33.4.8-jre'
             dependency 'org.apache.commons:commons-csv:1.14.1'
             dependency 'com.atilika.kuromoji:kuromoji-ipadic:0.9.0'
+            dependency 'com.ibm.icu:icu4j:76.1'
         }
     }
 
@@ -52,6 +53,7 @@ subprojects {
             implementation 'org.apache.commons:commons-csv'
             implementation 'com.fasterxml.jackson.core:jackson-databind'
             implementation 'com.atilika.kuromoji:kuromoji-ipadic'
+            implementation 'com.ibm.icu:icu4j'
             javaagent('org.mockito:mockito-core') { transitive = false }
         }
         if (project.name == 'pname-cli') {

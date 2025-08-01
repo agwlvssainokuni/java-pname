@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,51 +176,7 @@ public class PhysicalNameGenerator {
      * 未知語を分割してローマ字化する
      */
     private List<String> splitAndRomanizeUnknownWord(String word) {
-        if (romajiConverter.isAvailable()) {
-            return romajiConverter.convertToRomaji(word);
-        }
-        
-        // フォールバック: 従来の簡易変換
-        return fallbackRomanization(word);
-    }
-
-    /**
-     * フォールバック用の簡易ローマ字化
-     */
-    private List<String> fallbackRomanization(String word) {
-        List<String> elements = new ArrayList<>();
-        String processed = word;
-
-        // 管理を先に処理（他の語と組み合わさっている場合）
-        if (processed.contains("管理")) {
-            String[] parts = processed.split("管理", 2);
-            if (!parts[0].isEmpty()) {
-                elements.add(parts[0]);
-            }
-            elements.add("Management");
-            if (parts.length > 1 && !parts[1].isEmpty()) {
-                elements.addAll(fallbackRomanization(parts[1]));
-            }
-            return elements;
-        }
-
-        // その他の日本語単語の変換
-        processed = processed
-                .replace("システム", "System")
-                .replace("データ", "Data")
-                .replace("情報", "Information")
-                .replace("処理", "Process")
-                .replace("売上", "Sales")
-                .replace("明細", "Detail")
-                .replace("年月日", "Date")
-                .replace("金額", "Amount");
-
-        // 変換後の文字列を返す
-        if (!processed.isEmpty()) {
-            elements.add(processed);
-        }
-
-        return elements;
+        return romajiConverter.convertToRomaji(word);
     }
 
     /**
