@@ -394,6 +394,6 @@ class PhysicalNameGeneratorTest {
         assertEquals("customerXyKanri", result.physicalName());
         assertEquals(2, result.tokenMappings().size()); // 実際は2つのトークン
         assertEquals("顧客=>customer", result.tokenMappings().get(0));
-        assertEquals("XY管理=>(unknown)", result.tokenMappings().get(1)); // 未知語として処理
+        assertEquals("XY管理=>(romaji: XY kanri)", result.tokenMappings().get(1)); // ローマ字変換詳細
     }
 }

@@ -240,7 +240,10 @@ public class PhysicalNameGenerator {
      */
     private String formatTokenMapping(Token token) {
         if (token.isUnknown()) {
-            return token.word() + "=>(unknown)";
+            // ローマ字変換の詳細を表示
+            List<String> romajiElements = romajiConverter.convertToRomaji(token.word());
+            String romajiResult = String.join(" ", romajiElements);
+            return token.word() + "=>(romaji: " + romajiResult + ")";
         }
         String physicalNamesStr = String.join(", ", token.physicalNames());
         return token.word() + "=>" + physicalNamesStr;
