@@ -26,6 +26,10 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -68,12 +72,15 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         log.info("  --format=<format>         辞書形式を指定 (CSV, TSV, JSON) [default: CSV]");
         log.info("  --tokenizer=<type>        トークナイザーを指定 (GREEDY, OPTIMAL) [default: OPTIMAL]");
         log.info("  --naming=<convention>     命名規則を指定 (CAMEL_CASE, PASCAL_CASE, SNAKE_CASE, SNAKE_CASE_UPPER, KEBAB_CASE, KEBAB_CASE_UPPER) [default: CAMEL_CASE]");
+        log.info("  --input=<file>            入力ファイルを指定（論理名リスト）");
+        log.info("  --output=<file>           出力ファイルを指定");
         log.info("  --verbose                 詳細な出力を表示");
         log.info("  --quiet                   最小限の出力のみ表示");
         log.info("");
         log.info("Examples:");
         log.info("  java -jar pname-cli.jar --dictionary=dict.csv 顧客管理システム");
         log.info("  java -jar pname-cli.jar --format=JSON --naming=SNAKE_CASE --dictionary=dict.json 注文明細");
+        log.info("  java -jar pname-cli.jar --dictionary=dict.csv --input=input.txt --output=output.txt");
     }
 
     private void processArguments(ApplicationArguments args) throws IOException {
@@ -100,19 +107,14 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         TokenizerType tokenizerType = parseTokenizerType(args.getOptionValues("tokenizer"));
         NamingConvention namingConvention = parseNamingConvention(args.getOptionValues("naming"));
 
-        // 論理名の処理
-        List<String> logicalNames = args.getNonOptionArgs();
-        if (logicalNames.isEmpty()) {
-            log.error("変換対象の論理名が指定されていません");
-            exitCode = 1;
-            return;
-        }
-
         boolean verbose = isVerbose(args);
         boolean quiet = isQuiet(args);
 
-        for (String logicalName : logicalNames) {
-            processLogicalName(logicalName, tokenizerType, namingConvention, verbose, quiet);
+        // ファイルベース処理またはコマンドライン引数処理
+        if (args.containsOption("input")) {
+            processInputFile(args, tokenizerType, namingConvention, verbose, quiet);
+        } else {
+            processCommandLineArguments(args, tokenizerType, namingConvention, verbose, quiet);
         }
     }
 
@@ -184,6 +186,86 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
 
     private boolean isQuiet(ApplicationArguments args) {
         return args.containsOption("quiet");
+    }
+
+    private void processInputFile(ApplicationArguments args, TokenizerType tokenizerType,
+                                  NamingConvention namingConvention, boolean verbose, boolean quiet) throws IOException {
+        String inputFile = args.getOptionValues("input").get(0);
+        Path inputPath = Paths.get(inputFile);
+
+        if (!Files.exists(inputPath)) {
+            log.error("入力ファイルが見つかりません: {}", inputFile);
+            exitCode = 1;
+            return;
+        }
+
+        List<String> logicalNames = Files.readAllLines(inputPath, StandardCharsets.UTF_8);
+
+        if (!quiet) {
+            log.info("入力ファイルから{}件の論理名を読み込みました: {}", logicalNames.size(), inputFile);
+        }
+
+        StringBuilder outputContent = new StringBuilder();
+
+        for (String logicalName : logicalNames) {
+            String trimmedName = logicalName.trim();
+            if (trimmedName.isEmpty()) {
+                continue; // 空行をスキップ
+            }
+
+            try {
+                PhysicalNameResult result = generator.generatePhysicalName(tokenizerType, namingConvention, trimmedName);
+
+                if (args.containsOption("output")) {
+                    // ファイル出力用フォーマット
+                    if (verbose) {
+                        outputContent.append("論理名: ").append(result.logicalName()).append("\n");
+                        outputContent.append("物理名: ").append(result.physicalName()).append("\n");
+                        outputContent.append("トークン分解:\n");
+                        result.tokenMappings().forEach(mapping ->
+                                outputContent.append("  ").append(mapping).append("\n"));
+                        outputContent.append("\n");
+                    } else if (quiet) {
+                        outputContent.append(result.physicalName()).append("\n");
+                    } else {
+                        outputContent.append(result.logicalName()).append(" -> ").append(result.physicalName()).append("\n");
+                    }
+                } else {
+                    // コンソール出力
+                    processLogicalName(trimmedName, tokenizerType, namingConvention, verbose, quiet);
+                }
+            } catch (Exception e) {
+                log.error("論理名の変換に失敗しました: {} - {}", trimmedName, e.getMessage());
+                exitCode = 1;
+            }
+        }
+
+        // ファイル出力
+        if (args.containsOption("output")) {
+            String outputFile = args.getOptionValues("output").get(0);
+            Path outputPath = Paths.get(outputFile);
+
+            Files.writeString(outputPath, outputContent.toString(), StandardCharsets.UTF_8);
+
+            if (!quiet) {
+                log.info("結果を出力ファイルに書き込みました: {}", outputFile);
+            }
+        }
+    }
+
+    private void processCommandLineArguments(ApplicationArguments args, TokenizerType tokenizerType,
+                                             NamingConvention namingConvention, boolean verbose, boolean quiet) {
+        // 論理名の処理
+        List<String> logicalNames = args.getNonOptionArgs();
+        if (logicalNames.isEmpty()) {
+            log.error("変換対象の論理名が指定されていません");
+            exitCode = 1;
+            return;
+        }
+
+        for (String logicalName : logicalNames) {
+            processLogicalName(logicalName, tokenizerType, namingConvention, verbose, quiet);
+        }
     }
 
     @Override
