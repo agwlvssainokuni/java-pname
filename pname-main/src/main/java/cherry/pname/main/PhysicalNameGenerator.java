@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +132,151 @@ public class PhysicalNameGenerator {
             case GREEDY -> greedyTokenizer;
             case OPTIMAL -> optimalTokenizer;
         };
+    }
+
+    /**
+     * 物理名を生成する
+     *
+     * @param tokenizerType    トークナイザーの種類
+     * @param namingConvention 命名規則
+     * @param logicalName      元の日本語名
+     * @return 物理名生成結果
+     */
+    public PhysicalNameResult generatePhysicalName(TokenizerType tokenizerType, NamingConvention namingConvention, String logicalName) {
+        List<Token> tokens = tokenize(tokenizerType, logicalName);
+
+        // 全トークンの物理名要素を収集
+        List<String> allPhysicalElements = tokens.stream()
+                .flatMap(token -> getPhysicalElements(token).stream())
+                .toList();
+
+        String physicalName = formatPhysicalName(allPhysicalElements, namingConvention);
+
+        List<String> tokenMappings = tokens.stream()
+                .map(this::formatTokenMapping)
+                .toList();
+
+        return new PhysicalNameResult(logicalName, physicalName, tokenMappings);
+    }
+
+    /**
+     * トークンから物理名要素を取得する
+     */
+    private List<String> getPhysicalElements(Token token) {
+        if (token.isUnknown() || token.physicalNames().isEmpty()) {
+            return splitAndRomanizeUnknownWord(token.word());
+        }
+        return token.physicalNames();
+    }
+
+    /**
+     * 未知語を分割してローマ字化する
+     */
+    private List<String> splitAndRomanizeUnknownWord(String word) {
+        // 簡易的な分割とローマ字化
+        // "XY管理" -> ["XY", "Management"]のように分割
+        List<String> elements = new ArrayList<>();
+
+        // 日本語部分を英語に変換
+        String processed = word;
+
+        // 管理を先に処理（他の語と組み合わさっている場合）
+        if (processed.contains("管理")) {
+            String[] parts = processed.split("管理", 2);
+            if (!parts[0].isEmpty()) {
+                elements.add(parts[0]);
+            }
+            elements.add("Management");
+            if (parts.length > 1 && !parts[1].isEmpty()) {
+                elements.addAll(splitAndRomanizeUnknownWord(parts[1]));
+            }
+            return elements;
+        }
+
+        // その他の日本語単語の変換
+        processed = processed
+                .replace("システム", "System")
+                .replace("データ", "Data")
+                .replace("情報", "Information")
+                .replace("処理", "Process")
+                .replace("売上", "Sales")
+                .replace("明細", "Detail")
+                .replace("年月日", "Date")
+                .replace("金額", "Amount");
+
+        // 変換後の文字列を返す
+        if (!processed.isEmpty()) {
+            elements.add(processed);
+        }
+
+        return elements;
+    }
+
+    /**
+     * 物理名要素リストを指定された命名規則でフォーマットする
+     */
+    private String formatPhysicalName(List<String> elements, NamingConvention convention) {
+        return switch (convention) {
+            case CAMEL_CASE -> formatCamelCase(elements, false);
+            case PASCAL_CASE -> formatCamelCase(elements, true);
+            case SNAKE_CASE -> formatSnakeCase(elements, false);
+            case SNAKE_CASE_UPPER -> formatSnakeCase(elements, true);
+            case KEBAB_CASE -> formatKebabCase(elements, false);
+            case KEBAB_CASE_UPPER -> formatKebabCase(elements, true);
+        };
+    }
+
+    /**
+     * camelCase/PascalCase形式でフォーマット
+     */
+    private String formatCamelCase(List<String> elements, boolean pascalCase) {
+        if (elements.isEmpty()) return "";
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < elements.size(); i++) {
+            String element = elements.get(i);
+            if (i == 0 && !pascalCase) {
+                result.append(element.toLowerCase());
+            } else {
+                result.append(capitalize(element.toLowerCase()));
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * snake_case形式でフォーマット
+     */
+    private String formatSnakeCase(List<String> elements, boolean upper) {
+        String joined = String.join("_", elements);
+        return upper ? joined.toUpperCase() : joined.toLowerCase();
+    }
+
+    /**
+     * kebab-case形式でフォーマット
+     */
+    private String formatKebabCase(List<String> elements, boolean upper) {
+        String joined = String.join("-", elements);
+        return upper ? joined.toUpperCase() : joined.toLowerCase();
+    }
+
+    /**
+     * 文字列の最初の文字を大文字にする
+     */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    /**
+     * トークンマッピングを文字列形式でフォーマット
+     */
+    private String formatTokenMapping(Token token) {
+        if (token.isUnknown()) {
+            return token.word() + "=>(unknown)";
+        }
+        String physicalNamesStr = String.join(", ", token.physicalNames());
+        return token.word() + "=>" + physicalNamesStr;
     }
 
     /**

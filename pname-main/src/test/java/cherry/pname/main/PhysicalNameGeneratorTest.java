@@ -270,4 +270,128 @@ class PhysicalNameGeneratorTest {
         assertEquals(1, tokens.size());
         assertTrue(tokens.get(0).isUnknown());
     }
+
+    @Test
+    void testGeneratePhysicalNameCamelCase() throws IOException {
+        String csvData = """
+                顧客,customer
+                管理,management
+                システム,system
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.CAMEL_CASE, "顧客管理システム");
+
+        assertEquals("顧客管理システム", result.logicalName());
+        assertEquals("customerManagementSystem", result.physicalName());
+        assertEquals(3, result.tokenMappings().size());
+        assertEquals("顧客=>customer", result.tokenMappings().get(0));
+        assertEquals("管理=>management", result.tokenMappings().get(1));
+        assertEquals("システム=>system", result.tokenMappings().get(2));
+    }
+
+    @Test
+    void testGeneratePhysicalNamePascalCase() throws IOException {
+        String csvData = """
+                顧客,customer
+                管理,management
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.PASCAL_CASE, "顧客管理");
+
+        assertEquals("顧客管理", result.logicalName());
+        assertEquals("CustomerManagement", result.physicalName());
+        assertEquals(2, result.tokenMappings().size());
+    }
+
+    @Test
+    void testGeneratePhysicalNameSnakeCase() throws IOException {
+        String csvData = """
+                顧客,customer
+                管理,management
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.SNAKE_CASE, "顧客管理");
+
+        assertEquals("customer_management", result.physicalName());
+    }
+
+    @Test
+    void testGeneratePhysicalNameSnakeCaseUpper() throws IOException {
+        String csvData = """
+                顧客,customer
+                管理,management
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.SNAKE_CASE_UPPER, "顧客管理");
+
+        assertEquals("CUSTOMER_MANAGEMENT", result.physicalName());
+    }
+
+    @Test
+    void testGeneratePhysicalNameKebabCase() throws IOException {
+        String csvData = """
+                顧客,customer
+                管理,management
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.KEBAB_CASE, "顧客管理");
+
+        assertEquals("customer-management", result.physicalName());
+    }
+
+    @Test
+    void testGeneratePhysicalNameKebabCaseUpper() throws IOException {
+        String csvData = """
+                顧客,customer
+                管理,management
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.KEBAB_CASE_UPPER, "顧客管理");
+
+        assertEquals("CUSTOMER-MANAGEMENT", result.physicalName());
+    }
+
+    @Test
+    void testGeneratePhysicalNameWithMultipleElements() throws IOException {
+        String csvData = """
+                顧客,customer client
+                管理,management admin
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.CAMEL_CASE, "顧客管理");
+
+        assertEquals("customerClientManagementAdmin", result.physicalName());
+        assertEquals("顧客=>customer, client", result.tokenMappings().get(0));
+        assertEquals("管理=>management, admin", result.tokenMappings().get(1));
+    }
+
+    @Test
+    void testGeneratePhysicalNameWithUnknownWords() throws IOException {
+        String csvData = """
+                顧客,customer
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.CAMEL_CASE, "顧客XY管理");
+
+        assertEquals("customerXyManagement", result.physicalName());
+        assertEquals(2, result.tokenMappings().size());
+        assertEquals("顧客=>customer", result.tokenMappings().get(0));
+        assertEquals("XY管理=>(unknown)", result.tokenMappings().get(1));
+    }
 }
