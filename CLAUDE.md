@@ -33,6 +33,10 @@ Multi-module Gradle project with three subprojects:
 ./gradlew :pname-main:test
 ./gradlew :pname-cli:test
 ./gradlew :pname-web:test
+
+# Run CLI application
+./gradlew :pname-cli:bootRun --args="--help"
+./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
 ```
 
 ### Project Layout
@@ -43,8 +47,11 @@ java-pname/
 │       ├── tokenize/    # Word tokenization logic
 │       ├── dictionary/  # Dictionary loading (CSV, TSV, JSON)
 │       └── romaji/      # Japanese to romaji conversion
-├── pname-cli/           # CLI interface
-└── pname-web/           # Web API + React frontend
+├── pname-cli/           # CLI interface (implemented)
+│   └── src/main/java/cherry/pname/cli/
+│       ├── Main.java                        # Spring Boot entry point
+│       └── PhysicalNameGeneratorRunner.java # CLI processing logic
+└── pname-web/           # Web API + React frontend (planned)
 ```
 
 ## Dependencies
@@ -92,6 +99,14 @@ java-pname/
 - `TokenizerType` enum: Tokenizer selection (GREEDY, OPTIMAL)
 - `NamingConvention` enum: 6 naming conventions (CAMEL_CASE, PASCAL_CASE, SNAKE_CASE, KEBAB_CASE, SNAKE_CASE_UPPER, KEBAB_CASE_UPPER)
 - `PhysicalNameResult` record: Generation results with tokenMappings showing conversion details
+
+**CLI Interface (cherry.pname.cli)**:
+- `Main` class: Spring Boot application entry point with component scanning
+- `PhysicalNameGeneratorRunner` (@Component): ApplicationRunner implementing CLI logic
+- Command-line argument processing with comprehensive option support
+- File-based batch processing capabilities
+- Multiple output formats (verbose, normal, quiet)
+- Error handling with appropriate exit codes
 
 ## License
 
