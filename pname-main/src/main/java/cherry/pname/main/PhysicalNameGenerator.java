@@ -17,6 +17,7 @@
 package cherry.pname.main;
 
 import cherry.pname.main.dictionary.DictionaryLoader;
+import cherry.pname.main.romaji.RomajiConverter;
 import cherry.pname.main.tokenize.Token;
 import cherry.pname.main.tokenize.Tokenizer;
 import org.springframework.core.io.Resource;
@@ -41,6 +42,7 @@ public class PhysicalNameGenerator {
     private final DictionaryLoader jsonDictionaryLoader;
     private final Tokenizer greedyTokenizer;
     private final Tokenizer optimalTokenizer;
+    private final RomajiConverter romajiConverter;
 
     private Map<String, List<String>> dictionary = new HashMap<>();
 
@@ -49,12 +51,14 @@ public class PhysicalNameGenerator {
             DictionaryLoader tsvDictionaryLoader,
             DictionaryLoader jsonDictionaryLoader,
             Tokenizer greedyTokenizer,
-            Tokenizer optimalTokenizer) {
+            Tokenizer optimalTokenizer,
+            RomajiConverter romajiConverter) {
         this.csvDictionaryLoader = csvDictionaryLoader;
         this.tsvDictionaryLoader = tsvDictionaryLoader;
         this.jsonDictionaryLoader = jsonDictionaryLoader;
         this.greedyTokenizer = greedyTokenizer;
         this.optimalTokenizer = optimalTokenizer;
+        this.romajiConverter = romajiConverter;
     }
 
     /**
@@ -173,11 +177,19 @@ public class PhysicalNameGenerator {
      * 未知語を分割してローマ字化する
      */
     private List<String> splitAndRomanizeUnknownWord(String word) {
-        // 簡易的な分割とローマ字化
-        // "XY管理" -> ["XY", "Management"]のように分割
-        List<String> elements = new ArrayList<>();
+        if (romajiConverter.isAvailable()) {
+            return romajiConverter.convertToRomaji(word);
+        }
+        
+        // フォールバック: 従来の簡易変換
+        return fallbackRomanization(word);
+    }
 
-        // 日本語部分を英語に変換
+    /**
+     * フォールバック用の簡易ローマ字化
+     */
+    private List<String> fallbackRomanization(String word) {
+        List<String> elements = new ArrayList<>();
         String processed = word;
 
         // 管理を先に処理（他の語と組み合わさっている場合）
@@ -188,7 +200,7 @@ public class PhysicalNameGenerator {
             }
             elements.add("Management");
             if (parts.length > 1 && !parts[1].isEmpty()) {
-                elements.addAll(splitAndRomanizeUnknownWord(parts[1]));
+                elements.addAll(fallbackRomanization(parts[1]));
             }
             return elements;
         }
