@@ -20,6 +20,7 @@ import cherry.pname.main.dictionary.DictionaryLoader;
 import cherry.pname.main.romaji.RomajiConverter;
 import cherry.pname.main.tokenize.Token;
 import cherry.pname.main.tokenize.Tokenizer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -46,11 +47,11 @@ public class PhysicalNameGenerator {
     private Map<String, List<String>> dictionary = new HashMap<>();
 
     public PhysicalNameGenerator(
-            DictionaryLoader csvDictionaryLoader,
-            DictionaryLoader tsvDictionaryLoader,
-            DictionaryLoader jsonDictionaryLoader,
-            Tokenizer greedyTokenizer,
-            Tokenizer optimalTokenizer,
+            @Qualifier("csvDictionaryLoader") DictionaryLoader csvDictionaryLoader,
+            @Qualifier("tsvDictionaryLoader") DictionaryLoader tsvDictionaryLoader,
+            @Qualifier("jsonDictionaryLoader") DictionaryLoader jsonDictionaryLoader,
+            @Qualifier("greedyTokenizer") Tokenizer greedyTokenizer,
+            @Qualifier("optimalTokenizer") Tokenizer optimalTokenizer,
             RomajiConverter romajiConverter) {
         this.csvDictionaryLoader = csvDictionaryLoader;
         this.tsvDictionaryLoader = tsvDictionaryLoader;
