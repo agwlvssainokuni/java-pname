@@ -40,7 +40,9 @@ Multi-module Gradle project with three subprojects:
 java-pname/
 ├── pname-main/          # Core conversion logic
 │   └── src/main/java/cherry/pname/main/
-│       └── tokenize/    # Word tokenization logic
+│       ├── tokenize/    # Word tokenization logic
+│       ├── dictionary/  # Dictionary loading (CSV, TSV, JSON)
+│       └── romaji/      # Japanese to romaji conversion
 ├── pname-cli/           # CLI interface
 └── pname-web/           # Web API + React frontend
 ```
@@ -50,6 +52,9 @@ java-pname/
 - Spring Boot 3.5.4 (for pname-cli and pname-web)
 - Apache Commons CSV 1.14.1
 - Google Guava 33.4.8-jre
+- Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)
+- ICU4J 76.1 (Unicode text processing and Japanese romanization)
+- Jackson Databind (JSON processing)
 - JUnit 5 for testing
 
 ## Architecture Notes
@@ -68,6 +73,25 @@ java-pname/
 - `OptimalTokenizer` (@Component("optimalTokenizer")): Dynamic programming with evaluation criteria
   - Priority: unknown word length minimization → token count minimization → dictionary word maximization → unknown word count minimization
 - Thread-safe implementation with method-local memoization
+
+**Dictionary Loading (cherry.pname.main.dictionary)**:
+- `DictionaryLoader` interface: Common contract for dictionary loading
+- `CsvDictionaryLoader` (@Component("csvDictionaryLoader")): CSV format support
+- `TsvDictionaryLoader` (@Component("tsvDictionaryLoader")): TSV format support  
+- `JsonDictionaryLoader` (@Component("jsonDictionaryLoader")): JSON format support
+- `DictionaryFormat` enum: Format specification (CSV, TSV, JSON)
+
+**Japanese Romanization (cherry.pname.main.romaji)**:
+- `RomajiConverter` interface: Common contract for Japanese to romaji conversion
+- `KuromojiRomajiConverter` (@Component): Kuromoji morphological analysis + ICU4J romanization
+- Handles hiragana, katakana, and kanji text conversion
+- Provides detailed conversion results in tokenMappings as "(romaji: xy kanri)"
+
+**Physical Name Generation**:
+- `PhysicalNameGenerator` (@Component): Main service class
+- `TokenizerType` enum: Tokenizer selection (GREEDY, OPTIMAL)
+- `NamingConvention` enum: 6 naming conventions (CAMEL_CASE, PASCAL_CASE, SNAKE_CASE, KEBAB_CASE, SNAKE_CASE_UPPER, KEBAB_CASE_UPPER)
+- `PhysicalNameResult` record: Generation results with tokenMappings showing conversion details
 
 ## License
 
