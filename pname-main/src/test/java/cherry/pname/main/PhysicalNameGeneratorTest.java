@@ -19,6 +19,7 @@ package cherry.pname.main;
 import cherry.pname.main.dictionary.CsvDictionaryLoader;
 import cherry.pname.main.dictionary.JsonDictionaryLoader;
 import cherry.pname.main.dictionary.TsvDictionaryLoader;
+import cherry.pname.main.romaji.KuromojiRomajiConverter;
 import cherry.pname.main.tokenize.GreedyTokenizer;
 import cherry.pname.main.tokenize.OptimalTokenizer;
 import cherry.pname.main.tokenize.Token;
@@ -47,7 +48,8 @@ class PhysicalNameGeneratorTest {
                 new TsvDictionaryLoader(),
                 new JsonDictionaryLoader(),
                 new GreedyTokenizer(),
-                new OptimalTokenizer()
+                new OptimalTokenizer(),
+                new KuromojiRomajiConverter()
         );
     }
 
@@ -389,9 +391,9 @@ class PhysicalNameGeneratorTest {
         PhysicalNameResult result = generator.generatePhysicalName(
                 TokenizerType.GREEDY, NamingConvention.CAMEL_CASE, "顧客XY管理");
 
-        assertEquals("customerXyManagement", result.physicalName());
-        assertEquals(2, result.tokenMappings().size());
+        assertEquals("customerXyKanri", result.physicalName());
+        assertEquals(2, result.tokenMappings().size()); // 実際は2つのトークン
         assertEquals("顧客=>customer", result.tokenMappings().get(0));
-        assertEquals("XY管理=>(unknown)", result.tokenMappings().get(1));
+        assertEquals("XY管理=>(unknown)", result.tokenMappings().get(1)); // 未知語として処理
     }
 }

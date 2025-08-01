@@ -51,11 +51,16 @@ public class KuromojiRomajiConverter implements RomajiConverter {
             String surface = token.getSurface();
             String reading = token.getReading();
 
-            if (containsKanji(surface)) {
+            if (containsJapanese(surface)) {
                 if (reading != null && !reading.equals("*")) {
                     result.add(katakanaToLatin.transliterate(reading).toLowerCase());
                 } else {
-                    result.add(surface.toLowerCase());
+                    // 読み仮名が取得できない場合、カタカナならICU4Jで直接変換
+                    if (isKatakana(surface)) {
+                        result.add(katakanaToLatin.transliterate(surface).toLowerCase());
+                    } else {
+                        result.add(surface.toLowerCase());
+                    }
                 }
             } else {
                 result.add(surface);
@@ -65,10 +70,19 @@ public class KuromojiRomajiConverter implements RomajiConverter {
         return result;
     }
 
-    private boolean containsKanji(String text) {
+    private boolean containsJapanese(String text) {
         return text.chars().anyMatch(c ->
+                (c >= 0x3040 && c <= 0x309F) || // ひらがな
+                (c >= 0x30A0 && c <= 0x30FF) || // カタカナ
                 (c >= 0x4E00 && c <= 0x9FAF) || // CJK統合漢字
-                        (c >= 0x3400 && c <= 0x4DBF)    // CJK拡張A
+                (c >= 0x3400 && c <= 0x4DBF)    // CJK拡張A
+        );
+    }
+
+    private boolean isKatakana(String text) {
+        return text.chars().allMatch(c ->
+                (c >= 0x30A0 && c <= 0x30FF) || // カタカナ
+                c == 0x30FC                     // 長音符「ー」
         );
     }
 }
