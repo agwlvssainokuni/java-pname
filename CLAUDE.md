@@ -37,6 +37,7 @@ Multi-module Gradle project with three subprojects:
 # Run CLI application
 ./gradlew :pname-cli:bootRun --args="--help"
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
+./gradlew :pname-cli:bootRun --args="--dictionary=dict.yaml --format=YAML --naming=LOWER_SNAKE 顧客管理システム"
 
 # Run Web application
 ./gradlew :pname-web:bootRun
@@ -49,7 +50,7 @@ java-pname/
 ├── pname-main/          # Core conversion logic
 │   └── src/main/java/cherry/pname/main/
 │       ├── tokenize/    # Word tokenization logic
-│       ├── dictionary/  # Dictionary loading (CSV, TSV, JSON)
+│       ├── dictionary/  # Dictionary loading (CSV, TSV, JSON, YAML)
 │       └── romaji/      # Japanese to romaji conversion
 ├── pname-cli/           # CLI interface (implemented)
 │   └── src/main/java/cherry/pname/cli/
@@ -72,6 +73,8 @@ java-pname/
 - Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)
 - ICU4J 76.1 (Unicode text processing and Japanese romanization)
 - Jackson Databind (JSON processing)
+- Jackson YAML (YAML processing)
+- SpringDoc OpenAPI (API documentation)
 - JUnit 5 for testing
 
 ## Architecture Notes
@@ -96,7 +99,8 @@ java-pname/
 - `CsvDictionaryLoader` (@Component("csvDictionaryLoader")): CSV format support
 - `TsvDictionaryLoader` (@Component("tsvDictionaryLoader")): TSV format support  
 - `JsonDictionaryLoader` (@Component("jsonDictionaryLoader")): JSON format support
-- `DictionaryFormat` enum: Format specification (CSV, TSV, JSON)
+- `YamlDictionaryLoader` (@Component("yamlDictionaryLoader")): YAML format support with single/array value handling
+- `DictionaryFormat` enum: Format specification (CSV, TSV, JSON, YAML)
 
 **Japanese Romanization (cherry.pname.main.romaji)**:
 - `RomajiConverter` interface: Common contract for Japanese to romaji conversion
@@ -120,14 +124,22 @@ java-pname/
 
 **Web Interface (cherry.pname.web)**:
 - `Main` class: Spring Boot Web application entry point
-- `PhysicalNameController` (@RestController): REST API endpoints
+- `PhysicalNameController` (@RestController): REST API endpoints with OpenAPI annotations
   - POST /api/generate: Physical name generation
-  - POST /api/generate/dictionary: Dictionary file upload
+  - POST /api/generate/dictionary: Dictionary file upload (supports CSV, TSV, JSON, YAML)
   - GET /api/generate/dictionary/info: Dictionary information
 - `WebController` (@Controller): Web UI controller for main page
 - `GenerateRequest/Response`: DTOs for API communication
+- `OpenApiConfig`: SpringDoc configuration for automatic API documentation
 - Thymeleaf + Bootstrap frontend with file upload and real-time generation
+- OpenAPI 3.0 specification with Swagger UI integration
 - Comprehensive error handling and validation
+
+**API Documentation**:
+- Interactive Swagger UI: http://localhost:8080/swagger-ui/index.html
+- OpenAPI JSON specification: http://localhost:8080/v3/api-docs
+- Static openapi.yaml file with complete API specification
+- Comprehensive API_REFERENCE.md documentation
 
 ## License
 

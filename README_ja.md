@@ -231,6 +231,8 @@ java-pname/
 - ICU4J 76.1（Unicode処理とローマ字変換）
 - Apache Commons CSV 1.14.1
 - Jackson Databind（JSON処理）
+- Jackson YAML（YAML処理）
+- SpringDoc OpenAPI（API文書化）
 - Google Guava 33.4.8-jre
 
 ## ライセンス
@@ -249,13 +251,16 @@ java-pname/
 ## ロードマップ
 
 - [x] コアトークン化とローマ字変換
-- [x] 辞書読み込み（CSV、TSV、JSON）
+- [x] 辞書読み込み（CSV、TSV、JSON、YAML）
 - [x] バッチ処理機能付きCLIインターフェース
 - [x] RESTエンドポイント付きWeb API
 - [x] Thymeleaf + Bootstrapベースのwebインターフェース
 - [x] 辞書ファイルアップロード機能
 - [x] リアルタイム物理名生成とトークン分解表示
 - [x] 包括的なAPIドキュメント
-- [ ] パフォーマンス最適化
-- [ ] 追加辞書形式
+- [x] YAML辞書フォーマットサポート
 - [x] OpenAPI/Swagger統合
+- [ ] パフォーマンス最適化
+- [ ] 辞書検証とエラーレポート機能
+- [ ] カスタムトークナイザー設定
+- [ ] 複数名前用バッチAPIエンドポイント

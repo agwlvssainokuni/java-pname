@@ -7,11 +7,13 @@ info:
     conversion and romanization fallback.
     
     ## Features
-    - Multi-format dictionary support (CSV, TSV, JSON)
+    - Multi-format dictionary support (CSV, TSV, JSON, YAML)
     - Advanced tokenization algorithms (Greedy, Optimal)
     - Japanese text processing with morphological analysis
     - 10 different naming conventions
     - Real-time physical name generation
+    - Interactive API documentation with Swagger UI
+    - Comprehensive error handling and validation
     
     ## Dictionary Formats
     
@@ -287,10 +289,12 @@ components:
           description: |
             Optional dictionary data as text. If provided, this dictionary will be used
             for the current request only. Format should match dictionaryFormat.
-          example: "顧客,customer\n管理,management\nシステム,system"
+          examples:
+            csv: "顧客,customer\n管理,management\nシステム,system"
+            yaml: "顧客: customer\n管理: management\nシステム: system"
         dictionaryFormat:
           type: string
-          enum: [CSV, TSV, JSON]
+          enum: [CSV, TSV, JSON, YAML]
           default: "CSV"
           description: Format of the dictionary data (used with dictionaryData)
 
@@ -327,9 +331,15 @@ components:
 
 tags:
   - name: Physical Name Generation
-    description: Core functionality for converting Japanese logical names to physical names
+    description: |
+      Core functionality for converting Japanese logical names to physical names.
+      Supports multiple tokenization algorithms and naming conventions with 
+      dictionary-based conversion and romanization fallback.
   - name: Dictionary Management
-    description: Operations for managing dictionaries used in name conversion
+    description: |
+      Operations for managing dictionaries used in name conversion.
+      Supports multiple formats (CSV, TSV, JSON, YAML) and provides
+      information about currently loaded dictionaries.
 
 externalDocs:
   description: GitHub Repository

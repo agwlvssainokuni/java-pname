@@ -44,8 +44,8 @@ Content-Type: application/json
 | `logicalName` | string | Yes | - | Japanese logical name to convert |
 | `tokenizerType` | string | No | "OPTIMAL" | Tokenization algorithm ("GREEDY", "OPTIMAL") |
 | `namingConvention` | string | No | "LOWER_CAMEL" | Output naming convention |
-| `dictionaryData` | string | No | null | Dictionary data as text (CSV/TSV/JSON format) |
-| `dictionaryFormat` | string | No | "CSV" | Dictionary format ("CSV", "TSV", "JSON") |
+| `dictionaryData` | string | No | null | Dictionary data as text (CSV/TSV/JSON/YAML format) |
+| `dictionaryFormat` | string | No | "CSV" | Dictionary format ("CSV", "TSV", "JSON", "YAML") |
 
 **Naming Convention Options:**
 - `CAMEL` - camelCase (e.g., customerManagement)
@@ -142,7 +142,7 @@ Uploads and loads a dictionary file for use in subsequent generation requests.
 
 **Endpoint:** `POST /generate/dictionary`
 
-**Description:** Uploads a dictionary file in CSV, TSV, or JSON format and loads it into the generator for use in physical name generation.
+**Description:** Uploads a dictionary file in CSV, TSV, JSON, or YAML format and loads it into the generator for use in physical name generation.
 
 #### Request
 
@@ -155,8 +155,8 @@ Content-Type: multipart/form-data
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `file` | file | Yes | Dictionary file (CSV/TSV/JSON) |
-| `format` | string | Yes | Dictionary format ("CSV", "TSV", "JSON") |
+| `file` | file | Yes | Dictionary file (CSV/TSV/JSON/YAML) |
+| `format` | string | Yes | Dictionary format ("CSV", "TSV", "JSON", "YAML") |
 
 #### Response
 
@@ -260,6 +260,32 @@ JSON object with logical names as keys and arrays of physical names as values:
   "システム": ["system"]
 }
 ```
+
+### YAML Format
+
+YAML format with logical names as keys and arrays or single values as physical names. Supports comments and flexible syntax:
+
+```yaml
+# Dictionary for business terms
+顧客:
+  - customer
+  - client
+注文: order  # Single value
+商品:
+  - product
+  - item
+  - goods
+管理:
+  - management
+  - admin
+システム: system
+```
+
+**YAML Features:**
+- Supports both single values (`注文: order`) and arrays (`顧客: [customer, client]`)
+- Comments supported with `#`
+- Human-readable indentation-based structure
+- More flexible than JSON for manual editing
 
 ## Error Handling
 

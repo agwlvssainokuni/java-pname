@@ -231,6 +231,8 @@ java-pname/
 - ICU4J 76.1 (Unicode processing and romanization)
 - Apache Commons CSV 1.14.1
 - Jackson Databind (JSON processing)
+- Jackson YAML (YAML processing)
+- SpringDoc OpenAPI (API documentation)
 - Google Guava 33.4.8-jre
 
 ## License
@@ -249,13 +251,16 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ## Roadmap
 
 - [x] Core tokenization and romanization
-- [x] Dictionary loading (CSV, TSV, JSON)
+- [x] Dictionary loading (CSV, TSV, JSON, YAML)
 - [x] CLI interface with batch processing
 - [x] Web API with REST endpoints
 - [x] Thymeleaf + Bootstrap-based web interface
 - [x] Dictionary file upload functionality
 - [x] Real-time physical name generation and token decomposition display
 - [x] Comprehensive API documentation
-- [ ] Performance optimization
-- [ ] Additional dictionary formats
+- [x] YAML dictionary format support
 - [x] OpenAPI/Swagger integration
+- [ ] Performance optimization
+- [ ] Dictionary validation and error reporting
+- [ ] Custom tokenizer configuration
+- [ ] Batch API endpoint for multiple names
