@@ -86,7 +86,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
     private void processArguments(ApplicationArguments args) throws IOException {
         // 辞書ファイルの読み込み
         if (args.containsOption("dictionary")) {
-            String dictionaryFile = args.getOptionValues("dictionary").get(0);
+            String dictionaryFile = args.getOptionValues("dictionary").getFirst();
             DictionaryFormat format = parseDictionaryFormat(args.getOptionValues("format"));
 
             FileSystemResource resource = new FileSystemResource(dictionaryFile);
@@ -147,9 +147,9 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         }
 
         try {
-            return DictionaryFormat.valueOf(formatOptions.get(0).toUpperCase());
+            return DictionaryFormat.valueOf(formatOptions.getFirst().toUpperCase());
         } catch (IllegalArgumentException e) {
-            log.warn("不正な辞書形式です: {}. デフォルト(CSV)を使用します。", formatOptions.get(0));
+            log.warn("不正な辞書形式です: {}. デフォルト(CSV)を使用します。", formatOptions.getFirst());
             return DictionaryFormat.CSV;
         }
     }
@@ -160,9 +160,9 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         }
 
         try {
-            return TokenizerType.valueOf(tokenizerOptions.get(0).toUpperCase());
+            return TokenizerType.valueOf(tokenizerOptions.getFirst().toUpperCase());
         } catch (IllegalArgumentException e) {
-            log.warn("不正なトークナイザーです: {}. デフォルト(OPTIMAL)を使用します。", tokenizerOptions.get(0));
+            log.warn("不正なトークナイザーです: {}. デフォルト(OPTIMAL)を使用します。", tokenizerOptions.getFirst());
             return TokenizerType.OPTIMAL;
         }
     }
@@ -173,9 +173,9 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         }
 
         try {
-            return NamingConvention.valueOf(namingOptions.get(0).toUpperCase());
+            return NamingConvention.valueOf(namingOptions.getFirst().toUpperCase());
         } catch (IllegalArgumentException e) {
-            log.warn("不正な命名規則です: {}. デフォルト(LOWER_CAMEL)を使用します。", namingOptions.get(0));
+            log.warn("不正な命名規則です: {}. デフォルト(LOWER_CAMEL)を使用します。", namingOptions.getFirst());
             return NamingConvention.LOWER_CAMEL;
         }
     }
@@ -190,7 +190,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
 
     private void processInputFile(ApplicationArguments args, TokenizerType tokenizerType,
                                   NamingConvention namingConvention, boolean verbose, boolean quiet) throws IOException {
-        String inputFile = args.getOptionValues("input").get(0);
+        String inputFile = args.getOptionValues("input").getFirst();
         Path inputPath = Paths.get(inputFile);
 
         if (!Files.exists(inputPath)) {
@@ -242,7 +242,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
 
         // ファイル出力
         if (args.containsOption("output")) {
-            String outputFile = args.getOptionValues("output").get(0);
+            String outputFile = args.getOptionValues("output").getFirst();
             Path outputPath = Paths.get(outputFile);
 
             Files.writeString(outputPath, outputContent.toString(), StandardCharsets.UTF_8);
