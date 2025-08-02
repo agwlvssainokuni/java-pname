@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物理名生成ツール</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .result-section {
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .token-mapping {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            background-color: #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            margin: 0.25rem 0;
+        }
+        .error-message {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .dictionary-info {
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">物理名生成ツール</h1>
+
+        <!-- 辞書情報 -->
+        <div class="dictionary-info" th:if="${hasDictionary}">
+            <strong>📚 辞書情報:</strong> <span th:text="${dictionarySize}">0</span>エントリが読み込まれています
+        </div>
+        <div class="alert alert-warning" th:unless="${hasDictionary}">
+            <strong>⚠️ 注意:</strong> 辞書が読み込まれていません。未知語はローマ字変換されます。
+        </div>
+
+        <!-- 辞書アップロード -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">📁 辞書ファイル</h5>
+            </div>
+            <div class="card-body">
+                <form id="dictionaryForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="dictionaryFile" class="form-label">辞書ファイル</label>
+                            <input type="file" class="form-control" id="dictionaryFile" accept=".csv,.tsv,.json">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="dictionaryFormat" class="form-label">形式</label>
+                            <select class="form-select" id="dictionaryFormat">
+                                <option th:each="format : ${dictionaryFormats}" 
+                                        th:value="${format}" 
+                                        th:text="${format}"
+                                        th:selected="${format.name() == 'CSV'}">CSV</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">アップロード</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="dictionaryResult" class="mt-2"></div>
+
+                <!-- テキスト辞書入力 -->
+                <div class="mt-3">
+                    <label for="dictionaryText" class="form-label">または、辞書データを直接入力:</label>
+                    <textarea class="form-control" id="dictionaryText" rows="4" 
+                              placeholder="例：&#10;顧客,customer client&#10;管理,management admin&#10;システム,system"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 物理名生成 -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">🔧 物理名生成</h5>
+            </div>
+            <div class="card-body">
+                <form id="generateForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="logicalName" class="form-label">論理名（日本語）</label>
+                            <input type="text" class="form-control" id="logicalName" 
+                                   placeholder="例: 顧客管理システム" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tokenizerType" class="form-label">トークナイザー</label>
+                            <select class="form-select" id="tokenizerType">
+                                <option th:each="type : ${tokenizerTypes}" 
+                                        th:value="${type}" 
+                                        th:text="${type}"
+                                        th:selected="${type.name() == 'OPTIMAL'}">OPTIMAL</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="namingConvention" class="form-label">命名規則</label>
+                            <select class="form-select" id="namingConvention">
+                                <option th:each="convention : ${namingConventions}" 
+                                        th:value="${convention}" 
+                                        th:text="${convention}"
+                                        th:selected="${convention.name() == 'LOWER_CAMEL'}">LOWER_CAMEL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">物理名を生成</button>
+                </form>
+
+                <!-- 結果表示 -->
+                <div id="result" class="result-section" style="display: none;">
+                    <h6>生成結果:</h6>
+                    <div id="resultContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 辞書アップロード
+        document.getElementById('dictionaryForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('dictionaryFile');
+            const format = document.getElementById('dictionaryFormat').value;
+            const resultDiv = document.getElementById('dictionaryResult');
+            
+            if (fileInput.files.length === 0) {
+                resultDiv.innerHTML = '<div class="alert alert-warning">ファイルを選択してください</div>';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('format', format);
+            
+            try {
+                const response = await fetch('/api/generate/dictionary', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="alert alert-success">${result}</div>`;
+                    // ページをリロードして辞書情報を更新
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    resultDiv.innerHTML = `<div class="alert alert-danger">${result}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="alert alert-danger">エラーが発生しました: ${error.message}</div>`;
+            }
+        });
+
+        // 物理名生成
+        document.getElementById('generateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const logicalName = document.getElementById('logicalName').value;
+            const tokenizerType = document.getElementById('tokenizerType').value;
+            const namingConvention = document.getElementById('namingConvention').value;
+            const dictionaryText = document.getElementById('dictionaryText').value;
+            const dictionaryFormat = document.getElementById('dictionaryFormat').value;
+            
+            const requestData = {
+                logicalName: logicalName,
+                tokenizerType: tokenizerType,
+                namingConvention: namingConvention,
+                dictionaryData: dictionaryText.trim() || null,
+                dictionaryFormat: dictionaryFormat
+            };
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.json();
+                const resultDiv = document.getElementById('result');
+                const contentDiv = document.getElementById('resultContent');
+                
+                if (result.success) {
+                    let html = `
+                        <div class="mb-2">
+                            <strong>論理名:</strong> ${result.logicalName}
+                        </div>
+                        <div class="mb-2">
+                            <strong>物理名:</strong> <code style="font-size: 1.1rem; color: #0d6efd;">${result.physicalName}</code>
+                        </div>
+                    `;
+                    
+                    if (result.tokenMappings && result.tokenMappings.length > 0) {
+                        html += '<div class="mb-2"><strong>トークン分解:</strong></div>';
+                        result.tokenMappings.forEach(mapping => {
+                            html += `<div class="token-mapping">${mapping}</div>`;
+                        });
+                    }
+                    
+                    contentDiv.innerHTML = html;
+                } else {
+                    contentDiv.innerHTML = `<div class="error-message">${result.errorMessage}</div>`;
+                }
+                
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                const resultDiv = document.getElementById('result');
+                const contentDiv = document.getElementById('resultContent');
+                contentDiv.innerHTML = `<div class="error-message">エラーが発生しました: ${error.message}</div>`;
+                resultDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

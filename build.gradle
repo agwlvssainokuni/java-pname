@@ -25,7 +25,9 @@ subprojects {
 
     tasks.withType(Test).configureEach {
         useJUnitPlatform()
-        jvmArgs += "-javaagent:${configurations.javaagent.asPath}"
+        if (project.name == 'pname-main') {
+            jvmArgs += "-javaagent:${configurations.javaagent.asPath}"
+        }
     }
 
     repositories { mavenCentral() }
@@ -68,6 +70,7 @@ subprojects {
             implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
             implementation 'org.apache.commons:commons-lang3'
             implementation 'org.apache.commons:commons-csv'
+            testImplementation 'org.springframework.boot:spring-boot-starter-test'
         }
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
