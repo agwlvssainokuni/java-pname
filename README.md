@@ -14,6 +14,7 @@ This project generates alphanumeric identifiers from Japanese business terms usi
 - **Multiple Naming Conventions**: 10 types including camelCase, PascalCase, snake_case, UPPER_SNAKE_CASE, kebab-case, UPPER-KEBAB-CASE, etc.
 - **CLI Interface**: Command-line tool with batch processing capabilities
 - **Web Interface**: REST API + intuitive Web UI with dictionary upload support
+- **REST API**: Comprehensive HTTP API for integration with other systems
 - **File Processing**: Input/output file support for large-scale operations
 
 ## Quick Start
@@ -59,6 +60,21 @@ cd java-pname
 # - Dictionary file upload
 # - Real-time physical name generation
 # - Token decomposition display
+```
+
+### REST API Usage
+
+The web application also provides a REST API for programmatic access. See [API_REFERENCE.md](API_REFERENCE.md) for detailed documentation.
+
+**Quick API Example:**
+```bash
+# Generate physical name via API
+curl -X POST http://localhost:8080/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "logicalName": "顧客管理システム",
+    "namingConvention": "LOWER_SNAKE"
+  }'
 ```
 
 #### Batch Processing
@@ -223,6 +239,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - [x] Thymeleaf + Bootstrap-based web interface
 - [x] Dictionary file upload functionality
 - [x] Real-time physical name generation and token decomposition display
+- [x] Comprehensive API documentation
 - [ ] Performance optimization
 - [ ] Additional dictionary formats
-- [ ] API documentation (OpenAPI/Swagger)
+- [ ] OpenAPI/Swagger integration

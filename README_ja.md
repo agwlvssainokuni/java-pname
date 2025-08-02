@@ -14,6 +14,7 @@
 - **複数の命名規則**: camelCase、PascalCase、snake_case、SNAKE_CASE_UPPER、kebab-case、KEBAB-CASE_UPPER等10種類
 - **CLI インターフェース**: バッチ処理機能付きコマンドラインツール
 - **Web インターフェース**: REST API + 直感的なWebUI（辞書アップロード対応）
+- **REST API**: 他システムとの連携用包括的HTTP API
 - **ファイル処理**: 大規模操作用の入出力ファイルサポート
 
 ## クイックスタート
@@ -59,6 +60,21 @@ cd java-pname
 # - 辞書ファイルのアップロード
 # - リアルタイム物理名生成
 # - トークン分解結果の表示
+```
+
+### REST API使用方法
+
+Webアプリケーションはプログラムからのアクセス用にREST APIも提供しています。詳細は[API_REFERENCE.md](API_REFERENCE.md)を参照してください。
+
+**API使用例:**
+```bash
+# API経由で物理名生成
+curl -X POST http://localhost:8080/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "logicalName": "顧客管理システム",
+    "namingConvention": "LOWER_SNAKE"
+  }'
 ```
 
 #### バッチ処理
@@ -223,6 +239,7 @@ java-pname/
 - [x] Thymeleaf + Bootstrapベースのwebインターフェース
 - [x] 辞書ファイルアップロード機能
 - [x] リアルタイム物理名生成とトークン分解表示
+- [x] 包括的なAPIドキュメント
 - [ ] パフォーマンス最適化
 - [ ] 追加辞書形式
-- [ ] APIドキュメント（OpenAPI/Swagger）
+- [ ] OpenAPI/Swagger統合
