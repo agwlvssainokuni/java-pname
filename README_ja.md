@@ -66,6 +66,10 @@ cd java-pname
 
 Webアプリケーションはプログラムからのアクセス用にREST APIも提供しています。詳細は[API_REFERENCE.md](API_REFERENCE.md)を参照してください。
 
+**インタラクティブAPIドキュメント:**
+- **Swagger UI**: http://localhost:8080/swagger-ui/index.html (Webアプリ実行時)
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+
 **API使用例:**
 ```bash
 # API経由で物理名生成
@@ -242,4 +246,4 @@ java-pname/
 - [x] 包括的なAPIドキュメント
 - [ ] パフォーマンス最適化
 - [ ] 追加辞書形式
-- [ ] OpenAPI/Swagger統合
+- [x] OpenAPI/Swagger統合

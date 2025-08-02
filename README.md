@@ -66,6 +66,10 @@ cd java-pname
 
 The web application also provides a REST API for programmatic access. See [API_REFERENCE.md](API_REFERENCE.md) for detailed documentation.
 
+**Interactive API Documentation:**
+- **Swagger UI**: http://localhost:8080/swagger-ui/index.html (when web app is running)
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+
 **Quick API Example:**
 ```bash
 # Generate physical name via API
@@ -242,4 +246,4 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - [x] Comprehensive API documentation
 - [ ] Performance optimization
 - [ ] Additional dictionary formats
-- [ ] OpenAPI/Swagger integration
+- [x] OpenAPI/Swagger integration

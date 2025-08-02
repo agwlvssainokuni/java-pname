@@ -1,0 +1,325 @@
+openapi: 3.0.3
+info:
+  title: Physical Name Generator API
+  description: |
+    A Java tool for converting Japanese logical names to alphanumeric physical names. 
+    Generates identifiers for use in databases, APIs, and code using dictionary-based 
+    conversion and romanization fallback.
+    
+    ## Features
+    - Multi-format dictionary support (CSV, TSV, JSON)
+    - Advanced tokenization algorithms (Greedy, Optimal)
+    - Japanese text processing with morphological analysis
+    - 10 different naming conventions
+    - Real-time physical name generation
+    
+    ## Dictionary Formats
+    
+    ### CSV Format
+    ```
+    顧客,customer client
+    注文,order
+    商品,product item
+    ```
+    
+    ### TSV Format
+    ```
+    顧客	customer client
+    注文	order
+    商品	product item
+    ```
+    
+    ### JSON Format
+    ```json
+    {
+      "顧客": ["customer", "client"],
+      "注文": ["order"],
+      "商品": ["product", "item"]
+    }
+    ```
+  version: 1.0.0
+  contact:
+    name: Physical Name Generator
+    url: https://github.com/example/java-pname
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: http://localhost:8080/api
+    description: Local development server
+  - url: https://api.example.com/api
+    description: Production server
+
+paths:
+  /generate:
+    post:
+      summary: Generate Physical Name
+      description: |
+        Converts a Japanese logical name into an alphanumeric physical name using 
+        specified tokenization and naming convention strategies.
+        
+        The API supports both pre-loaded dictionaries (via file upload) and inline 
+        dictionary data provided directly in the request.
+      operationId: generatePhysicalName
+      tags:
+        - Physical Name Generation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+            examples:
+              basic:
+                summary: Basic conversion
+                value:
+                  logicalName: "顧客管理"
+                  tokenizerType: "OPTIMAL"
+                  namingConvention: "LOWER_CAMEL"
+              with_dictionary:
+                summary: With inline dictionary
+                value:
+                  logicalName: "顧客管理システム"
+                  tokenizerType: "OPTIMAL"
+                  namingConvention: "UPPER_SNAKE"
+                  dictionaryData: "顧客,customer\n管理,management\nシステム,system"
+                  dictionaryFormat: "CSV"
+              snake_case:
+                summary: Snake case output
+                value:
+                  logicalName: "注文処理機能"
+                  tokenizerType: "GREEDY"
+                  namingConvention: "LOWER_SNAKE"
+      responses:
+        '200':
+          description: Physical name generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateResponse'
+              examples:
+                success:
+                  summary: Successful generation
+                  value:
+                    success: true
+                    logicalName: "顧客管理システム"
+                    physicalName: "customerManagementSystem"
+                    tokenMappings:
+                      - "顧客=>customer"
+                      - "管理=>management"
+                      - "システム=>system"
+                    errorMessage: null
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateResponse'
+              examples:
+                invalid_parameter:
+                  summary: Invalid parameter error
+                  value:
+                    success: false
+                    logicalName: null
+                    physicalName: null
+                    tokenMappings: null
+                    errorMessage: "不正なパラメータです: Invalid naming convention"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateResponse'
+              examples:
+                server_error:
+                  summary: Server error
+                  value:
+                    success: false
+                    logicalName: null
+                    physicalName: null
+                    tokenMappings: null
+                    errorMessage: "辞書の読み込みに失敗しました: Invalid dictionary format"
+
+  /generate/dictionary:
+    post:
+      summary: Upload Dictionary File
+      description: |
+        Uploads and loads a dictionary file for use in subsequent generation requests.
+        The dictionary will be stored in memory and used for all future generation 
+        requests until a new dictionary is uploaded or the server is restarted.
+        
+        Supported formats: CSV, TSV, JSON
+      operationId: uploadDictionary
+      tags:
+        - Dictionary Management
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - format
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Dictionary file in CSV, TSV, or JSON format
+                format:
+                  type: string
+                  enum: [CSV, TSV, JSON]
+                  description: Dictionary file format
+            examples:
+              csv_upload:
+                summary: CSV dictionary upload
+                value:
+                  format: "CSV"
+      responses:
+        '200':
+          description: Dictionary uploaded successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                success:
+                  summary: Upload successful
+                  value: "辞書ファイルを読み込みました (150エントリ)"
+        '400':
+          description: Invalid request
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                no_file:
+                  summary: No file selected
+                  value: "ファイルが選択されていません"
+                invalid_format:
+                  summary: Invalid format
+                  value: "不正な辞書形式です: INVALID_FORMAT"
+        '500':
+          description: Dictionary processing error
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                processing_error:
+                  summary: Processing error
+                  value: "辞書の読み込みに失敗しました: Invalid file format"
+
+  /generate/dictionary/info:
+    get:
+      summary: Get Dictionary Information
+      description: |
+        Returns information about the currently loaded dictionary, including 
+        whether a dictionary is loaded and the number of entries it contains.
+      operationId: getDictionaryInfo
+      tags:
+        - Dictionary Management
+      responses:
+        '200':
+          description: Dictionary information retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                with_dictionary:
+                  summary: Dictionary loaded
+                  value: "辞書が読み込まれています (150エントリ)"
+                without_dictionary:
+                  summary: No dictionary loaded
+                  value: "辞書が読み込まれていません"
+
+components:
+  schemas:
+    GenerateRequest:
+      type: object
+      required:
+        - logicalName
+      properties:
+        logicalName:
+          type: string
+          description: Japanese logical name to convert
+          example: "顧客管理システム"
+        tokenizerType:
+          type: string
+          enum: [GREEDY, OPTIMAL]
+          default: "OPTIMAL"
+          description: |
+            Tokenization algorithm to use:
+            - GREEDY: Forward longest-match algorithm
+            - OPTIMAL: Dynamic programming with evaluation criteria
+        namingConvention:
+          type: string
+          enum: [CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB]
+          default: "LOWER_CAMEL"
+          description: |
+            Output naming convention:
+            - CAMEL: camelCase (e.g., customerManagement)
+            - PASCAL: PascalCase (e.g., CustomerManagement)
+            - LOWER_CAMEL: lowerCamelCase (e.g., customerManagement)
+            - UPPER_CAMEL: UpperCamelCase (e.g., CustomerManagement)
+            - SNAKE: snake_case (e.g., customer_management)
+            - LOWER_SNAKE: lower_snake_case (e.g., customer_management)
+            - UPPER_SNAKE: UPPER_SNAKE_CASE (e.g., CUSTOMER_MANAGEMENT)
+            - KEBAB: kebab-case (e.g., customer-management)
+            - LOWER_KEBAB: lower-kebab-case (e.g., customer-management)
+            - UPPER_KEBAB: UPPER-KEBAB-CASE (e.g., CUSTOMER-MANAGEMENT)
+        dictionaryData:
+          type: string
+          nullable: true
+          description: |
+            Optional dictionary data as text. If provided, this dictionary will be used
+            for the current request only. Format should match dictionaryFormat.
+          example: "顧客,customer\n管理,management\nシステム,system"
+        dictionaryFormat:
+          type: string
+          enum: [CSV, TSV, JSON]
+          default: "CSV"
+          description: Format of the dictionary data (used with dictionaryData)
+
+    GenerateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the generation was successful
+        logicalName:
+          type: string
+          nullable: true
+          description: Original Japanese logical name (null on error)
+        physicalName:
+          type: string
+          nullable: true
+          description: Generated alphanumeric physical name (null on error)
+        tokenMappings:
+          type: array
+          items:
+            type: string
+          nullable: true
+          description: |
+            Detailed token mappings showing how each part was converted.
+            Format: "logical=>physical" or "unknown=>(romaji: ...)" for unknown words
+          example:
+            - "顧客=>customer"
+            - "管理=>management"
+            - "システム=>system"
+        errorMessage:
+          type: string
+          nullable: true
+          description: Error message if success is false (null on success)
+
+tags:
+  - name: Physical Name Generation
+    description: Core functionality for converting Japanese logical names to physical names
+  - name: Dictionary Management
+    description: Operations for managing dictionaries used in name conversion
+
+externalDocs:
+  description: GitHub Repository
+  url: https://github.com/example/java-pname
