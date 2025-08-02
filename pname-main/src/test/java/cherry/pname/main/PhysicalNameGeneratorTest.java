@@ -318,6 +318,20 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.SNAKE, "顧客管理");
+
+        assertEquals("customer_management", result.physicalName());
+    }
+
+    @Test
+    void testGeneratePhysicalNameLowerSnakeCase() throws IOException {
+        String csvData = """
+                顧客,customer
+                管理,management
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
                 TokenizerType.GREEDY, NamingConvention.LOWER_SNAKE, "顧客管理");
 
         assertEquals("customer_management", result.physicalName());
@@ -339,6 +353,20 @@ class PhysicalNameGeneratorTest {
 
     @Test
     void testGeneratePhysicalNameKebabCase() throws IOException {
+        String csvData = """
+                顧客,customer
+                管理,management
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.KEBAB, "顧客管理");
+
+        assertEquals("customer-management", result.physicalName());
+    }
+
+    @Test
+    void testGeneratePhysicalNameLowerKebabCase() throws IOException {
         String csvData = """
                 顧客,customer
                 管理,management

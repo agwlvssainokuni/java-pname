@@ -185,13 +185,11 @@ public class PhysicalNameGenerator {
      */
     private String formatPhysicalName(List<String> elements, NamingConvention convention) {
         return switch (convention) {
-            case LOWER_CAMEL -> formatCamelCase(elements, false);
-            case UPPER_CAMEL -> formatCamelCase(elements, true);
-            case CAMEL -> formatCamelCase(elements, false);
-            case PASCAL -> formatCamelCase(elements, true);
-            case LOWER_SNAKE -> formatSnakeCase(elements, false);
+            case CAMEL, LOWER_CAMEL -> formatCamelCase(elements, false);
+            case PASCAL, UPPER_CAMEL -> formatCamelCase(elements, true);
+            case SNAKE, LOWER_SNAKE -> formatSnakeCase(elements, false);
             case UPPER_SNAKE -> formatSnakeCase(elements, true);
-            case LOWER_KEBAB -> formatKebabCase(elements, false);
+            case KEBAB, LOWER_KEBAB -> formatKebabCase(elements, false);
             case UPPER_KEBAB -> formatKebabCase(elements, true);
         };
     }

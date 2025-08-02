@@ -21,16 +21,6 @@ package cherry.pname.main;
  */
 public enum NamingConvention {
     /**
-     * lowerCamelCase形式 (例: customerManagement)
-     */
-    LOWER_CAMEL,
-
-    /**
-     * UpperCamelCase（PascalCase）形式 (例: CustomerManagement)
-     */
-    UPPER_CAMEL,
-
-    /**
      * camelCase形式 (例: customerManagement)
      */
     CAMEL,
@@ -41,6 +31,21 @@ public enum NamingConvention {
     PASCAL,
 
     /**
+     * lowerCamelCase形式 (例: customerManagement)
+     */
+    LOWER_CAMEL,
+
+    /**
+     * UpperCamelCase（PascalCase）形式 (例: CustomerManagement)
+     */
+    UPPER_CAMEL,
+
+    /**
+     * snake_case形式 (例: customer_management) - LOWER_SNAKEと同じ
+     */
+    SNAKE,
+
+    /**
      * lower_snake_case形式 (例: customer_management)
      */
     LOWER_SNAKE,
@@ -49,6 +54,11 @@ public enum NamingConvention {
      * UPPER_SNAKE_CASE形式 (例: CUSTOMER_MANAGEMENT)
      */
     UPPER_SNAKE,
+
+    /**
+     * kebab-case形式 (例: customer-management) - LOWER_KEBABと同じ
+     */
+    KEBAB,
 
     /**
      * lower-kebab-case形式 (例: customer-management)
