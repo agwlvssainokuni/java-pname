@@ -43,11 +43,19 @@ public class OpenApiConfig {
                                 conversion and romanization fallback.
                                 
                                 ## Features
-                                - Multi-format dictionary support (CSV, TSV, JSON)
+                                - Multi-format dictionary support (CSV, TSV, JSON, YAML)
                                 - Advanced tokenization algorithms (Greedy, Optimal)
                                 - Japanese text processing with morphological analysis
                                 - 10 different naming conventions
                                 - Real-time physical name generation
+                                - Interactive API documentation with Swagger UI
+                                - Comprehensive error handling and validation
+                                
+                                ## Dictionary Formats
+                                - CSV: Comma-separated values format
+                                - TSV: Tab-separated values format  
+                                - JSON: JavaScript Object Notation
+                                - YAML: Human-readable structured data format
                                 """)
                         .version("1.0.0")
                         .contact(new Contact()
