@@ -71,7 +71,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         log.info("  --dictionary=<file>       辞書ファイルを指定");
         log.info("  --format=<format>         辞書形式を指定 (CSV, TSV, JSON) [default: CSV]");
         log.info("  --tokenizer=<type>        トークナイザーを指定 (GREEDY, OPTIMAL) [default: OPTIMAL]");
-        log.info("  --naming=<convention>     命名規則を指定 (CAMEL_CASE, PASCAL_CASE, SNAKE_CASE, SNAKE_CASE_UPPER, KEBAB_CASE, KEBAB_CASE_UPPER) [default: CAMEL_CASE]");
+        log.info("  --naming=<convention>     命名規則を指定 (LOWER_CAMEL, UPPER_CAMEL, CAMEL, PASCAL, LOWER_SNAKE, UPPER_SNAKE, LOWER_KEBAB, UPPER_KEBAB) [default: LOWER_CAMEL]");
         log.info("  --input=<file>            入力ファイルを指定（論理名リスト）");
         log.info("  --output=<file>           出力ファイルを指定");
         log.info("  --verbose                 詳細な出力を表示");
@@ -79,7 +79,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         log.info("");
         log.info("Examples:");
         log.info("  java -jar pname-cli.jar --dictionary=dict.csv 顧客管理システム");
-        log.info("  java -jar pname-cli.jar --format=JSON --naming=SNAKE_CASE --dictionary=dict.json 注文明細");
+        log.info("  java -jar pname-cli.jar --format=JSON --naming=LOWER_SNAKE --dictionary=dict.json 注文明細");
         log.info("  java -jar pname-cli.jar --dictionary=dict.csv --input=input.txt --output=output.txt");
     }
 
@@ -169,14 +169,14 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
 
     private NamingConvention parseNamingConvention(List<String> namingOptions) {
         if (namingOptions == null || namingOptions.isEmpty()) {
-            return NamingConvention.CAMEL_CASE;
+            return NamingConvention.LOWER_CAMEL;
         }
 
         try {
             return NamingConvention.valueOf(namingOptions.get(0).toUpperCase());
         } catch (IllegalArgumentException e) {
-            log.warn("不正な命名規則です: {}. デフォルト(CAMEL_CASE)を使用します。", namingOptions.get(0));
-            return NamingConvention.CAMEL_CASE;
+            log.warn("不正な命名規則です: {}. デフォルト(LOWER_CAMEL)を使用します。", namingOptions.get(0));
+            return NamingConvention.LOWER_CAMEL;
         }
     }
 
