@@ -30,13 +30,8 @@ import java.util.List;
 @Component
 public class KuromojiRomajiConverter implements RomajiConverter {
 
-    private final Tokenizer tokenizer;
-    private final Transliterator katakanaToLatin;
-
-    public KuromojiRomajiConverter() {
-        this.tokenizer = new Tokenizer();
-        this.katakanaToLatin = Transliterator.getInstance("Katakana-Latin");
-    }
+    private final Tokenizer tokenizer = new Tokenizer();
+    private final Transliterator katakanaToLatin = Transliterator.getInstance("Katakana-Latin");
 
     @Override
     public List<String> convertToRomaji(String japaneseText) {
