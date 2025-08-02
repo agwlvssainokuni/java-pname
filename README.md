@@ -8,7 +8,7 @@ This project generates alphanumeric identifiers from Japanese business terms usi
 
 ## Features
 
-- **Multi-format Dictionary Support**: CSV, TSV, JSON dictionary formats
+- **Multi-format Dictionary Support**: CSV, TSV, JSON, YAML dictionary formats
 - **Advanced Tokenization**: Greedy longest-match and optimal selection algorithms
 - **Japanese Text Processing**: Morphological analysis and romanization using Kuromoji and ICU4J
 - **Multiple Naming Conventions**: 10 types including camelCase, PascalCase, snake_case, UPPER_SNAKE_CASE, kebab-case, UPPER-KEBAB-CASE, etc.
@@ -97,7 +97,7 @@ curl -X POST http://localhost:8080/api/generate \
 |--------|-------------|---------|
 | `--help` | Show help message | - |
 | `--dictionary=<file>` | Dictionary file path | - |
-| `--format=<format>` | Dictionary format (CSV, TSV, JSON) | CSV |
+| `--format=<format>` | Dictionary format (CSV, TSV, JSON, YAML) | CSV |
 | `--tokenizer=<type>` | Tokenizer type (GREEDY, OPTIMAL) | OPTIMAL |
 | `--naming=<convention>` | Naming convention (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB) | LOWER_CAMEL |
 | `--input=<file>` | Input file containing logical names | - |
@@ -131,6 +131,18 @@ curl -X POST http://localhost:8080/api/generate \
   "注文": ["order"],
   "商品": ["product", "item"]
 }
+```
+
+### YAML Format
+
+```yaml
+顧客:
+  - customer
+  - client
+注文: order
+商品:
+  - product
+  - item
 ```
 
 ## Usage Examples

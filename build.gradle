@@ -54,6 +54,7 @@ subprojects {
             implementation 'org.apache.commons:commons-lang3'
             implementation 'org.apache.commons:commons-csv'
             implementation 'com.fasterxml.jackson.core:jackson-databind'
+            implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
             implementation 'com.atilika.kuromoji:kuromoji-ipadic'
             implementation 'com.ibm.icu:icu4j'
             javaagent('org.mockito:mockito-core') { transitive = false }

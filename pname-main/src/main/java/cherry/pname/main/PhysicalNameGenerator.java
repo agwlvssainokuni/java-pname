@@ -40,6 +40,7 @@ public class PhysicalNameGenerator {
     private final DictionaryLoader csvDictionaryLoader;
     private final DictionaryLoader tsvDictionaryLoader;
     private final DictionaryLoader jsonDictionaryLoader;
+    private final DictionaryLoader yamlDictionaryLoader;
     private final Tokenizer greedyTokenizer;
     private final Tokenizer optimalTokenizer;
     private final RomajiConverter romajiConverter;
@@ -50,12 +51,14 @@ public class PhysicalNameGenerator {
             @Qualifier("csvDictionaryLoader") DictionaryLoader csvDictionaryLoader,
             @Qualifier("tsvDictionaryLoader") DictionaryLoader tsvDictionaryLoader,
             @Qualifier("jsonDictionaryLoader") DictionaryLoader jsonDictionaryLoader,
+            @Qualifier("yamlDictionaryLoader") DictionaryLoader yamlDictionaryLoader,
             @Qualifier("greedyTokenizer") Tokenizer greedyTokenizer,
             @Qualifier("optimalTokenizer") Tokenizer optimalTokenizer,
             RomajiConverter romajiConverter) {
         this.csvDictionaryLoader = csvDictionaryLoader;
         this.tsvDictionaryLoader = tsvDictionaryLoader;
         this.jsonDictionaryLoader = jsonDictionaryLoader;
+        this.yamlDictionaryLoader = yamlDictionaryLoader;
         this.greedyTokenizer = greedyTokenizer;
         this.optimalTokenizer = optimalTokenizer;
         this.romajiConverter = romajiConverter;
@@ -109,6 +112,7 @@ public class PhysicalNameGenerator {
             case CSV -> csvDictionaryLoader;
             case TSV -> tsvDictionaryLoader;
             case JSON -> jsonDictionaryLoader;
+            case YAML -> yamlDictionaryLoader;
         };
     }
 

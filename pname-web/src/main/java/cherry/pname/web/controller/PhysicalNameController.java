@@ -216,7 +216,7 @@ public class PhysicalNameController {
      */
     @Operation(
         summary = "Upload Dictionary File",
-        description = "Uploads and loads a dictionary file for use in subsequent generation requests. The dictionary will be stored in memory and used for all future generation requests until a new dictionary is uploaded or the server is restarted. Supported formats: CSV, TSV, JSON",
+        description = "Uploads and loads a dictionary file for use in subsequent generation requests. The dictionary will be stored in memory and used for all future generation requests until a new dictionary is uploaded or the server is restarted. Supported formats: CSV, TSV, JSON, YAML",
         tags = {"Dictionary Management"}
     )
     @ApiResponses(value = {
@@ -270,7 +270,7 @@ public class PhysicalNameController {
     @PostMapping(value = "/dictionary", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadDictionary(
             @Parameter(
-                description = "Dictionary file in CSV, TSV, or JSON format",
+                description = "Dictionary file in CSV, TSV, JSON, or YAML format",
                 required = true,
                 content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)
             )
@@ -278,7 +278,7 @@ public class PhysicalNameController {
             @Parameter(
                 description = "Dictionary file format",
                 required = true,
-                schema = @Schema(type = "string", allowableValues = {"CSV", "TSV", "JSON"})
+                schema = @Schema(type = "string", allowableValues = {"CSV", "TSV", "JSON", "YAML"})
             )
             @RequestParam("format") String format) {
         try {

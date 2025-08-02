@@ -8,7 +8,7 @@
 
 ## 機能
 
-- **多形式辞書サポート**: CSV、TSV、JSON辞書形式
+- **多形式辞書サポート**: CSV、TSV、JSON、YAML辞書形式
 - **高度なトークン化**: 貪欲最長一致および最適選択アルゴリズム
 - **日本語テキスト処理**: KuromojiとICU4Jを使用した形態素解析とローマ字変換
 - **複数の命名規則**: camelCase、PascalCase、snake_case、SNAKE_CASE_UPPER、kebab-case、KEBAB-CASE_UPPER等10種類
@@ -97,7 +97,7 @@ curl -X POST http://localhost:8080/api/generate \
 |-----------|------|-----------|
 | `--help` | ヘルプメッセージを表示 | - |
 | `--dictionary=<file>` | 辞書ファイルパス | - |
-| `--format=<format>` | 辞書形式 (CSV, TSV, JSON) | CSV |
+| `--format=<format>` | 辞書形式 (CSV, TSV, JSON, YAML) | CSV |
 | `--tokenizer=<type>` | トークナイザータイプ (GREEDY, OPTIMAL) | OPTIMAL |
 | `--naming=<convention>` | 命名規則 (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB) | LOWER_CAMEL |
 | `--input=<file>` | 論理名を含む入力ファイル | - |
@@ -131,6 +131,18 @@ curl -X POST http://localhost:8080/api/generate \
   "注文": ["order"],
   "商品": ["product", "item"]
 }
+```
+
+### YAML形式
+
+```yaml
+顧客:
+  - customer
+  - client
+注文: order
+商品:
+  - product
+  - item
 ```
 
 ## 使用例

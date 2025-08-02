@@ -19,6 +19,7 @@ package cherry.pname.main;
 import cherry.pname.main.dictionary.CsvDictionaryLoader;
 import cherry.pname.main.dictionary.JsonDictionaryLoader;
 import cherry.pname.main.dictionary.TsvDictionaryLoader;
+import cherry.pname.main.dictionary.YamlDictionaryLoader;
 import cherry.pname.main.romaji.KuromojiRomajiConverter;
 import cherry.pname.main.tokenize.GreedyTokenizer;
 import cherry.pname.main.tokenize.OptimalTokenizer;
@@ -47,6 +48,7 @@ class PhysicalNameGeneratorTest {
                 new CsvDictionaryLoader(),
                 new TsvDictionaryLoader(),
                 new JsonDictionaryLoader(),
+                new YamlDictionaryLoader(),
                 new GreedyTokenizer(),
                 new OptimalTokenizer(),
                 new KuromojiRomajiConverter()
@@ -168,6 +170,44 @@ class PhysicalNameGeneratorTest {
         assertEquals(2, tokens.size());
         assertEquals("売上", tokens.get(0).word());
         assertEquals("明細", tokens.get(1).word());
+    }
+
+    @Test
+    void testLoadYamlDictionaryFromString() throws IOException {
+        String yamlData = """
+                顧客:
+                  - customer
+                  - client
+                注文: order
+                商品:
+                  - product
+                  - item
+                """;
+        generator.loadDictionary(DictionaryFormat.YAML, yamlData);
+        assertTrue(generator.hasDictionary());
+        assertEquals(3, generator.getDictionarySize());
+        List<Token> tokens = generator.tokenize(TokenizerType.GREEDY, "注文商品");
+        assertEquals(2, tokens.size());
+        assertEquals("注文", tokens.get(0).word());
+        assertEquals("商品", tokens.get(1).word());
+    }
+
+    @Test
+    void testLoadYamlDictionaryFromResource() throws IOException {
+        String yamlData = """
+                年月日: date
+                金額:
+                  - amount
+                  - price
+                """;
+        Resource resource = new ByteArrayResource(yamlData.getBytes(StandardCharsets.UTF_8));
+        generator.loadDictionary(DictionaryFormat.YAML, resource);
+        assertTrue(generator.hasDictionary());
+        assertEquals(2, generator.getDictionarySize());
+        List<Token> tokens = generator.tokenize(TokenizerType.OPTIMAL, "年月日金額");
+        assertEquals(2, tokens.size());
+        assertEquals("年月日", tokens.get(0).word());
+        assertEquals("金額", tokens.get(1).word());
     }
 
     @Test

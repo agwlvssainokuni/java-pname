@@ -37,6 +37,17 @@ info:
       "商品": ["product", "item"]
     }
     ```
+    
+    ### YAML Format
+    ```yaml
+    顧客:
+      - customer
+      - client
+    注文: order
+    商品:
+      - product
+      - item
+    ```
   version: 1.0.0
   contact:
     name: Physical Name Generator
@@ -149,7 +160,7 @@ paths:
         The dictionary will be stored in memory and used for all future generation 
         requests until a new dictionary is uploaded or the server is restarted.
         
-        Supported formats: CSV, TSV, JSON
+        Supported formats: CSV, TSV, JSON, YAML
       operationId: uploadDictionary
       tags:
         - Dictionary Management
@@ -169,7 +180,7 @@ paths:
                   description: Dictionary file in CSV, TSV, or JSON format
                 format:
                   type: string
-                  enum: [CSV, TSV, JSON]
+                  enum: [CSV, TSV, JSON, YAML]
                   description: Dictionary file format
             examples:
               csv_upload:
