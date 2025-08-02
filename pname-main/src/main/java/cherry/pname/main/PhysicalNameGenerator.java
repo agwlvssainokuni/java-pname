@@ -244,14 +244,20 @@ public class PhysicalNameGenerator {
      * トークンマッピングを文字列形式でフォーマット
      */
     private String formatTokenMapping(Token token) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(token.word()).append("=>");
+        
         if (token.isUnknown()) {
             // 既に変換済みの物理名要素を取得
             List<String> physicalElements = getPhysicalElements(token);
             String romajiResult = String.join(" ", physicalElements);
-            return token.word() + "=>(romaji: " + romajiResult + ")";
+            sb.append("(romaji: ").append(romajiResult).append(")");
+        } else {
+            String physicalNamesStr = String.join(", ", token.physicalNames());
+            sb.append(physicalNamesStr);
         }
-        String physicalNamesStr = String.join(", ", token.physicalNames());
-        return token.word() + "=>" + physicalNamesStr;
+        
+        return sb.toString();
     }
 
     /**
