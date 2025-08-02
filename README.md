@@ -1,93 +1,93 @@
 # Physical Name Generator (java-pname)
 
-日本語の論理名から英数字の物理名を生成するJavaツールです。データベース、API、コードで使用する識別子を生成します。
+A Java tool for converting Japanese logical names to alphanumeric physical names. Generates identifiers for use in databases, APIs, and code.
 
-## 概要
+## Overview
 
-このプロジェクトは、辞書ベースの変換とローマ字変換フォールバックを使用して、日本語のビジネス用語から英数字の識別子を生成します。様々な開発ニーズに対応するため、複数のトークン化戦略と命名規則をサポートしています。
+This project generates alphanumeric identifiers from Japanese business terms using dictionary-based conversion and romanization fallback. It supports multiple tokenization strategies and naming conventions to meet various development needs.
 
-## 機能
+## Features
 
-- **多形式辞書サポート**: CSV、TSV、JSON辞書形式
-- **高度なトークン化**: 貪欲最長一致および最適選択アルゴリズム
-- **日本語テキスト処理**: KuromojiとICU4Jを使用した形態素解析とローマ字変換
-- **複数の命名規則**: camelCase、PascalCase、snake_case、SNAKE_CASE_UPPER、kebab-case、KEBAB-CASE_UPPER等10種類
-- **CLI インターフェース**: バッチ処理機能付きコマンドラインツール
-- **Web インターフェース**: REST API + 直感的なWebUI（辞書アップロード対応）
-- **ファイル処理**: 大規模操作用の入出力ファイルサポート
+- **Multi-format Dictionary Support**: CSV, TSV, JSON dictionary formats
+- **Advanced Tokenization**: Greedy longest-match and optimal selection algorithms
+- **Japanese Text Processing**: Morphological analysis and romanization using Kuromoji and ICU4J
+- **Multiple Naming Conventions**: 10 types including camelCase, PascalCase, snake_case, UPPER_SNAKE_CASE, kebab-case, UPPER-KEBAB-CASE, etc.
+- **CLI Interface**: Command-line tool with batch processing capabilities
+- **Web Interface**: REST API + intuitive Web UI with dictionary upload support
+- **File Processing**: Input/output file support for large-scale operations
 
-## クイックスタート
+## Quick Start
 
-### 前提条件
+### Prerequisites
 
-- Java 21以降
-- Gradle（ラッパー経由で含まれています）
+- Java 21 or later
+- Gradle (included via wrapper)
 
-### ビルド
+### Build
 
 ```bash
-# リポジトリをクローン
+# Clone repository
 git clone <repository-url>
 cd java-pname
 
-# 全モジュールをビルド
+# Build all modules
 ./gradlew build
 
-# テストを実行
+# Run tests
 ./gradlew test
 ```
 
-### CLI使用方法
+### CLI Usage
 
-#### 基本的な使用方法
+#### Basic Usage
 
 ```bash
-# 単一の論理名を変換
+# Convert a single logical name
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
 
-# 特定のオプションで複数の名前を変換
+# Convert multiple names with specific options
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --tokenizer=OPTIMAL --naming=LOWER_SNAKE 顧客管理 注文処理"
 ```
 
-### Web UI使用方法
+### Web UI Usage
 
 ```bash
-# Webアプリケーションを起動
+# Start the web application
 ./gradlew :pname-web:bootRun
 
-# ブラウザで http://localhost:8080 にアクセス
-# - 辞書ファイルのアップロード
-# - リアルタイム物理名生成
-# - トークン分解結果の表示
+# Access http://localhost:8080 in your browser
+# - Dictionary file upload
+# - Real-time physical name generation
+# - Token decomposition display
 ```
 
-#### バッチ処理
+#### Batch Processing
 
 ```bash
-# 入出力ファイルでファイル処理
+# File processing with input/output files
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --input=input.txt --output=output.txt"
 
-# トークン化の詳細を表示する詳細出力
+# Verbose output showing tokenization details
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --input=input.txt --verbose"
 ```
 
-#### コマンドラインオプション
+#### Command Line Options
 
-| オプション | 説明 | デフォルト |
-|-----------|------|-----------|
-| `--help` | ヘルプメッセージを表示 | - |
-| `--dictionary=<file>` | 辞書ファイルパス | - |
-| `--format=<format>` | 辞書形式 (CSV, TSV, JSON) | CSV |
-| `--tokenizer=<type>` | トークナイザータイプ (GREEDY, OPTIMAL) | OPTIMAL |
-| `--naming=<convention>` | 命名規則 (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB) | LOWER_CAMEL |
-| `--input=<file>` | 論理名を含む入力ファイル | - |
-| `--output=<file>` | 結果用出力ファイル | - |
-| `--verbose` | 詳細な変換情報を表示 | false |
-| `--quiet` | 物理名のみを表示 | false |
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--help` | Show help message | - |
+| `--dictionary=<file>` | Dictionary file path | - |
+| `--format=<format>` | Dictionary format (CSV, TSV, JSON) | CSV |
+| `--tokenizer=<type>` | Tokenizer type (GREEDY, OPTIMAL) | OPTIMAL |
+| `--naming=<convention>` | Naming convention (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB) | LOWER_CAMEL |
+| `--input=<file>` | Input file containing logical names | - |
+| `--output=<file>` | Output file for results | - |
+| `--verbose` | Show detailed conversion information | false |
+| `--quiet` | Show only physical names | false |
 
-## 辞書形式
+## Dictionary Formats
 
-### CSV形式
+### CSV Format
 
 ```csv
 顧客,customer client
@@ -95,7 +95,7 @@ cd java-pname
 商品,product item
 ```
 
-### TSV形式
+### TSV Format
 
 ```tsv
 顧客	customer client
@@ -103,7 +103,7 @@ cd java-pname
 商品	product item
 ```
 
-### JSON形式
+### JSON Format
 
 ```json
 {
@@ -113,36 +113,36 @@ cd java-pname
 }
 ```
 
-## 使用例
+## Usage Examples
 
-### 入力ファイル処理
+### Input File Processing
 
-入力ファイル `logical_names.txt` を作成:
+Create input file `logical_names.txt`:
 ```
 顧客管理システム
 注文処理機能
 商品マスタ管理
 ```
 
-バッチ変換を実行:
+Execute batch conversion:
 ```bash
 ./gradlew :pname-cli:bootRun --args="--dictionary=business_dict.csv --input=logical_names.txt --output=physical_names.txt --naming=LOWER_SNAKE"
 ```
 
-出力 (`physical_names.txt`):
+Output (`physical_names.txt`):
 ```
 顧客管理システム -> customer_management_system
 注文処理機能 -> order_processing_function
 商品マスタ管理 -> product_master_management
 ```
 
-### 詳細出力
+### Verbose Output
 
 ```bash
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --verbose 顧客管理"
 ```
 
-出力:
+Output:
 ```
 論理名: 顧客管理
 物理名: customerManagement
@@ -151,78 +151,78 @@ cd java-pname
   管理=>management
 ```
 
-## アーキテクチャ
+## Architecture
 
-### マルチモジュール構造
+### Multi-Module Structure
 
-- **pname-main**: コア変換ロジックとSpringコンポーネント
-- **pname-cli**: コマンドラインインターフェース（実装済み）
-- **pname-web**: Web APIとThymeleafフロントエンド（実装済み）
+- **pname-main**: Core conversion logic and Spring components
+- **pname-cli**: Command-line interface (implemented)
+- **pname-web**: Web API and Thymeleaf frontend (implemented)
 
-### 主要コンポーネント
+### Key Components
 
-- **トークン化**: 最適な単語分割のための複数アルゴリズム
-- **辞書読み込み**: 様々な辞書形式のサポート
-- **ローマ字化**: KuromojiとICU4Jを使用した日本語テキスト変換
-- **物理名生成**: 設定可能な命名規則変換
+- **Tokenization**: Multiple algorithms for optimal word segmentation
+- **Dictionary Loading**: Support for various dictionary formats
+- **Romanization**: Japanese text conversion using Kuromoji and ICU4J
+- **Physical Name Generation**: Configurable naming convention conversion
 
-## 開発
+## Development
 
-### プロジェクト構造
+### Project Structure
 
 ```
 java-pname/
-├── pname-main/          # コアロジック
-│   ├── tokenize/        # トークン化アルゴリズム
-│   ├── dictionary/      # 辞書ローダー
-│   └── romaji/          # 日本語ローマ字変換
-├── pname-cli/           # CLIインターフェース
-└── pname-web/           # Webインターフェース（実装済み）
+├── pname-main/          # Core logic
+│   ├── tokenize/        # Tokenization algorithms
+│   ├── dictionary/      # Dictionary loaders
+│   └── romaji/          # Japanese romanization
+├── pname-cli/           # CLI interface
+└── pname-web/           # Web interface (implemented)
 ```
 
-### テストの実行
+### Running Tests
 
 ```bash
-# 全テスト
+# All tests
 ./gradlew test
 
-# 特定のモジュール
+# Specific modules
 ./gradlew :pname-main:test
 ./gradlew :pname-cli:test
 ./gradlew :pname-web:test
 ```
 
-### 依存関係
+### Dependencies
 
 - Spring Boot 3.5.4
-- Kuromoji IPADIC 0.9.0（日本語形態素解析）
-- ICU4J 76.1（Unicode処理とローマ字変換）
+- Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)
+- ICU4J 76.1 (Unicode processing and romanization)
 - Apache Commons CSV 1.14.1
-- Jackson Databind（JSON処理）
+- Jackson Databind (JSON processing)
 - Google Guava 33.4.8-jre
 
-## ライセンス
+## License
 
-このプロジェクトはApache License 2.0の下でライセンスされています - 詳細は[LICENSE](LICENSE)ファイルを参照してください。
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
-## 貢献
+## Contributing
 
-1. リポジトリをフォーク
-2. フィーチャーブランチを作成
-3. 変更を行う
-4. 新機能にテストを追加
-5. テストスイートを実行
-6. プルリクエストを提出
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new features
+5. Run the test suite
+6. Submit a pull request
 
-## ロードマップ
+## Roadmap
 
-- [x] コアトークン化とローマ字変換
-- [x] 辞書読み込み（CSV、TSV、JSON）
-- [x] バッチ処理機能付きCLIインターフェース
-- [x] RESTエンドポイント付きWeb API
-- [x] Thymeleaf + Bootstrapベースのwebインターフェース
-- [x] 辞書ファイルアップロード機能
-- [x] リアルタイム物理名生成とトークン分解表示
-- [ ] パフォーマンス最適化
-- [ ] 追加辞書形式
-- [ ] APIドキュメント（OpenAPI/Swagger）
+- [x] Core tokenization and romanization
+- [x] Dictionary loading (CSV, TSV, JSON)
+- [x] CLI interface with batch processing
+- [x] Web API with REST endpoints
+- [x] Thymeleaf + Bootstrap-based web interface
+- [x] Dictionary file upload functionality
+- [x] Real-time physical name generation and token decomposition display
+- [ ] Performance optimization
+- [ ] Additional dictionary formats
+- [ ] API documentation (OpenAPI/Swagger)
