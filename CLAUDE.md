@@ -12,7 +12,7 @@ Multi-module Gradle project with three subprojects:
 
 - **pname-main**: Core physical name generation logic
 - **pname-cli**: Command-line interface for name conversion
-- **pname-web**: Web application with REST API and React frontend
+- **pname-web**: Web application with REST API and Thymeleaf frontend
 
 ## Development Setup
 
@@ -37,6 +37,10 @@ Multi-module Gradle project with three subprojects:
 # Run CLI application
 ./gradlew :pname-cli:bootRun --args="--help"
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
+
+# Run Web application
+./gradlew :pname-web:bootRun
+# Access http://localhost:8080
 ```
 
 ### Project Layout
@@ -51,7 +55,13 @@ java-pname/
 │   └── src/main/java/cherry/pname/cli/
 │       ├── Main.java                        # Spring Boot entry point
 │       └── PhysicalNameGeneratorRunner.java # CLI processing logic
-└── pname-web/           # Web API + React frontend (planned)
+└── pname-web/           # Web API + Thymeleaf frontend (implemented)
+    └── src/main/java/cherry/pname/web/
+        ├── Main.java                            # Spring Boot Web entry point
+        ├── controller/                          # Web controllers
+        │   ├── PhysicalNameController.java      # REST API endpoints
+        │   └── WebController.java               # Web UI controller
+        └── dto/                                 # Data transfer objects
 ```
 
 ## Dependencies
@@ -97,7 +107,7 @@ java-pname/
 **Physical Name Generation**:
 - `PhysicalNameGenerator` (@Component): Main service class
 - `TokenizerType` enum: Tokenizer selection (GREEDY, OPTIMAL)
-- `NamingConvention` enum: 6 naming conventions (CAMEL_CASE, PASCAL_CASE, SNAKE_CASE, KEBAB_CASE, SNAKE_CASE_UPPER, KEBAB_CASE_UPPER)
+- `NamingConvention` enum: 10 naming conventions (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB)
 - `PhysicalNameResult` record: Generation results with tokenMappings showing conversion details
 
 **CLI Interface (cherry.pname.cli)**:
@@ -107,6 +117,17 @@ java-pname/
 - File-based batch processing capabilities
 - Multiple output formats (verbose, normal, quiet)
 - Error handling with appropriate exit codes
+
+**Web Interface (cherry.pname.web)**:
+- `Main` class: Spring Boot Web application entry point
+- `PhysicalNameController` (@RestController): REST API endpoints
+  - POST /api/generate: Physical name generation
+  - POST /api/generate/dictionary: Dictionary file upload
+  - GET /api/generate/dictionary/info: Dictionary information
+- `WebController` (@Controller): Web UI controller for main page
+- `GenerateRequest/Response`: DTOs for API communication
+- Thymeleaf + Bootstrap frontend with file upload and real-time generation
+- Comprehensive error handling and validation
 
 ## License
 

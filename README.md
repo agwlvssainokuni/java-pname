@@ -11,8 +11,9 @@
 - **多形式辞書サポート**: CSV、TSV、JSON辞書形式
 - **高度なトークン化**: 貪欲最長一致および最適選択アルゴリズム
 - **日本語テキスト処理**: KuromojiとICU4Jを使用した形態素解析とローマ字変換
-- **複数の命名規則**: camelCase、PascalCase、snake_case、SNAKE_CASE_UPPER、kebab-case、KEBAB-CASE_UPPER
+- **複数の命名規則**: camelCase、PascalCase、snake_case、SNAKE_CASE_UPPER、kebab-case、KEBAB-CASE_UPPER等10種類
 - **CLI インターフェース**: バッチ処理機能付きコマンドラインツール
+- **Web インターフェース**: REST API + 直感的なWebUI（辞書アップロード対応）
 - **ファイル処理**: 大規模操作用の入出力ファイルサポート
 
 ## クイックスタート
@@ -45,7 +46,19 @@ cd java-pname
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
 
 # 特定のオプションで複数の名前を変換
-./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --tokenizer=OPTIMAL --naming=SNAKE_CASE 顧客管理 注文処理"
+./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --tokenizer=OPTIMAL --naming=LOWER_SNAKE 顧客管理 注文処理"
+```
+
+### Web UI使用方法
+
+```bash
+# Webアプリケーションを起動
+./gradlew :pname-web:bootRun
+
+# ブラウザで http://localhost:8080 にアクセス
+# - 辞書ファイルのアップロード
+# - リアルタイム物理名生成
+# - トークン分解結果の表示
 ```
 
 #### バッチ処理
@@ -66,7 +79,7 @@ cd java-pname
 | `--dictionary=<file>` | 辞書ファイルパス | - |
 | `--format=<format>` | 辞書形式 (CSV, TSV, JSON) | CSV |
 | `--tokenizer=<type>` | トークナイザータイプ (GREEDY, OPTIMAL) | OPTIMAL |
-| `--naming=<convention>` | 命名規則 | CAMEL_CASE |
+| `--naming=<convention>` | 命名規則 (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB) | LOWER_CAMEL |
 | `--input=<file>` | 論理名を含む入力ファイル | - |
 | `--output=<file>` | 結果用出力ファイル | - |
 | `--verbose` | 詳細な変換情報を表示 | false |
@@ -113,7 +126,7 @@ cd java-pname
 
 バッチ変換を実行:
 ```bash
-./gradlew :pname-cli:bootRun --args="--dictionary=business_dict.csv --input=logical_names.txt --output=physical_names.txt --naming=SNAKE_CASE"
+./gradlew :pname-cli:bootRun --args="--dictionary=business_dict.csv --input=logical_names.txt --output=physical_names.txt --naming=LOWER_SNAKE"
 ```
 
 出力 (`physical_names.txt`):
@@ -144,7 +157,7 @@ cd java-pname
 
 - **pname-main**: コア変換ロジックとSpringコンポーネント
 - **pname-cli**: コマンドラインインターフェース（実装済み）
-- **pname-web**: Web APIとReactフロントエンド（予定）
+- **pname-web**: Web APIとThymeleafフロントエンド（実装済み）
 
 ### 主要コンポーネント
 
@@ -164,7 +177,7 @@ java-pname/
 │   ├── dictionary/      # 辞書ローダー
 │   └── romaji/          # 日本語ローマ字変換
 ├── pname-cli/           # CLIインターフェース
-└── pname-web/           # Webインターフェース（予定）
+└── pname-web/           # Webインターフェース（実装済み）
 ```
 
 ### テストの実行
@@ -176,6 +189,7 @@ java-pname/
 # 特定のモジュール
 ./gradlew :pname-main:test
 ./gradlew :pname-cli:test
+./gradlew :pname-web:test
 ```
 
 ### 依存関係
@@ -205,7 +219,10 @@ java-pname/
 - [x] コアトークン化とローマ字変換
 - [x] 辞書読み込み（CSV、TSV、JSON）
 - [x] バッチ処理機能付きCLIインターフェース
-- [ ] RESTエンドポイント付きWeb API
-- [ ] Reactベースのwebインターフェース
+- [x] RESTエンドポイント付きWeb API
+- [x] Thymeleaf + Bootstrapベースのwebインターフェース
+- [x] 辞書ファイルアップロード機能
+- [x] リアルタイム物理名生成とトークン分解表示
 - [ ] パフォーマンス最適化
 - [ ] 追加辞書形式
+- [ ] APIドキュメント（OpenAPI/Swagger）
