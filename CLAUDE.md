@@ -34,6 +34,10 @@ Multi-module Gradle project with three subprojects:
 ./gradlew :pname-cli:test
 ./gradlew :pname-web:test
 
+# Run single test class
+./gradlew :pname-main:test --tests PhysicalNameGeneratorTest
+./gradlew :pname-web:test --tests PhysicalNameControllerTest
+
 # Run CLI application
 ./gradlew :pname-cli:bootRun --args="--help"
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
@@ -42,6 +46,9 @@ Multi-module Gradle project with three subprojects:
 # Run Web application
 ./gradlew :pname-web:bootRun
 # Access http://localhost:8080
+
+# Clean build (useful when dependencies change)
+./gradlew clean build
 ```
 
 ### Project Layout
@@ -83,6 +90,12 @@ java-pname/
 - pname-main contains framework-agnostic conversion logic with Spring components
 - pname-cli and pname-web depend on pname-main
 - Build configuration supports both executable applications (CLI/Web) and library (main)
+
+### Spring Integration Patterns
+- Constructor injection with `@Qualifier` annotations for component disambiguation
+- Both CLI and Web modules scan `cherry.pname.main` packages for dependency injection
+- Component naming follows consistent strategy (e.g., "greedyTokenizer", "csvDictionaryLoader")
+- Clean separation between framework-agnostic core and application-specific code
 
 ### Core Components
 
@@ -140,6 +153,12 @@ java-pname/
 - OpenAPI JSON specification: http://localhost:8080/v3/api-docs
 - Static openapi.yaml file with complete API specification
 - Comprehensive API_REFERENCE.md documentation
+
+### Testing Strategy
+- Unit tests use `TokenizerTestBase` for consistent shared test dictionary
+- Spring Boot integration tests with `@AutoConfigureMockMvc` for web controllers
+- Mock-based testing for isolated component testing
+- Comprehensive test coverage for core tokenization, dictionary loading, and web endpoints
 
 ## License
 
