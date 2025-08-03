@@ -237,7 +237,30 @@ java-pname/
 ./gradlew :pname-main:test
 ./gradlew :pname-cli:test
 ./gradlew :pname-web:test
+
+# Run specific test classes
+./gradlew :pname-main:test --tests GreedyTokenizerTest
+./gradlew :pname-main:test --tests OptimalTokenizerTest
+./gradlew :pname-web:test --tests PhysicalNameControllerTest
 ```
+
+### Test Architecture
+
+The project follows a comprehensive testing strategy with hierarchical test organization:
+
+- **Hierarchical Test Structure**: All test classes use `@Nested` annotations for logical grouping
+- **Comprehensive Documentation**: Each test includes detailed JavaDoc explaining verification criteria and expected behavior
+- **Shared Test Infrastructure**: `TokenizerTestBase` provides consistent dictionary setup across tokenizer tests
+- **Integration Testing**: Spring Boot tests with `@AutoConfigureMockMvc` for web layer testing
+- **Mock-based Testing**: Isolated component testing for focused unit tests
+
+**Test Coverage Areas:**
+- Core tokenization algorithms (Greedy and Optimal)
+- Japanese romanization with Kuromoji and ICU4J
+- Dictionary loading for all supported formats (CSV, TSV, JSON, YAML)
+- REST API endpoints and web controller functionality
+- Error handling and edge cases
+- Fallback control mechanisms
 
 ### Dependencies
 
@@ -275,6 +298,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - [x] Comprehensive API documentation
 - [x] YAML dictionary format support
 - [x] OpenAPI/Swagger integration
+- [x] Hierarchical test architecture with comprehensive documentation
 - [ ] Performance optimization
 - [ ] Dictionary validation and error reporting
 - [ ] Custom tokenizer configuration

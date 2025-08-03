@@ -237,7 +237,30 @@ java-pname/
 ./gradlew :pname-main:test
 ./gradlew :pname-cli:test
 ./gradlew :pname-web:test
+
+# 特定のテストクラスを実行
+./gradlew :pname-main:test --tests GreedyTokenizerTest
+./gradlew :pname-main:test --tests OptimalTokenizerTest
+./gradlew :pname-web:test --tests PhysicalNameControllerTest
 ```
+
+### テストアーキテクチャ
+
+プロジェクトは階層的なテスト構成による包括的テスト戦略を採用しています：
+
+- **階層的テスト構造**: 全テストクラスで`@Nested`アノテーションによる論理的グループ化
+- **包括的文書化**: 各テストに検証内容と期待動作を説明する詳細なJavaDocを含む
+- **共有テストインフラ**: `TokenizerTestBase`がトークナイザーテスト間で一貫した辞書設定を提供
+- **統合テスト**: Web層テスト用の`@AutoConfigureMockMvc`によるSpring Bootテスト
+- **モックベーステスト**: 集中的な単体テスト用の分離されたコンポーネントテスト
+
+**テストカバレッジ領域:**
+- コアトークン化アルゴリズム（GreedyとOptimal）
+- KuromojiとICU4Jによる日本語ローマ字変換
+- サポートされる全形式（CSV、TSV、JSON、YAML）の辞書読み込み
+- REST APIエンドポイントとWebコントローラー機能
+- エラーハンドリングとエッジケース
+- フォールバック制御メカニズム
 
 ### 依存関係
 
@@ -275,6 +298,7 @@ java-pname/
 - [x] 包括的なAPIドキュメント
 - [x] YAML辞書フォーマットサポート
 - [x] OpenAPI/Swagger統合
+- [x] 包括的文書化による階層的テストアーキテクチャ
 - [ ] パフォーマンス最適化
 - [ ] 辞書検証とエラーレポート機能
 - [ ] カスタムトークナイザー設定

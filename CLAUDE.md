@@ -162,6 +162,13 @@ java-pname/
 - Spring Boot integration tests with `@AutoConfigureMockMvc` for web controllers
 - Mock-based testing for isolated component testing
 - Comprehensive test coverage for core tokenization, dictionary loading, and web endpoints
+- **Test Class Organization**: All test classes use `@Nested` annotations for hierarchical organization
+  - **GreedyTokenizerTest**: BasicTokenization, LongestMatchPriority, UnknownWordHandling, EdgeCasesAndErrorHandling
+  - **OptimalTokenizerTest**: BasicTokenization, OptimalChoiceAlgorithm, UnknownWordMinimization, ComparisonWithGreedyAlgorithm, EdgeCasesAndErrorHandling
+  - **KuromojiRomajiConverterTest**: BasicJapaneseRomanization, ICU4JTransliterationFeatures, MixedTextAndAlphanumericHandling, EdgeCasesAndErrorHandling
+  - **Dictionary Loader Tests**: BasicFormatProcessing, PhysicalNameCandidateHandling, WhitespaceAndDataCleaning, ErrorHandlingAndSpecialCases
+- **Comprehensive Documentation**: Each test method includes detailed JavaDoc with verification criteria and expected behavior
+- **Consistent Test Patterns**: All tests follow the same documentation and organization standards
 
 ## License
 
