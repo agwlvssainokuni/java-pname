@@ -41,6 +41,7 @@ subprojects {
         dependencies {
             dependency 'com.google.guava:guava:33.4.8-jre'
             dependency 'org.apache.commons:commons-csv:1.14.1'
+            dependency 'org.apache.commons:commons-collections4:4.5.0'
             dependency 'com.atilika.kuromoji:kuromoji-ipadic:0.9.0'
             dependency 'com.ibm.icu:icu4j:76.1'
         }
@@ -53,6 +54,7 @@ subprojects {
             implementation 'com.google.guava:guava'
             implementation 'org.apache.commons:commons-lang3'
             implementation 'org.apache.commons:commons-csv'
+            implementation 'org.apache.commons:commons-collections4'
             implementation 'com.fasterxml.jackson.core:jackson-databind'
             implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
             implementation 'com.atilika.kuromoji:kuromoji-ipadic'

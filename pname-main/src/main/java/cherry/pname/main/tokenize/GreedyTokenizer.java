@@ -16,11 +16,13 @@
 
 package cherry.pname.main.tokenize;
 
+import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * 前方最長マッチ方式のトークナイザー
@@ -35,40 +37,25 @@ public class GreedyTokenizer implements Tokenizer {
             return new ArrayList<>();
         }
 
+        // Trie構造を事前に構築
+        PatriciaTrie<List<String>> trie = buildTrie(dictionary);
+
         List<Token> tokens = new ArrayList<>();
         int pos = 0;
 
         while (pos < logicalName.length()) {
-            String longestMatch = null;
-            int longestLength = 0;
-
-            // 現在位置から始まる最長の辞書マッチを探す
-            for (int end = pos + 1; end <= logicalName.length(); end++) {
-                String candidate = logicalName.substring(pos, end);
-                if (dictionary.containsKey(candidate) && candidate.length() > longestLength) {
-                    longestMatch = candidate;
-                    longestLength = candidate.length();
-                }
-            }
-
-            if (longestMatch != null) {
-                List<String> physicalNames = dictionary.get(longestMatch);
-                tokens.add(new Token(longestMatch, physicalNames, false));
-                pos += longestLength;
+            MatchResult matchResult = findLongestMatchWithTrie(trie, logicalName, pos);
+            
+            if (matchResult.hasMatch()) {
+                List<String> physicalNames = trie.get(matchResult.match());
+                tokens.add(new Token(matchResult.match(), physicalNames, false));
+                pos += matchResult.length();
             } else {
                 // 連続する未知語をまとめて処理
                 int unknownStart = pos;
                 while (pos < logicalName.length()) {
-                    // 現在位置から辞書マッチがあるかチェック
-                    boolean foundMatch = false;
-                    for (int end = pos + 1; end <= logicalName.length(); end++) {
-                        String candidate = logicalName.substring(pos, end);
-                        if (dictionary.containsKey(candidate)) {
-                            foundMatch = true;
-                            break;
-                        }
-                    }
-                    if (foundMatch) {
+                    MatchResult nextMatch = findLongestMatchWithTrie(trie, logicalName, pos);
+                    if (nextMatch.hasMatch()) {
                         break;
                     }
                     pos++;
@@ -80,5 +67,53 @@ public class GreedyTokenizer implements Tokenizer {
         }
 
         return tokens;
+    }
+
+    /**
+     * 辞書からTrie構造を構築
+     */
+    private PatriciaTrie<List<String>> buildTrie(Map<String, List<String>> dictionary) {
+        PatriciaTrie<List<String>> trie = new PatriciaTrie<>();
+        for (Map.Entry<String, List<String>> entry : dictionary.entrySet()) {
+            trie.put(entry.getKey(), entry.getValue());
+        }
+        return trie;
+    }
+
+    /**
+     * Trie構造を使って指定位置から始まる最長マッチを探す
+     */
+    private MatchResult findLongestMatchWithTrie(PatriciaTrie<List<String>> trie, String text, int startPos) {
+        String longestMatch = null;
+        int longestLength = 0;
+        
+        // startPosから始まる部分文字列で接頭辞マッチを探索
+        for (int end = startPos + 1; end <= text.length(); end++) {
+            String candidate = text.substring(startPos, end);
+            
+            if (trie.containsKey(candidate)) {
+                longestMatch = candidate;
+                longestLength = candidate.length();
+            }
+            
+            // 接頭辞マッチがなくなったら早期終了
+            SortedMap<String, List<String>> prefixMatches = trie.prefixMap(candidate);
+            if (prefixMatches.isEmpty()) {
+                break;
+            }
+        }
+
+        return longestMatch != null ? 
+            new MatchResult(longestMatch, longestLength) : 
+            new MatchResult(null, 0);
+    }
+
+    /**
+     * マッチ結果を保持するレコード
+     */
+    private record MatchResult(String match, int length) {
+        boolean hasMatch() {
+            return match != null;
+        }
     }
 }
