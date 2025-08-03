@@ -41,7 +41,7 @@ Multi-module Gradle project with three subprojects:
 # Run CLI application
 ./gradlew :pname-cli:bootRun --args="--help"
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
-./gradlew :pname-cli:bootRun --args="--dictionary=dict.yaml --format=YAML --naming=LOWER_SNAKE 顧客管理システム"
+./gradlew :pname-cli:bootRun --args="--dictionary=dict.yaml --format=YAML --naming=LOWER_SNAKE --enable-fallback 顧客管理システム"
 
 # Run Web application
 ./gradlew :pname-web:bootRun
@@ -126,6 +126,7 @@ java-pname/
 - `TokenizerType` enum: Tokenizer selection (GREEDY, OPTIMAL)
 - `NamingConvention` enum: 10 naming conventions (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB)
 - `PhysicalNameResult` record: Generation results with tokenMappings showing conversion details
+- Fallback control: Configurable unknown word handling (romaji conversion vs. original Japanese)
 
 **CLI Interface (cherry.pname.cli)**:
 - `Main` class: Spring Boot application entry point with component scanning
@@ -134,6 +135,7 @@ java-pname/
 - File-based batch processing capabilities
 - Multiple output formats (verbose, normal, quiet)
 - Error handling with appropriate exit codes
+- Fallback control: `--enable-fallback` option (disabled by default for safer operation)
 
 **Web Interface (cherry.pname.web)**:
 - `Main` class: Spring Boot Web application entry point
@@ -147,6 +149,7 @@ java-pname/
 - Thymeleaf + Bootstrap frontend with file upload and real-time generation
 - OpenAPI 3.0 specification with Swagger UI integration
 - Comprehensive error handling and validation
+- Fallback control: Web UI checkbox for enabling romaji conversion (disabled by default)
 
 **API Documentation**:
 - Interactive Swagger UI: http://localhost:8080/swagger-ui/index.html

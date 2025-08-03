@@ -12,6 +12,7 @@ This project generates alphanumeric identifiers from Japanese business terms usi
 - **Advanced Tokenization**: Greedy longest-match and optimal selection algorithms
 - **Japanese Text Processing**: Morphological analysis and romanization using Kuromoji and ICU4J
 - **Multiple Naming Conventions**: 10 types including camelCase, PascalCase, snake_case, UPPER_SNAKE_CASE, kebab-case, UPPER-KEBAB-CASE, etc.
+- **Fallback Control**: Configurable unknown word handling (romaji conversion or keep original Japanese)
 - **CLI Interface**: Command-line tool with batch processing capabilities
 - **Web Interface**: REST API + intuitive Web UI with dictionary upload support
 - **REST API**: Comprehensive HTTP API for integration with other systems
@@ -43,8 +44,11 @@ cd java-pname
 #### Basic Usage
 
 ```bash
-# Convert a single logical name
+# Convert a single logical name (fallback disabled by default)
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
+
+# Convert with romaji fallback enabled for unknown words
+./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --enable-fallback 顧客管理システム"
 
 # Convert multiple names with specific options
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --tokenizer=OPTIMAL --naming=LOWER_SNAKE 顧客管理 注文処理"
@@ -60,6 +64,7 @@ cd java-pname
 # - Dictionary file upload
 # - Real-time physical name generation
 # - Token decomposition display
+# - Fallback control checkbox (disabled by default for safer operation)
 ```
 
 ### REST API Usage
@@ -72,12 +77,21 @@ The web application also provides a REST API for programmatic access. See [API_R
 
 **Quick API Example:**
 ```bash
-# Generate physical name via API
+# Generate physical name via API (fallback disabled by default)
 curl -X POST http://localhost:8080/api/generate \
   -H "Content-Type: application/json" \
   -d '{
     "logicalName": "顧客管理システム",
     "namingConvention": "LOWER_SNAKE"
+  }'
+
+# Generate with fallback enabled
+curl -X POST http://localhost:8080/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "logicalName": "顧客管理システム",
+    "namingConvention": "LOWER_SNAKE",
+    "enableFallback": true
   }'
 ```
 
@@ -102,6 +116,7 @@ curl -X POST http://localhost:8080/api/generate \
 | `--naming=<convention>` | Naming convention (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB) | LOWER_CAMEL |
 | `--input=<file>` | Input file containing logical names | - |
 | `--output=<file>` | Output file for results | - |
+| `--enable-fallback` | Enable romaji conversion for unknown words | false |
 | `--verbose` | Show detailed conversion information | false |
 | `--quiet` | Show only physical names | false |
 

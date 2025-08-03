@@ -12,6 +12,7 @@
 - **高度なトークン化**: 貪欲最長一致および最適選択アルゴリズム
 - **日本語テキスト処理**: KuromojiとICU4Jを使用した形態素解析とローマ字変換
 - **複数の命名規則**: camelCase、PascalCase、snake_case、SNAKE_CASE_UPPER、kebab-case、KEBAB-CASE_UPPER等10種類
+- **フォールバック制御**: 未知語の処理方法を設定可能（ローマ字変換または元の日本語を保持）
 - **CLI インターフェース**: バッチ処理機能付きコマンドラインツール
 - **Web インターフェース**: REST API + 直感的なWebUI（辞書アップロード対応）
 - **REST API**: 他システムとの連携用包括的HTTP API
@@ -43,8 +44,11 @@ cd java-pname
 #### 基本的な使用方法
 
 ```bash
-# 単一の論理名を変換
+# 単一の論理名を変換（フォールバックはデフォルトで無効）
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv 顧客管理システム"
+
+# 未知語のローマ字変換フォールバックを有効にして変換
+./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --enable-fallback 顧客管理システム"
 
 # 特定のオプションで複数の名前を変換
 ./gradlew :pname-cli:bootRun --args="--dictionary=dict.csv --tokenizer=OPTIMAL --naming=LOWER_SNAKE 顧客管理 注文処理"
@@ -60,6 +64,7 @@ cd java-pname
 # - 辞書ファイルのアップロード
 # - リアルタイム物理名生成
 # - トークン分解結果の表示
+# - フォールバック制御チェックボックス（より安全な操作のためデフォルトで無効）
 ```
 
 ### REST API使用方法
@@ -72,12 +77,21 @@ Webアプリケーションはプログラムからのアクセス用にREST API
 
 **API使用例:**
 ```bash
-# API経由で物理名生成
+# API経由で物理名生成（フォールバックはデフォルトで無効）
 curl -X POST http://localhost:8080/api/generate \
   -H "Content-Type: application/json" \
   -d '{
     "logicalName": "顧客管理システム",
     "namingConvention": "LOWER_SNAKE"
+  }'
+
+# フォールバックを有効にして生成
+curl -X POST http://localhost:8080/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "logicalName": "顧客管理システム",
+    "namingConvention": "LOWER_SNAKE",
+    "enableFallback": true
   }'
 ```
 
@@ -102,6 +116,7 @@ curl -X POST http://localhost:8080/api/generate \
 | `--naming=<convention>` | 命名規則 (CAMEL, PASCAL, LOWER_CAMEL, UPPER_CAMEL, SNAKE, LOWER_SNAKE, UPPER_SNAKE, KEBAB, LOWER_KEBAB, UPPER_KEBAB) | LOWER_CAMEL |
 | `--input=<file>` | 論理名を含む入力ファイル | - |
 | `--output=<file>` | 結果用出力ファイル | - |
+| `--enable-fallback` | 未知語のローマ字変換を有効化 | false |
 | `--verbose` | 詳細な変換情報を表示 | false |
 | `--quiet` | 物理名のみを表示 | false |
 
