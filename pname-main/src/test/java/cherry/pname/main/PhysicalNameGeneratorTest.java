@@ -323,7 +323,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.LOWER_CAMEL, "顧客管理システム");
+                TokenizerType.GREEDY, NamingConvention.LOWER_CAMEL, "顧客管理システム", true);
 
         assertEquals("顧客管理システム", result.logicalName());
         assertEquals("customerManagementSystem", result.physicalName());
@@ -342,7 +342,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.UPPER_CAMEL, "顧客管理");
+                TokenizerType.GREEDY, NamingConvention.UPPER_CAMEL, "顧客管理", true);
 
         assertEquals("顧客管理", result.logicalName());
         assertEquals("CustomerManagement", result.physicalName());
@@ -358,7 +358,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.SNAKE, "顧客管理");
+                TokenizerType.GREEDY, NamingConvention.SNAKE, "顧客管理", true);
 
         assertEquals("customer_management", result.physicalName());
     }
@@ -372,7 +372,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.LOWER_SNAKE, "顧客管理");
+                TokenizerType.GREEDY, NamingConvention.LOWER_SNAKE, "顧客管理", true);
 
         assertEquals("customer_management", result.physicalName());
     }
@@ -386,7 +386,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.UPPER_SNAKE, "顧客管理");
+                TokenizerType.GREEDY, NamingConvention.UPPER_SNAKE, "顧客管理", true);
 
         assertEquals("CUSTOMER_MANAGEMENT", result.physicalName());
     }
@@ -400,7 +400,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.KEBAB, "顧客管理");
+                TokenizerType.GREEDY, NamingConvention.KEBAB, "顧客管理", true);
 
         assertEquals("customer-management", result.physicalName());
     }
@@ -414,7 +414,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.LOWER_KEBAB, "顧客管理");
+                TokenizerType.GREEDY, NamingConvention.LOWER_KEBAB, "顧客管理", true);
 
         assertEquals("customer-management", result.physicalName());
     }
@@ -428,7 +428,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.UPPER_KEBAB, "顧客管理");
+                TokenizerType.GREEDY, NamingConvention.UPPER_KEBAB, "顧客管理", true);
 
         assertEquals("CUSTOMER-MANAGEMENT", result.physicalName());
     }
@@ -442,7 +442,7 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.LOWER_CAMEL, "顧客管理");
+                TokenizerType.GREEDY, NamingConvention.LOWER_CAMEL, "顧客管理", true);
 
         assertEquals("customerClientManagementAdmin", result.physicalName());
         assertEquals("顧客=>customer, client", result.tokenMappings().get(0));
@@ -457,11 +457,27 @@ class PhysicalNameGeneratorTest {
         generator.loadDictionary(DictionaryFormat.CSV, csvData);
 
         PhysicalNameResult result = generator.generatePhysicalName(
-                TokenizerType.GREEDY, NamingConvention.LOWER_CAMEL, "顧客XY管理");
+                TokenizerType.GREEDY, NamingConvention.LOWER_CAMEL, "顧客XY管理", true);
 
         assertEquals("customerXyKanri", result.physicalName());
         assertEquals(2, result.tokenMappings().size()); // 実際は2つのトークン
         assertEquals("顧客=>customer", result.tokenMappings().get(0));
         assertEquals("XY管理=>(romaji: XY kanri)", result.tokenMappings().get(1)); // ローマ字変換詳細
+    }
+
+    @Test
+    void testGeneratePhysicalNameWithoutFallback() throws IOException {
+        String csvData = """
+                顧客,customer
+                """;
+        generator.loadDictionary(DictionaryFormat.CSV, csvData);
+
+        PhysicalNameResult result = generator.generatePhysicalName(
+                TokenizerType.GREEDY, NamingConvention.LOWER_CAMEL, "顧客XY管理", false);
+
+        assertEquals("customerXy管理", result.physicalName());
+        assertEquals(2, result.tokenMappings().size());
+        assertEquals("顧客=>customer", result.tokenMappings().get(0));
+        assertEquals("XY管理=>(unknown: XY管理)", result.tokenMappings().get(1));
     }
 }

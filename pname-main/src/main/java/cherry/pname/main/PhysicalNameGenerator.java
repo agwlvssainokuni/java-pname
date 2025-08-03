@@ -148,31 +148,36 @@ public class PhysicalNameGenerator {
      * @param tokenizerType    トークナイザーの種類
      * @param namingConvention 命名規則
      * @param logicalName      元の日本語名
+     * @param enableFallback   未知語のfallback処理を有効にするかどうか
      * @return 物理名生成結果
      */
-    public PhysicalNameResult generatePhysicalName(TokenizerType tokenizerType, NamingConvention namingConvention, String logicalName) {
+    public PhysicalNameResult generatePhysicalName(TokenizerType tokenizerType, NamingConvention namingConvention, String logicalName, boolean enableFallback) {
         List<Token> tokens = tokenize(tokenizerType, logicalName);
 
         // 全トークンの物理名要素を収集
         List<String> allPhysicalElements = tokens.stream()
-                .flatMap(token -> getPhysicalElements(token).stream())
+                .flatMap(token -> getPhysicalElements(token, enableFallback).stream())
                 .toList();
 
         String physicalName = formatPhysicalName(allPhysicalElements, namingConvention);
 
         List<String> tokenMappings = tokens.stream()
-                .map(this::formatTokenMapping)
+                .map(token -> formatTokenMapping(token, enableFallback))
                 .toList();
 
         return new PhysicalNameResult(logicalName, physicalName, tokenMappings);
     }
 
     /**
-     * トークンから物理名要素を取得する
+     * トークンから物理名要素を取得する（fallback制御付き）
      */
-    private List<String> getPhysicalElements(Token token) {
+    private List<String> getPhysicalElements(Token token, boolean enableFallback) {
         if (token.isUnknown() || token.physicalNames().isEmpty()) {
-            return splitAndRomanizeUnknownWord(token.word());
+            if (enableFallback) {
+                return splitAndRomanizeUnknownWord(token.word());
+            } else {
+                return List.of(token.word());
+            }
         }
         return token.physicalNames();
     }
@@ -241,22 +246,26 @@ public class PhysicalNameGenerator {
     }
 
     /**
-     * トークンマッピングを文字列形式でフォーマット
+     * トークンマッピングを文字列形式でフォーマット（fallback制御付き）
      */
-    private String formatTokenMapping(Token token) {
+    private String formatTokenMapping(Token token, boolean enableFallback) {
         StringBuilder sb = new StringBuilder();
         sb.append(token.word()).append("=>");
-        
+
         if (token.isUnknown()) {
-            // 既に変換済みの物理名要素を取得
-            List<String> physicalElements = getPhysicalElements(token);
-            String romajiResult = String.join(" ", physicalElements);
-            sb.append("(romaji: ").append(romajiResult).append(")");
+            if (enableFallback) {
+                // 既に変換済みの物理名要素を取得
+                List<String> physicalElements = getPhysicalElements(token, enableFallback);
+                String romajiResult = String.join(" ", physicalElements);
+                sb.append("(romaji: ").append(romajiResult).append(")");
+            } else {
+                sb.append("(unknown: ").append(token.word()).append(")");
+            }
         } else {
             String physicalNamesStr = String.join(", ", token.physicalNames());
             sb.append(physicalNamesStr);
         }
-        
+
         return sb.toString();
     }
 
