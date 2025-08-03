@@ -87,27 +87,67 @@ class PhysicalNameGeneratorRunnerTest {
     @Nested
     class HelpAndBasicFunctionality {
 
+        /**
+         * --helpオプションのテスト
+         * 
+         * <p>検証内容:</p>
+         * <ul>
+         *   <li>--helpオプション指定時にヘルプメッセージが表示される</li>
+         *   <li>例外がスローされずに正常終了する</li>
+         *   <li>終了コードが0（正常終了）である</li>
+         * </ul>
+         * 
+         * <p>期待動作:</p>
+         * CLIの使用方法、オプション一覧、実行例が標準出力に表示され、
+         * アプリケーションが正常終了する。
+         */
         @Test
         void testHelpOption() {
-            // --helpオプション指定時にヘルプが表示され、正常終了することを確認
             ApplicationArguments args = new DefaultApplicationArguments("--help");
 
             assertDoesNotThrow(() -> runner.run(args));
             assertEquals(0, runner.getExitCode());
         }
 
+        /**
+         * 論理名未指定時の動作テスト
+         * 
+         * <p>検証内容:</p>
+         * <ul>
+         *   <li>コマンドライン引数なしで実行時にヘルプが表示される</li>
+         *   <li>例外がスローされずに正常終了する</li>
+         *   <li>終了コードが0（正常終了）である</li>
+         * </ul>
+         * 
+         * <p>期待動作:</p>
+         * 変換対象の論理名が指定されていない場合、エラーではなく
+         * ヘルプメッセージを表示してユーザーに使用方法を案内する。
+         */
         @Test
         void testNoLogicalNamesProvided() {
-            // 論理名が指定されていない場合、ヘルプが表示され正常終了することを確認
             ApplicationArguments args = new DefaultApplicationArguments();
 
             assertDoesNotThrow(() -> runner.run(args));
             assertEquals(0, runner.getExitCode());
         }
 
+        /**
+         * 複数論理名の同時処理テスト
+         * 
+         * <p>検証内容:</p>
+         * <ul>
+         *   <li>複数の論理名を同一コマンドで指定できる</li>
+         *   <li>すべての論理名が順次処理される</li>
+         *   <li>処理中に例外が発生しない</li>
+         *   <li>すべて処理完了後に正常終了する</li>
+         * </ul>
+         * 
+         * <p>期待動作:</p>
+         * 「顧客管理」「システム」の両方が個別に物理名変換され、
+         * それぞれの結果が順次出力される。
+         */
         @Test
         void testMultipleLogicalNames() {
-            // 複数の論理名を同時に処理できることを確認
             ApplicationArguments args = new DefaultApplicationArguments("顧客管理", "システム");
 
             assertDoesNotThrow(() -> runner.run(args));
@@ -122,18 +162,47 @@ class PhysicalNameGeneratorRunnerTest {
     @Nested
     class FallbackControl {
 
+        /**
+         * フォールバック有効時の基本変換テスト
+         * 
+         * <p>検証内容:</p>
+         * <ul>
+         *   <li>--enable-fallbackオプションが正しく解釈される</li>
+         *   <li>辞書にない未知語もローマ字変換される</li>
+         *   <li>処理が正常完了する</li>
+         * </ul>
+         * 
+         * <p>期待動作:</p>
+         * 辞書に登録されていない単語もKuromojiとICU4Jを使用して
+         * ローマ字変換され、物理名に含まれる。
+         * 例: 未知語「ABC」→「abc」（ローマ字変換）
+         */
         @Test
         void testBasicConversionWithFallbackEnabled() {
-            // --enable-fallbackオプション指定時、未知語もローマ字変換されることを確認
             ApplicationArguments args = new DefaultApplicationArguments("--enable-fallback", "顧客管理システム");
 
             assertDoesNotThrow(() -> runner.run(args));
             assertEquals(0, runner.getExitCode());
         }
 
+        /**
+         * フォールバック無効時の基本変換テスト
+         * 
+         * <p>検証内容:</p>
+         * <ul>
+         *   <li>フォールバックオプション未指定時の動作</li>
+         *   <li>未知語が元の日本語のまま保持される</li>
+         *   <li>辞書にある単語は正常に変換される</li>
+         *   <li>処理が正常完了する</li>
+         * </ul>
+         * 
+         * <p>期待動作:</p>
+         * より安全な動作として、辞書にない単語はローマ字変換せず
+         * 元の日本語のまま出力される。
+         * 例: 「顧客XY管理」→「customerXy管理」（XYは変換されない）
+         */
         @Test
         void testBasicConversionWithFallbackDisabled() {
-            // フォールバック無効時、未知語は元の日本語のまま残ることを確認
             ApplicationArguments args = new DefaultApplicationArguments("顧客XY管理");
 
             assertDoesNotThrow(() -> runner.run(args));
