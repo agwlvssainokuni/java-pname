@@ -26,6 +26,7 @@ public class GenerateRequest {
     private String namingConvention = "LOWER_CAMEL";
     private String dictionaryData;
     private String dictionaryFormat = "CSV";
+    private boolean enableFallback = true;
 
     public GenerateRequest() {
     }
@@ -74,5 +75,13 @@ public class GenerateRequest {
 
     public void setDictionaryFormat(String dictionaryFormat) {
         this.dictionaryFormat = dictionaryFormat;
+    }
+
+    public boolean isEnableFallback() {
+        return enableFallback;
+    }
+
+    public void setEnableFallback(boolean enableFallback) {
+        this.enableFallback = enableFallback;
     }
 }

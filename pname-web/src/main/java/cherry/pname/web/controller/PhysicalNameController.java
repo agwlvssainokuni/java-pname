@@ -191,7 +191,7 @@ public class PhysicalNameController {
             NamingConvention namingConvention = NamingConvention.valueOf(request.getNamingConvention().toUpperCase());
             
             PhysicalNameResult result = generator.generatePhysicalName(
-                    tokenizerType, namingConvention, request.getLogicalName());
+                    tokenizerType, namingConvention, request.getLogicalName(), request.isEnableFallback());
 
             return ResponseEntity.ok(GenerateResponse.fromResult(result));
             

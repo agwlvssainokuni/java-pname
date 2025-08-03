@@ -113,6 +113,19 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enableFallback" checked>
+                                <label class="form-check-label" for="enableFallback">
+                                    未知語のローマ字変換を有効にする
+                                </label>
+                                <div class="form-text">
+                                    チェックを外すと、辞書にない単語は元の日本語のまま出力されます
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-success">物理名を生成</button>
                 </form>
 
@@ -173,13 +186,15 @@
             const namingConvention = document.getElementById('namingConvention').value;
             const dictionaryText = document.getElementById('dictionaryText').value;
             const dictionaryFormat = document.getElementById('dictionaryFormat').value;
+            const enableFallback = document.getElementById('enableFallback').checked;
             
             const requestData = {
                 logicalName: logicalName,
                 tokenizerType: tokenizerType,
                 namingConvention: namingConvention,
                 dictionaryData: dictionaryText.trim() || null,
-                dictionaryFormat: dictionaryFormat
+                dictionaryFormat: dictionaryFormat,
+                enableFallback: enableFallback
             };
             
             try {
