@@ -74,6 +74,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         log.info("  --naming=<convention>     命名規則を指定 (LOWER_CAMEL, UPPER_CAMEL, CAMEL, PASCAL, LOWER_SNAKE, UPPER_SNAKE, LOWER_KEBAB, UPPER_KEBAB) [default: LOWER_CAMEL]");
         log.info("  --input=<file>            入力ファイルを指定（論理名リスト）");
         log.info("  --output=<file>           出力ファイルを指定");
+        log.info("  --no-fallback             未知語のローマ字変換を無効化");
         log.info("  --verbose                 詳細な出力を表示");
         log.info("  --quiet                   最小限の出力のみ表示");
         log.info("");
@@ -107,21 +108,22 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         TokenizerType tokenizerType = parseTokenizerType(args.getOptionValues("tokenizer"));
         NamingConvention namingConvention = parseNamingConvention(args.getOptionValues("naming"));
 
+        boolean enableFallback = parseEnableFallback(args);
         boolean verbose = isVerbose(args);
         boolean quiet = isQuiet(args);
 
         // ファイルベース処理またはコマンドライン引数処理
         if (args.containsOption("input")) {
-            processInputFile(args, tokenizerType, namingConvention, verbose, quiet);
+            processInputFile(args, tokenizerType, namingConvention, enableFallback, verbose, quiet);
         } else {
-            processCommandLineArguments(args, tokenizerType, namingConvention, verbose, quiet);
+            processCommandLineArguments(args, tokenizerType, namingConvention, enableFallback, verbose, quiet);
         }
     }
 
     private void processLogicalName(String logicalName, TokenizerType tokenizerType,
-                                    NamingConvention namingConvention, boolean verbose, boolean quiet) {
+                                    NamingConvention namingConvention, boolean enableFallback, boolean verbose, boolean quiet) {
         try {
-            PhysicalNameResult result = generator.generatePhysicalName(tokenizerType, namingConvention, logicalName);
+            PhysicalNameResult result = generator.generatePhysicalName(tokenizerType, namingConvention, logicalName, enableFallback);
 
             if (quiet) {
                 log.info(result.physicalName());
@@ -188,8 +190,12 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         return args.containsOption("quiet");
     }
 
+    private boolean parseEnableFallback(ApplicationArguments args) {
+        return !args.containsOption("no-fallback");
+    }
+
     private void processInputFile(ApplicationArguments args, TokenizerType tokenizerType,
-                                  NamingConvention namingConvention, boolean verbose, boolean quiet) throws IOException {
+                                  NamingConvention namingConvention, boolean enableFallback, boolean verbose, boolean quiet) throws IOException {
         String inputFile = args.getOptionValues("input").getFirst();
         Path inputPath = Paths.get(inputFile);
 
@@ -214,7 +220,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
             }
 
             try {
-                PhysicalNameResult result = generator.generatePhysicalName(tokenizerType, namingConvention, trimmedName);
+                PhysicalNameResult result = generator.generatePhysicalName(tokenizerType, namingConvention, trimmedName, enableFallback);
 
                 if (args.containsOption("output")) {
                     // ファイル出力用フォーマット
@@ -232,7 +238,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
                     }
                 } else {
                     // コンソール出力
-                    processLogicalName(trimmedName, tokenizerType, namingConvention, verbose, quiet);
+                    processLogicalName(trimmedName, tokenizerType, namingConvention, enableFallback, verbose, quiet);
                 }
             } catch (Exception e) {
                 log.error("論理名の変換に失敗しました: {} - {}", trimmedName, e.getMessage());
@@ -254,7 +260,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
     }
 
     private void processCommandLineArguments(ApplicationArguments args, TokenizerType tokenizerType,
-                                             NamingConvention namingConvention, boolean verbose, boolean quiet) {
+                                             NamingConvention namingConvention, boolean enableFallback, boolean verbose, boolean quiet) {
         // 論理名の処理
         List<String> logicalNames = args.getNonOptionArgs();
         if (logicalNames.isEmpty()) {
@@ -264,7 +270,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         }
 
         for (String logicalName : logicalNames) {
-            processLogicalName(logicalName, tokenizerType, namingConvention, verbose, quiet);
+            processLogicalName(logicalName, tokenizerType, namingConvention, enableFallback, verbose, quiet);
         }
     }
 
