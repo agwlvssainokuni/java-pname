@@ -52,11 +52,11 @@ info:
     ```
   version: 1.0.0
   contact:
-    name: Physical Name Generator
-    url: https://github.com/example/java-pname
+    name: Physical Name Generator Support
+    url: https://github.com/example/java-pname/issues
   license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
 
 servers:
   - url: http://localhost:8080/api

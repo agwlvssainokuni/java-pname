@@ -46,6 +46,7 @@ Content-Type: application/json
 | `namingConvention` | string | No | "LOWER_CAMEL" | Output naming convention |
 | `dictionaryData` | string | No | null | Dictionary data as text (CSV/TSV/JSON/YAML format) |
 | `dictionaryFormat` | string | No | "CSV" | Dictionary format ("CSV", "TSV", "JSON", "YAML") |
+| `enableFallback` | boolean | No | false | Enable romaji conversion for unknown words |
 
 **Naming Convention Options:**
 - `CAMEL` - camelCase (e.g., customerManagement)
@@ -112,6 +113,20 @@ curl -X POST http://localhost:8080/api/generate \
   }'
 ```
 
+**Response:**
+```json
+{
+  "success": true,
+  "logicalName": "顧客管理",
+  "physicalName": "kyakuKanri",
+  "tokenMappings": [
+    "顧客=>(romaji: kyaku kanri)",
+    "管理=>(romaji: kyaku kanri)"
+  ],
+  "errorMessage": null
+}
+```
+
 **Request with Custom Settings:**
 ```bash
 curl -X POST http://localhost:8080/api/generate \
@@ -119,8 +134,24 @@ curl -X POST http://localhost:8080/api/generate \
   -d '{
     "logicalName": "顧客管理システム",
     "tokenizerType": "OPTIMAL",
-    "namingConvention": "UPPER_SNAKE"
+    "namingConvention": "UPPER_SNAKE",
+    "enableFallback": true
   }'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "logicalName": "顧客管理システム",
+  "physicalName": "KYAKU_KANRI_SYSTEM",
+  "tokenMappings": [
+    "顧客=>(romaji: kyaku kanri)",
+    "管理=>(romaji: kyaku kanri)",
+    "システム=>(romaji: system)"
+  ],
+  "errorMessage": null
+}
 ```
 
 **Request with Inline Dictionary:**
@@ -132,8 +163,23 @@ curl -X POST http://localhost:8080/api/generate \
     "tokenizerType": "OPTIMAL",
     "namingConvention": "LOWER_CAMEL",
     "dictionaryData": "顧客,customer\n管理,management\nシステム,system",
-    "dictionaryFormat": "CSV"
+    "dictionaryFormat": "CSV",
+    "enableFallback": false
   }'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "logicalName": "顧客管理",
+  "physicalName": "customerManagement",
+  "tokenMappings": [
+    "顧客=>customer",
+    "管理=>management"
+  ],
+  "errorMessage": null
+}
 ```
 
 ### 2. Upload Dictionary File
