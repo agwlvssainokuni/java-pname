@@ -57,6 +57,53 @@ class PhysicalNameControllerTest {
     }
 
     @Test
+    void testGeneratePhysicalNameWithFallbackEnabled() throws Exception {
+        GenerateRequest request = new GenerateRequest("テストXY", "OPTIMAL", "LOWER_CAMEL");
+        request.setEnableFallback(true);
+
+        mockMvc.perform(post("/api/generate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.logicalName").value("テストXY"))
+                .andExpect(jsonPath("$.physicalName").exists())
+                .andExpect(jsonPath("$.tokenMappings").isArray());
+    }
+
+    @Test
+    void testGeneratePhysicalNameWithFallbackDisabled() throws Exception {
+        GenerateRequest request = new GenerateRequest("テストXY", "OPTIMAL", "LOWER_CAMEL");
+        request.setEnableFallback(false);
+
+        mockMvc.perform(post("/api/generate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.logicalName").value("テストXY"))
+                .andExpect(jsonPath("$.physicalName").exists())
+                .andExpect(jsonPath("$.tokenMappings").isArray());
+    }
+
+    @Test
+    void testGeneratePhysicalNameDefaultFallbackBehavior() throws Exception {
+        // enableFallbackが指定されていない場合、デフォルトでfalseになることを確認
+        GenerateRequest request = new GenerateRequest("顧客XY管理", "OPTIMAL", "LOWER_CAMEL");
+        request.setDictionaryData("顧客,customer\n管理,management");
+        request.setDictionaryFormat("CSV");
+
+        mockMvc.perform(post("/api/generate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.logicalName").value("顧客XY管理"))
+                .andExpect(jsonPath("$.physicalName").value("customerXy管理"))
+                .andExpect(jsonPath("$.tokenMappings").isArray());
+    }
+
+    @Test
     void testGeneratePhysicalNameWithDictionary() throws Exception {
         GenerateRequest request = new GenerateRequest("顧客管理", "OPTIMAL", "SNAKE");
         request.setDictionaryData("顧客,customer\n管理,management");
@@ -69,6 +116,23 @@ class PhysicalNameControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.logicalName").value("顧客管理"))
                 .andExpect(jsonPath("$.physicalName").value("customer_management"));
+    }
+
+    @Test
+    void testGeneratePhysicalNameWithDictionaryAndFallbackEnabled() throws Exception {
+        GenerateRequest request = new GenerateRequest("顧客XY管理", "OPTIMAL", "LOWER_CAMEL");
+        request.setDictionaryData("顧客,customer\n管理,management");
+        request.setDictionaryFormat("CSV");
+        request.setEnableFallback(true);
+
+        mockMvc.perform(post("/api/generate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.logicalName").value("顧客XY管理"))
+                .andExpect(jsonPath("$.physicalName").exists())
+                .andExpect(jsonPath("$.tokenMappings").isArray());
     }
 
     @Test
