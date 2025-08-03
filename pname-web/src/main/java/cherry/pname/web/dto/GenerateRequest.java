@@ -26,7 +26,7 @@ public class GenerateRequest {
     private String namingConvention = "LOWER_CAMEL";
     private String dictionaryData;
     private String dictionaryFormat = "CSV";
-    private boolean enableFallback = true;
+    private boolean enableFallback = false;
 
     public GenerateRequest() {
     }

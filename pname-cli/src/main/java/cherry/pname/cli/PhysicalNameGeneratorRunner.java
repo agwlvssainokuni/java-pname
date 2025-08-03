@@ -74,7 +74,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
         log.info("  --naming=<convention>     命名規則を指定 (LOWER_CAMEL, UPPER_CAMEL, CAMEL, PASCAL, LOWER_SNAKE, UPPER_SNAKE, LOWER_KEBAB, UPPER_KEBAB) [default: LOWER_CAMEL]");
         log.info("  --input=<file>            入力ファイルを指定（論理名リスト）");
         log.info("  --output=<file>           出力ファイルを指定");
-        log.info("  --no-fallback             未知語のローマ字変換を無効化");
+        log.info("  --enable-fallback         未知語のローマ字変換を有効化");
         log.info("  --verbose                 詳細な出力を表示");
         log.info("  --quiet                   最小限の出力のみ表示");
         log.info("");
@@ -191,7 +191,7 @@ public class PhysicalNameGeneratorRunner implements ApplicationRunner, ExitCodeG
     }
 
     private boolean parseEnableFallback(ApplicationArguments args) {
-        return !args.containsOption("no-fallback");
+        return args.containsOption("enable-fallback");
     }
 
     private void processInputFile(ApplicationArguments args, TokenizerType tokenizerType,
