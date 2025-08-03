@@ -99,7 +99,7 @@ class PhysicalNameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.logicalName").value("顧客XY管理"))
-                .andExpect(jsonPath("$.physicalName").value("customerXy管理"))
+                .andExpect(jsonPath("$.physicalName").value("customerXyManagement"))
                 .andExpect(jsonPath("$.tokenMappings").isArray());
     }
 
