@@ -30,7 +30,3 @@ build/
 # OS
 .DS_Store
 Thumbs.db
-
-# Dictionary files
-dict.tsv
-sample_dict.yaml
