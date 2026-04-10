@@ -18,7 +18,7 @@ Multi-module Gradle project with three subprojects:
 
 ### Build System
 - Gradle with Wrapper (use `./gradlew` commands)
-- Java 21 with Spring Boot 3.5.4
+- Java 21 with Spring Boot 4.0.5
 - Multi-project build configuration
 
 ### Common Commands
@@ -74,13 +74,13 @@ java-pname/
 
 ## Dependencies
 
-- Spring Boot 3.5.4 (for pname-cli and pname-web)
+- Spring Boot 4.0.5 (for pname-cli and pname-web)
 - Apache Commons CSV 1.14.1
 - Google Guava 33.4.8-jre
 - Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)
-- ICU4J 76.1 (Unicode text processing and Japanese romanization)
-- Jackson Databind (JSON processing)
-- Jackson YAML (YAML processing)
+- ICU4J 77.1 (Unicode text processing and Japanese romanization)
+- Jackson 3.x Databind (JSON processing) (tools.jackson.core:jackson-databind)
+- Jackson 3.x YAML (YAML processing) (tools.jackson.dataformat:jackson-dataformat-yaml)
 - SpringDoc OpenAPI (API documentation)
 - JUnit 5 for testing
 

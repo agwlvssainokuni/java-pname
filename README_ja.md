@@ -264,12 +264,12 @@ java-pname/
 
 ### 依存関係
 
-- Spring Boot 3.5.4
+- Spring Boot 4.0.5
 - Kuromoji IPADIC 0.9.0（日本語形態素解析）
-- ICU4J 76.1（Unicode処理とローマ字変換）
+- ICU4J 77.1（Unicode処理とローマ字変換）
 - Apache Commons CSV 1.14.1
-- Jackson Databind（JSON処理）
-- Jackson YAML（YAML処理）
+- Jackson 3.x Databind（JSON処理）
+- Jackson 3.x YAML（YAML処理）
 - SpringDoc OpenAPI（API文書化）
 - Google Guava 33.4.8-jre
 

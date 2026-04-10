@@ -264,12 +264,12 @@ The project follows a comprehensive testing strategy with hierarchical test orga
 
 ### Dependencies
 
-- Spring Boot 3.5.4
+- Spring Boot 4.0.5
 - Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)
-- ICU4J 76.1 (Unicode processing and romanization)
+- ICU4J 77.1 (Unicode processing and romanization)
 - Apache Commons CSV 1.14.1
-- Jackson Databind (JSON processing)
-- Jackson YAML (YAML processing)
+- Jackson 3.x Databind (JSON processing)
+- Jackson 3.x YAML (YAML processing)
 - SpringDoc OpenAPI (API documentation)
 - Google Guava 33.4.8-jre
 
