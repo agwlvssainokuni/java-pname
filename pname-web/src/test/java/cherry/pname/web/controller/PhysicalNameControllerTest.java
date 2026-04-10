@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -59,7 +59,7 @@ class PhysicalNameControllerTest {
 
         /**
          * 辞書なし基本変換APIテスト
-         * 
+         *
          * <p>検証内容:</p>
          * <ul>
          *   <li>POST /api/generate エンドポイントが正常に動作する</li>
@@ -68,7 +68,7 @@ class PhysicalNameControllerTest {
          *   <li>レスポンスJSONの必須フィールドが存在する</li>
          *   <li>success=trueで成功を示す</li>
          * </ul>
-         * 
+         *
          * <p>期待動作:</p>
          * 辞書が指定されていない場合でも、デフォルトの形態素解析と
          * ローマ字変換により物理名が生成される。
