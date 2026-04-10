@@ -16,10 +16,9 @@
 
 package cherry.pname.main.dictionary;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,7 +37,7 @@ import java.util.Map;
 @Component("yamlDictionaryLoader")
 public class YamlDictionaryLoader implements DictionaryLoader {
 
-    private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+    private final YAMLMapper yamlMapper = new YAMLMapper();
 
     @Override
     public Map<String, List<String>> load(String source) throws IOException {
