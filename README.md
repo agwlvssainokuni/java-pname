@@ -266,12 +266,12 @@ The project follows a comprehensive testing strategy with hierarchical test orga
 
 - Spring Boot 4.1.0
 - Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)
-- ICU4J 77.1 (Unicode processing and romanization)
+- ICU4J 78.3 (Unicode processing and romanization)
 - Apache Commons CSV 1.14.1
 - Jackson 3.x Databind (JSON processing)
 - Jackson 3.x YAML (YAML processing)
 - SpringDoc OpenAPI (API documentation)
-- Google Guava 33.4.8-jre
+- Google Guava 33.6.0-jre
 
 ## License
 

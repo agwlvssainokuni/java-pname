@@ -39,11 +39,12 @@ subprojects {
             mavenBom 'org.springframework.boot:spring-boot-dependencies:4.1.0'
         }
         dependencies {
-            dependency 'com.google.guava:guava:33.4.8-jre'
+            dependency 'com.google.guava:guava:33.6.0-jre'
             dependency 'org.apache.commons:commons-csv:1.14.1'
             dependency 'org.apache.commons:commons-collections4:4.5.0'
             dependency 'com.atilika.kuromoji:kuromoji-ipadic:0.9.0'
-            dependency 'com.ibm.icu:icu4j:77.1'
+            dependency 'com.ibm.icu:icu4j:78.3'
+            dependency 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
         }
     }
 
@@ -73,7 +74,7 @@ subprojects {
             implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
             implementation 'org.apache.commons:commons-lang3'
             implementation 'org.apache.commons:commons-csv'
-            implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
+            implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
             testImplementation 'org.springframework.boot:spring-boot-starter-test'
             testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
         }

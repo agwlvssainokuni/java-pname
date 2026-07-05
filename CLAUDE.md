@@ -76,9 +76,9 @@ java-pname/
 
 - Spring Boot 4.1.0 (for pname-cli and pname-web)
 - Apache Commons CSV 1.14.1
-- Google Guava 33.4.8-jre
+- Google Guava 33.6.0-jre
 - Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)
-- ICU4J 77.1 (Unicode text processing and Japanese romanization)
+- ICU4J 78.3 (Unicode text processing and Japanese romanization)
 - Jackson 3.x Databind (JSON processing) (tools.jackson.core:jackson-databind)
 - Jackson 3.x YAML (YAML processing) (tools.jackson.dataformat:jackson-dataformat-yaml)
 - SpringDoc OpenAPI (API documentation)
