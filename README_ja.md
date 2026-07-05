@@ -22,7 +22,7 @@
 
 ### 前提条件
 
-- Java 21以降
+- Java 25以降
 - Gradle（ラッパー経由で含まれています）
 
 ### ビルド
@@ -264,7 +264,7 @@ java-pname/
 
 ### 依存関係
 
-- Spring Boot 4.0.5
+- Spring Boot 4.1.0
 - Kuromoji IPADIC 0.9.0（日本語形態素解析）
 - ICU4J 77.1（Unicode処理とローマ字変換）
 - Apache Commons CSV 1.14.1

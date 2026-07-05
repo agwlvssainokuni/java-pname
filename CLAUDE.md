@@ -18,7 +18,7 @@ Multi-module Gradle project with three subprojects:
 
 ### Build System
 - Gradle with Wrapper (use `./gradlew` commands)
-- Java 21 with Spring Boot 4.0.5
+- Java 25 with Spring Boot 4.1.0
 - Multi-project build configuration
 
 ### Common Commands
@@ -74,7 +74,7 @@ java-pname/
 
 ## Dependencies
 
-- Spring Boot 4.0.5 (for pname-cli and pname-web)
+- Spring Boot 4.1.0 (for pname-cli and pname-web)
 - Apache Commons CSV 1.14.1
 - Google Guava 33.4.8-jre
 - Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)

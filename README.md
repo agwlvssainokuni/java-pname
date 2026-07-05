@@ -22,7 +22,7 @@ This project generates alphanumeric identifiers from Japanese business terms usi
 
 ### Prerequisites
 
-- Java 21 or later
+- Java 25 or later
 - Gradle (included via wrapper)
 
 ### Build
@@ -264,7 +264,7 @@ The project follows a comprehensive testing strategy with hierarchical test orga
 
 ### Dependencies
 
-- Spring Boot 4.0.5
+- Spring Boot 4.1.0
 - Kuromoji IPADIC 0.9.0 (Japanese morphological analysis)
 - ICU4J 77.1 (Unicode processing and romanization)
 - Apache Commons CSV 1.14.1
